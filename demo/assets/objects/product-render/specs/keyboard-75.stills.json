@@ -1,0 +1,138 @@
+{
+ "id": "keyboard-75",
+ "made": "2026-11-06T07:50:50.916Z",
+ "px": 1100,
+ "grounds": [
+  "light"
+ ],
+ "colors": [
+  "blue",
+  "black",
+  "white"
+ ],
+ "variants": {
+  "three-quarter": {
+   "view": "three-quarter",
+   "scene": null,
+   "off": false,
+   "grounds": [
+    "light"
+   ],
+   "stills": {
+    "light": {
+     "blue": {
+      "file": "stills/keyboard-75-three-quarter-blue.webp",
+      "half": "stills/keyboard-75-three-quarter-blue-half.webp",
+      "w": 1133,
+      "h": 449
+     },
+     "black": {
+      "file": "stills/keyboard-75-three-quarter-black.webp",
+      "half": "stills/keyboard-75-three-quarter-black-half.webp",
+      "w": 1133,
+      "h": 449
+     },
+     "white": {
+      "file": "stills/keyboard-75-three-quarter-white.webp",
+      "half": "stills/keyboard-75-three-quarter-white-half.webp",
+      "w": 1133,
+      "h": 449
+     }
+    }
+   },
+   "box": [
+    0.0053,
+    0.0134,
+    0.9656,
+    0.9354
+   ],
+   "px": 1100
+  },
+  "top": {
+   "view": "top",
+   "scene": null,
+   "off": false,
+   "grounds": [
+    "light"
+   ],
+   "stills": {
+    "light": {
+     "blue": {
+      "file": "stills/keyboard-75-top-blue.webp",
+      "half": "stills/keyboard-75-top-blue-half.webp",
+      "w": 1146,
+      "h": 714
+     },
+     "black": {
+      "file": "stills/keyboard-75-top-black.webp",
+      "half": "stills/keyboard-75-top-black-half.webp",
+      "w": 1146,
+      "h": 714
+     },
+     "white": {
+      "file": "stills/keyboard-75-top-white.webp",
+      "half": "stills/keyboard-75-top-white-half.webp",
+      "w": 1146,
+      "h": 714
+     }
+    }
+   },
+   "box": [
+    0.0052,
+    0.084,
+    0.959,
+    0.9034
+   ],
+   "px": 1100
+  },
+  "detail-knob": {
+   "view": "detail-knob",
+   "scene": null,
+   "off": false,
+   "grounds": [
+    "light"
+   ],
+   "stills": {
+    "light": {
+     "blue": {
+      "file": "stills/keyboard-75-detail-knob-blue.webp",
+      "half": "stills/keyboard-75-detail-knob-blue-half.webp",
+      "w": 1375,
+      "h": 1320
+     },
+     "black": {
+      "file": "stills/keyboard-75-detail-knob-black.webp",
+      "half": "stills/keyboard-75-detail-knob-black-half.webp",
+      "w": 1375,
+      "h": 1320
+     },
+     "white": {
+      "file": "stills/keyboard-75-detail-knob-white.webp",
+      "half": "stills/keyboard-75-detail-knob-white-half.webp",
+      "w": 1375,
+      "h": 1320
+     }
+    }
+   },
+   "box": [
+    0,
+    0.2788,
+    0.856,
+    0.9955
+   ],
+   "focus": [
+    0.2143,
+    0.3545,
+    0.7857,
+    0.6455
+   ],
+   "cut": [
+    1,
+    0,
+    0,
+    0
+   ],
+   "px": 1100
+  }
+ }
+}

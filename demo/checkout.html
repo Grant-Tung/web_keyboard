@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="vi" data-type="product" data-radius="round" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thanh toán | KeyHouse</title>
+<meta name="site-kind" content="tech">
+<meta name="page-type" content="product">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="index.html"><span class="mark" data-mark="stack" aria-hidden="true"></span>KeyHouse</a>
+    <div class="nav__actions">
+      <button class="cart-btn" type="button" aria-label="Mở giỏ hàng">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="cart-btn__n"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="checkout" id="page">
+  <div class="wrap">
+    <div class="checkout__grid">
+      <form id="form" novalidate>
+        <h1>Thông tin giao hàng</h1>
+        <div class="fl"><input id="name" name="name" placeholder=" " autocomplete="name" required minlength="2"><label for="name">Họ và tên</label><p class="fl__err">Nhập họ tên người nhận.</p></div>
+        <div class="fl"><input id="phone" name="phone" placeholder=" " inputmode="tel" autocomplete="tel" required><label for="phone">Số điện thoại</label><p class="fl__err">Số điện thoại chưa đúng (VD 0912345678).</p></div>
+        <div class="row2">
+          <div class="fl"><input id="province" name="province" placeholder=" " list="provinces" required><label for="province">Tỉnh / Thành phố</label><p class="fl__err">Chọn tỉnh, thành.</p></div>
+          <div class="fl"><input id="ward" name="ward" placeholder=" " required><label for="ward">Phường / Xã</label><p class="fl__err">Nhập phường, xã.</p></div>
+        </div>
+        <datalist id="provinces"><option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đà Nẵng</option><option>Hải Phòng</option><option>Cần Thơ</option><option>Huế</option><option>Khánh Hòa</option><option>Lâm Đồng</option><option>Đồng Nai</option><option>An Giang</option></datalist>
+        <div class="fl"><input id="street" name="street" placeholder=" " autocomplete="street-address" required><label for="street">Số nhà, tên đường</label><p class="fl__err">Nhập số nhà, tên đường.</p></div>
+        <div class="fl"><textarea id="notes" name="notes" placeholder=" "></textarea><label for="notes">Ghi chú (không bắt buộc)</label></div>
+
+        <div class="paybox">
+          <strong>Thanh toán: Cọc 100.000đ + COD</strong>
+          <span class="muted">Sau khi đặt, bạn quét mã QR để chuyển 100.000đ tiền cọc. Phần còn lại trả cho shipper khi nhận hàng.</span>
+        </div>
+        <button class="btn btn--primary submit" type="submit">Hoàn tất đặt hàng</button>
+      </form>
+
+      <aside class="summary" aria-label="Đơn hàng">
+        <h2>Đơn hàng</h2>
+        <div id="lines"></div>
+        <div class="sum"><span class="muted">Tạm tính</span><span class="price" id="sub"></span></div>
+        <div class="sum"><span class="muted">Phí giao hàng</span><span>Tính khi lên đơn</span></div>
+        <div class="sum sum--total"><span>Cọc trước</span><span class="price">100.000đ</span></div>
+        <div class="sum"><span class="muted">Trả khi nhận (COD)</span><span class="price" id="cod"></span></div>
+      </aside>
+    </div>
+
+    <div class="skel" aria-live="polite" aria-label="Đang kiểm tra tồn kho và tạo đơn">
+      <div class="skel__b skel__b--h"></div>
+      <div class="skel__b" style="width:80%"></div>
+      <div class="skel__b" style="width:55%"></div>
+      <div class="skel__b skel__b--box"></div>
+      <div class="skel__b" style="width:70%"></div>
+    </div>
+
+    <div class="done" aria-live="polite">
+      <span class="done__badge">● Đơn đang chờ xác nhận</span>
+      <h1>Cảm ơn bạn đã đặt hàng</h1>
+      <p class="muted">Mã đơn của bạn</p>
+      <p class="done__code" id="code"></p>
+      <div class="qr"><img id="qr" alt="Mã QR chuyển khoản tiền cọc 100.000đ"></div>
+      <dl>
+        <div><dt>Số tiền cọc</dt><dd>100.000đ</dd></div>
+        <div><dt>Nội dung chuyển khoản</dt><dd id="memo"></dd></div>
+        <div><dt>Ngân hàng</dt><dd id="bank"></dd></div>
+      </dl>
+      <p class="muted" style="margin-top:20px">Shop xác nhận cọc trong giờ làm việc và gọi lại cho bạn trước khi gửi hàng.</p>
+      <a class="btn btn--secondary" href="index.html" style="margin-top:12px">Về trang chủ</a>
+    </div>
+  </div>
+</main>
+
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module">
+  import { cart, vnd, orders, BANK, DEPOSIT } from './app.js';
+  const $ = (s) => document.querySelector(s);
+  const items = cart.get();
+  if (!items.length) location.replace('product.html');
+  const sub = cart.total();
+  $('#lines').innerHTML = items.map((i) => `<div class="sum"><span>${i.title} × ${i.qty}<br><small class="muted">${i.variant}</small></span><span class="price">${vnd(i.price * i.qty)}</span></div>`).join('');
+  $('#sub').textContent = vnd(sub);
+  $('#cod').textContent = vnd(sub - DEPOSIT);
+
+  const rules = {
+    name: (v) => v.trim().length >= 2,
+    phone: (v) => /^(0|\+84)(3|5|7|8|9)\d{8}$/.test(v.replace(/[\s.]/g, '')),
+    province: (v) => v.trim().length > 1, ward: (v) => v.trim().length > 1, street: (v) => v.trim().length > 2,
+  };
+  const form = $('#form');
+  form.addEventListener('input', (e) => e.target.closest('.fl')?.classList.remove('is-bad'));
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let first;
+    for (const [k, ok] of Object.entries(rules)) {
+      const el = form.elements[k], bad = !ok(el.value);
+      el.closest('.fl').classList.toggle('is-bad', bad);
+      if (bad) first ||= el;
+    }
+    if (first) return first.focus();
+    form.querySelector('.submit').disabled = true; // no double orders
+    const page = $('#page');
+    page.classList.add('is-sending');
+    scrollTo({ top: 0 });
+    setTimeout(() => { // demo: stands in for the backend's stock check and save
+      const code = 'DH' + String(Math.floor(1000 + Math.random() * 9000));
+      const f = Object.fromEntries(new FormData(form));
+      orders.save([{ code, name: f.name, phone: f.phone, address: `${f.street}, ${f.ward}, ${f.province}`, notes: f.notes, items, total: sub, status: 'pending', at: Date.now() }, ...orders.get()]);
+      cart.set([]);
+      $('#code').textContent = code;
+      $('#memo').textContent = code + ' coc';
+      $('#bank').textContent = `${BANK.id} · ${BANK.acc} · ${BANK.name}`;
+      $('#qr').src = `https://img.vietqr.io/image/${BANK.id}-${BANK.acc}-compact2.png?amount=${DEPOSIT}&addInfo=${encodeURIComponent(code + ' coc')}&accountName=${encodeURIComponent(BANK.name)}`;
+      page.classList.remove('is-sending');
+      page.classList.add('is-done');
+    }, 1600);
+  });
+</script>
+</body>
+</html>

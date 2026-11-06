@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi" data-radius="round" data-buttons="solid">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quản trị đơn hàng | KeyHouse</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="admin">
+<header class="admin__top">
+  <div class="wrap">
+    <strong>KeyHouse Admin</strong>
+    <nav><a href="#" aria-current="page">Đơn hàng</a><a href="#">Sản phẩm</a><a href="#">Tổng quan</a></nav>
+    <button class="btn btn--secondary btn--sm" type="button" id="reset" style="margin-left:auto">Xóa dữ liệu demo</button>
+    <a class="link" href="index.html">Xem cửa hàng</a>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <h1>Đơn hàng</h1>
+    <div class="kpis">
+      <div class="kpi"><span>Chờ cọc</span><b id="k-pending"></b></div>
+      <div class="kpi"><span>Đang giao</span><b id="k-ship"></b></div>
+      <div class="kpi"><span>Doanh thu tháng này</span><b id="k-rev"></b></div>
+      <div class="kpi kpi--warn"><span>Sắp hết hàng</span><b>2 loại</b></div>
+    </div>
+
+    <div class="panelbox">
+      <div class="panelbox__head">
+        <h2>Danh sách đơn</h2>
+        <div class="tabs" id="tabs"></div>
+      </div>
+      <table class="orders">
+        <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>SĐT</th><th>Sản phẩm</th><th>Tổng</th><th>Trạng thái</th><th>Đặt lúc</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="panelbox lowstock">
+      <div class="panelbox__head"><h2>Cảnh báo tồn kho</h2></div>
+      <ul>
+        <li><span>AULA F75 · Vỏ Trắng ngà · LEOBOG Reaper</span><b style="color:#b25000">Còn 2</b></li>
+        <li><span>AULA F75 · Vỏ Đen · Tactile Brown</span><b style="color:#d70015">Còn 1</b></li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<dialog class="modal" id="modal">
+  <div class="modal__in">
+    <h2 id="m-code"></h2>
+    <span id="m-status"></span>
+    <div class="copybox" id="m-info"></div>
+    <div id="m-items" class="muted" style="margin-bottom:20px"></div>
+    <div class="modal__actions">
+      <button class="btn btn--secondary" type="button" id="m-copy">Copy nhanh</button>
+      <button class="btn btn--primary" type="button" id="m-next"></button>
+      <button class="btn btn--secondary" type="button" id="m-cancel">Hủy đơn</button>
+      <button class="btn btn--secondary" type="button" onclick="this.closest('dialog').close()" style="margin-left:auto">Đóng</button>
+    </div>
+  </div>
+</dialog>
+
+<script type="module">
+  import { orders, vnd, toast } from './app.js';
+  const $ = (s) => document.querySelector(s);
+  const H = 3600e3;
+  const STATUS = {
+    pending: ['Chờ cọc', 'st--pending', 'Xác nhận đã cọc', 'paid'],
+    paid: ['Đã cọc', 'st--paid', 'Chuyển sang đóng gói', 'packing'],
+    packing: ['Đang đóng gói', 'st--packing', 'Đã giao cho ĐVVC', 'shipping'],
+    shipping: ['Đang giao', 'st--shipping', 'Hoàn tất', 'done'],
+    done: ['Hoàn tất', 'st--done'],
+    cancel: ['Đã hủy', 'st--cancel'],
+  };
+  const it = (v, sw) => [{ title: 'AULA F75', variant: `Vỏ ${v} · ${sw}`, qty: 1, price: 1290000 }];
+  if (!localStorage.getItem('kb-seeded')) { // demo data
+    const now = Date.now();
+    orders.save([
+      { code: 'DH4821', name: 'Nguyễn Minh Anh', phone: '0912345678', address: '12 Lê Lợi, Phường Bến Thành, TP. Hồ Chí Minh', items: it('Xanh nhạt', 'LEOBOG Graywood V3'), total: 1290000, status: 'pending', at: now - 2 * H },
+      { code: 'DH4790', name: 'Trần Quốc Bảo', phone: '0987654321', address: '45 Trần Phú, Phường Hải Châu, Đà Nẵng', items: it('Đen', 'Tactile Brown'), total: 1290000, status: 'pending', at: now - 30 * H, notes: 'Gọi trước khi giao' },
+      { code: 'DH4755', name: 'Lê Thu Hà', phone: '0356789012', address: '8 Kim Mã, Phường Giảng Võ, Hà Nội', items: it('Trắng ngà', 'LEOBOG Reaper'), total: 1340000, status: 'paid', at: now - 50 * H },
+      { code: 'DH4702', name: 'Phạm Gia Huy', phone: '0778899001', address: '102 Nguyễn Văn Cừ, Phường Ninh Kiều, Cần Thơ', items: it('Xanh nhạt', 'LEOBOG Reaper'), total: 1340000, status: 'shipping', at: now - 80 * H },
+      { code: 'DH4650', name: 'Võ Ngọc Lan', phone: '0901122334', address: '3 Hùng Vương, Phường Thuận Hóa, Huế', items: it('Đen', 'LEOBOG Graywood V3'), total: 1290000, status: 'done', at: now - 120 * H },
+      ...orders.get(),
+    ]);
+    localStorage.setItem('kb-seeded', '1');
+  }
+
+  let filter = 'pending';
+  const fmt = (t) => new Date(t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+  function render() {
+    const list = orders.get();
+    const count = (s) => list.filter((o) => o.status === s).length;
+    $('#k-pending').textContent = count('pending');
+    $('#k-ship').textContent = count('shipping');
+    $('#k-rev').textContent = vnd(list.filter((o) => o.status !== 'cancel').reduce((s, o) => s + o.total, 0));
+    $('#tabs').innerHTML = [['pending', 'Chờ cọc'], ['paid', 'Đã cọc'], ['packing', 'Đóng gói'], ['shipping', 'Đang giao'], ['done', 'Hoàn tất'], ['all', 'Tất cả']]
+      .map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${l}${k === 'all' ? '' : ' (' + count(k) + ')'}</button>`).join('');
+    const rows = list.filter((o) => filter === 'all' || o.status === filter);
+    $('#rows').innerHTML = rows.length ? rows.map((o) => {
+      const late = o.status === 'pending' && Date.now() - o.at > 24 * H;
+      const [label, cls] = STATUS[o.status];
+      return `<tr data-code="${o.code}" class="${late ? 'is-late' : ''}" tabindex="0"><td><b>${o.code}</b></td><td>${esc(o.name)}</td><td>${esc(o.phone)}</td><td>${o.items.map((i) => esc(i.variant)).join('<br>')}</td><td style="font-weight:600">${vnd(o.total)}</td><td><span class="st ${cls}">${label}</span>${late ? '<span class="late">Quá 24 giờ chưa cọc</span>' : ''}</td><td>${fmt(o.at)}</td></tr>`;
+    }).join('') : '<tr><td colspan="7" class="muted">Không có đơn nào.</td></tr>';
+  }
+  const esc = (s = '') => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`); // customer input is untrusted
+
+  let cur;
+  function open(code) {
+    cur = orders.get().find((o) => o.code === code);
+    const [label, cls, next] = STATUS[cur.status];
+    $('#m-code').textContent = cur.code;
+    $('#m-status').className = 'st ' + cls; $('#m-status').textContent = label;
+    $('#m-info').textContent = `${cur.name}\n${cur.phone}\n${cur.address}${cur.notes ? '\nGhi chú: ' + cur.notes : ''}`;
+    $('#m-items').textContent = cur.items.map((i) => `${i.title} · ${i.variant} × ${i.qty}`).join(', ') + ` · Thu COD ${vnd(cur.total - 100000)}`;
+    $('#m-next').hidden = !next; $('#m-next').textContent = next || '';
+    $('#m-cancel').hidden = ['done', 'cancel'].includes(cur.status);
+    $('#modal').showModal();
+  }
+  function setStatus(s) {
+    orders.save(orders.get().map((o) => (o.code === cur.code ? { ...o, status: s } : o)));
+    $('#modal').close(); render(); toast(`${cur.code}: ${STATUS[s][0]}`);
+  }
+  document.addEventListener('click', (e) => {
+    const f = e.target.closest('[data-f]'); if (f) { filter = f.dataset.f; render(); }
+    const r = e.target.closest('tr[data-code]'); if (r) open(r.dataset.code);
+  });
+  document.addEventListener('keydown', (e) => { const r = e.target.closest?.('tr[data-code]'); if (r && e.key === 'Enter') open(r.dataset.code); });
+  $('#m-copy').onclick = () => navigator.clipboard.writeText($('#m-info').textContent).then(() => toast('Đã copy, dán sang GHN/GHTK'));
+  $('#m-next').onclick = () => setStatus(STATUS[cur.status][3]);
+  $('#m-cancel').onclick = () => confirm(`Hủy đơn ${cur.code}? Kho sẽ được cộng lại.`) && setStatus('cancel');
+  $('#reset').onclick = () => {
+    if (!confirm('Xóa toàn bộ đơn và giỏ hàng demo, nạp lại 5 đơn mẫu?')) return;
+    ['kb-orders', 'kb-cart', 'kb-seeded'].forEach((k) => localStorage.removeItem(k));
+    location.reload();
+  };
+  render();
+</script>
+</body>
+</html>
