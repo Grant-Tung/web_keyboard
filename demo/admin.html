@@ -198,6 +198,12 @@
         <label for="p-subcategory" id="p-subcat-label">Phân loại chi tiết (Layout / Loại switch) *</label>
       </div>
 
+      <!-- Hiện khi chọn "Nhập phân loại mới..." -->
+      <div class="fl" id="p-subcat-new-wrap" style="grid-column:1 / -1;margin-bottom:0" hidden>
+        <input type="text" id="p-subcat-new" placeholder=" " maxlength="40" autocomplete="off">
+        <label for="p-subcat-new">Tên phân loại mới (VD: Layout 80%, Switch Dual-Stage, Profile KDA) *</label>
+      </div>
+
       <!-- Thương hiệu -->
       <div class="fl" style="margin-bottom:0">
         <input type="text" id="p-brand" placeholder=" " list="brand-list" required>
@@ -226,7 +232,18 @@
       <!-- Tồn kho ban đầu -->
       <div class="fl" style="margin-bottom:0">
         <input type="number" id="p-stock" placeholder=" " min="0" value="10" required>
-        <label for="p-stock">Tồn kho ban đầu (&lt; 3 sẽ báo đỏ) *</label>
+        <label for="p-stock" id="p-stock-label">Tồn kho ban đầu (&lt; 3 sẽ báo đỏ) *</label>
+      </div>
+
+      <!-- Mẫu mã / Màu sắc: mỗi màu một tồn kho riêng, tổng tồn = cộng các màu -->
+      <div class="color-variants" style="grid-column:1 / -1">
+        <div class="color-variants__head">
+          <strong style="font-size:14px">🎨 Mẫu mã / Màu sắc (tồn kho riêng từng màu)</strong>
+          <button type="button" class="btn btn--secondary btn--sm" id="btn-add-color">+ Thêm màu / mẫu</button>
+        </div>
+        <p class="muted" style="font-size:12px;margin:6px 0 10px">Không thêm màu nào thì sản phẩm dùng một số tồn kho chung ở ô trên. Đã thêm màu thì tồn kho = tổng các màu.</p>
+        <div id="p-colors"></div>
+        <div id="p-colors-total" class="color-variants__total" hidden></div>
       </div>
 
       <!-- KHỐI 1: UPLOAD FILE ẢNH TỪ MÁY TÍNH -->
@@ -313,7 +330,7 @@
 </dialog>
 
 <script type="module">
-  import { orders, vnd, toast, getLiveCatalog, saveCatalog, PRODUCT, playSwitch, adjustStock, firstImg, orderDeposit, SUB_FILTERS } from './app.js';
+  import { orders, vnd, toast, getLiveCatalog, saveCatalog, PRODUCT, playSwitch, adjustStock, firstImg, orderDeposit, SUB_FILTERS, addCustomSub, slugify, seedColors, colorTotal } from './app.js';
   const $ = (s) => document.querySelector(s);
   const H = 3600e3;
   const STATUS = {
@@ -457,12 +474,18 @@
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
           const liveCat = getLiveCatalog();
+          let migrated = false;
           parsed.forEach(item => {
-            if (!item.subCategory) {
-              const cp = liveCat.find(p => p.id === item.id);
-              if (cp?.subCategory) item.subCategory = cp.subCategory;
+            const cp = liveCat.find(p => p.id === item.id);
+            if (!item.subCategory && cp?.subCategory) item.subCategory = cp.subCategory;
+            // tables saved before per-colour stock: give each catalog colour its own count once
+            if (!Array.isArray(item.colors) && cp?.colors?.length && !item.isCustom) {
+              item.colors = seedColors(cp, item.stock);
+              item.stock = colorTotal(item.colors);
+              migrated = true;
             }
           });
+          if (migrated) localStorage.setItem('kb-inventory', JSON.stringify(parsed));
           return parsed;
         }
       } catch (e) {}
@@ -489,6 +512,7 @@
         initStock = [5, 8, 10, 15, 20, 25][idx % 6];
       }
 
+      const colors = p.category === 'custom-build' ? undefined : seedColors(p, initStock);
       return {
         id: p.id,
         name: p.name,
@@ -500,7 +524,8 @@
         isCustom: p.category === 'custom-build',
         soundId: p.soundId || '',
         line: p.line || '',
-        stock: initStock,
+        stock: colors ? colorTotal(colors) : initStock,
+        colors,
         hidden: false
       };
     });
@@ -538,6 +563,14 @@
     return item ? item.name : subId;
   }
 
+  // Change one colour's count (or the single count of a product without colours); the total is always the sum.
+  function setStock(item, colorId, fn) {
+    const c = colorId && item.colors?.find(x => x.id === colorId);
+    if (c) { c.stock = Math.max(0, fn(c.stock)); item.stock = colorTotal(item.colors); }
+    else item.stock = Math.max(0, fn(item.stock));
+    return c || null;
+  }
+
   // the storefront reads this table for SẴN HÀNG / TẠM HẾT HÀNG (getLiveCatalog); throws if browser storage is full
   function saveInventory() {
     localStorage.setItem('kb-inventory', JSON.stringify(inventory));
@@ -567,7 +600,8 @@
   function renderInventory() {
     const stockItems = inventory.filter(i => !i.isCustom);
     const zeroCount = stockItems.filter(i => i.stock === 0 && !i.hidden).length;
-    const lowStockCount = stockItems.filter(i => i.stock < 3 && !i.hidden).length;
+    // low = total under 3, or any single colour sold out
+    const lowStockCount = stockItems.filter(i => (i.stock < 3 || i.colors?.some(c => c.stock === 0)) && !i.hidden).length;
 
     $('#k-lowstock').textContent = `${lowStockCount} loại`;
     $('#zero-count-pill').textContent = zeroCount;
@@ -629,6 +663,23 @@
       } else {
         statusBadge = `<span class="stock-badge stock-badge--ok">✅ Sẵn hàng (${item.stock})</span>`;
       }
+      const hasColors = !item.isCustom && item.colors?.length > 0;
+      const outColors = hasColors ? item.colors.filter(c => c.stock === 0) : [];
+      if (outColors.length && !isZero) {
+        statusBadge += `<span class="stock-badge stock-badge--danger" style="margin-top:4px">⚠️ Hết màu: ${outColors.map(c => esc(c.name)).join(', ')}</span>`;
+      }
+      const stepper = (val, colorId = '') => `
+        <div class="stock-stepper">
+          <button type="button" class="btn-step" data-step="-1" data-id="${item.id}" data-color="${colorId}" title="Giảm 1 sp">-</button>
+          <input type="number" class="stock-input ${val < 3 ? 'is-low' : ''}" value="${val}" min="0" max="9999" data-id="${item.id}" data-color="${colorId}" aria-label="Tồn kho">
+          <button type="button" class="btn-step" data-step="1" data-id="${item.id}" data-color="${colorId}" title="Tăng 1 sp">+</button>
+        </div>`;
+      // colour products: one stepper per colour, e.g. Xanh [5] · Đen [6] · Trắng [0] ➔ Tổng 11
+      const stockCell = item.isCustom ? '<span class="muted" style="font-size:12px">Không giới hạn kho</span>'
+        : hasColors ? `<div class="stock-colors">${item.colors.map(c => `
+            <div class="stock-color${c.stock === 0 ? ' is-out' : ''}"><span><i style="background:${esc(c.hex)}"></i>${esc(c.name)}</span>${stepper(c.stock, c.id)}</div>`).join('')}
+            <div class="stock-color stock-color--total">➔ Tổng: <b>${item.stock}</b></div></div>`
+        : stepper(item.stock);
 
       return `
         <tr class="${rowCls}">
@@ -655,13 +706,7 @@
             ${statusBadge}
           </td>
           <td style="text-align:center">
-            ${item.isCustom ? '<span class="muted" style="font-size:12px">Không giới hạn kho</span>' : `
-              <div class="stock-stepper">
-                <button type="button" class="btn-step" data-step="-1" data-id="${item.id}" title="Giảm 1 sp">-</button>
-                <input type="number" class="stock-input ${isDanger ? 'is-low' : ''}" value="${item.stock}" min="0" max="9999" data-id="${item.id}" aria-label="Tồn kho">
-                <button type="button" class="btn-step" data-step="1" data-id="${item.id}" title="Tăng 1 sp">+</button>
-              </div>
-            `}
+            ${stockCell}
           </td>
           <td style="text-align:center">
             <div class="stock-actions-cell">
@@ -701,24 +746,28 @@
   const subcategorySelect = $('#p-subcategory');
   const subcategoryLabel = $('#p-subcat-label');
 
+  const NEW_SUB = '__new';
+  const subNewWrap = $('#p-subcat-new-wrap');
+  const subNewInput = $('#p-subcat-new');
+  function toggleNewSub() {
+    const on = subcategorySelect.value === NEW_SUB;
+    subNewWrap.hidden = !on;
+    subNewInput.required = on;
+    if (on) subNewInput.focus();
+  }
+
+  // suggested sub-categories (built-in + ones typed earlier) plus "type a new one"
   function updateSubcatOptions(cat, selectedVal = '') {
     const subs = (SUB_FILTERS[cat] || []).filter(s => s.id !== 'all');
     if (subcategoryLabel) {
       subcategoryLabel.textContent = SUBCAT_LABELS[cat] || 'Phân loại chi tiết *';
     }
-    if (!subs.length) {
-      subcategorySelect.innerHTML = '<option value="">(Không có phân loại con)</option>';
-      return;
-    }
-    subcategorySelect.innerHTML = subs.map(s => `
-      <option value="${s.id}" ${s.id === selectedVal ? 'selected' : ''}>${esc(s.name)}</option>
-    `).join('');
-
-    if (selectedVal && subs.some(s => s.id === selectedVal)) {
-      subcategorySelect.value = selectedVal;
-    } else {
-      subcategorySelect.value = subs[0]?.id || '';
-    }
+    subcategorySelect.innerHTML = (subs.length ? '' : '<option value="">(Chưa có phân loại con)</option>')
+      + subs.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')
+      + `<option value="${NEW_SUB}">➕ Nhập phân loại mới...</option>`;
+    subcategorySelect.value = subs.some(s => s.id === selectedVal) ? selectedVal : (subs[0]?.id || '');
+    subNewInput.value = '';
+    toggleNewSub();
   }
 
   if (categorySelect) {
@@ -726,6 +775,53 @@
       updateSubcatOptions(categorySelect.value);
     };
   }
+  subcategorySelect.onchange = toggleNewSub;
+
+  // --- colour variants: rows of name + colour + own stock ---
+  const colorsBox = $('#p-colors');
+  const stockInput = $('#p-stock');
+  function colorRowHtml(c = {}) {
+    return `<div class="color-row" data-cid="${esc(c.id || '')}">
+      <input type="color" class="c-hex" value="${esc(c.hex || '#cccccc')}" aria-label="Mã màu">
+      <input type="text" class="c-name" value="${esc(c.name || '')}" placeholder="Tên màu (VD: Xanh Nhạt)" maxlength="30" required aria-label="Tên màu">
+      <input type="number" class="c-stock" value="${Number(c.stock) || 0}" min="0" max="9999" aria-label="Tồn kho màu này">
+      <button type="button" class="c-del" aria-label="Xóa màu này" title="Xóa màu">✕</button>
+    </div>`;
+  }
+  function readColorRows() {
+    const used = new Set();
+    return [...colorsBox.querySelectorAll('.color-row')].map(row => {
+      const name = row.querySelector('.c-name').value.trim();
+      let id = row.dataset.cid || slugify(name) || 'mau';
+      while (used.has(id)) id += '-2'; // two colours typed with the same name still get separate stock
+      used.add(id);
+      return { id, name, hex: row.querySelector('.c-hex').value, stock: Math.max(0, parseInt(row.querySelector('.c-stock').value) || 0) };
+    });
+  }
+  // with colours the product total is their sum and cannot be typed by hand
+  function syncColorTotal() {
+    const colors = readColorRows();
+    const has = colors.length > 0;
+    stockInput.readOnly = has;
+    if (has) stockInput.value = colorTotal(colors);
+    $('#p-stock-label').textContent = has ? 'Tổng tồn kho (tự cộng từ các màu)' : 'Tồn kho ban đầu (< 3 sẽ báo đỏ) *';
+    const total = $('#p-colors-total');
+    total.hidden = !has;
+    total.innerHTML = has ? `${colors.map(c => `${esc(c.name || '?')} [${c.stock}]`).join(' · ')} ➔ <b>Tổng: ${colorTotal(colors)}</b>` : '';
+  }
+  function renderColorRows(colors = []) {
+    colorsBox.innerHTML = colors.map(colorRowHtml).join('');
+    syncColorTotal();
+  }
+  $('#btn-add-color').onclick = () => {
+    colorsBox.insertAdjacentHTML('beforeend', colorRowHtml());
+    colorsBox.lastElementChild.querySelector('.c-name').focus();
+    syncColorTotal();
+  };
+  colorsBox.addEventListener('click', (e) => {
+    if (e.target.closest('.c-del')) { e.target.closest('.color-row').remove(); syncColorTotal(); }
+  });
+  colorsBox.addEventListener('input', syncColorTotal);
 
   // 1. Upload ảnh trực tiếp từ máy tính
   btnBrowseImg.onclick = () => imgFileInput.click();
@@ -826,6 +922,7 @@
     audioPlayer.src = '';
     audioPreviewWrap.style.display = 'none';
     audioFilename.textContent = 'Chưa chọn file âm thanh riêng';
+    renderColorRows([]);
     $('#p-stock').value = 10;
     modalProduct.showModal();
   };
@@ -845,6 +942,7 @@
     $('#p-brand').value = item.brand || 'MoneyKeyboard';
     $('#p-price').value = item.price || 0;
     $('#p-stock').value = item.stock ?? 10;
+    renderColorRows(item.colors || []);
     imgInput.value = item.img || 'img/red-translucent.webp';
     imgPreview.src = item.img || 'img/red-translucent.webp';
     imgFilename.textContent = item.img?.startsWith('data:') ? '✅ Đang dùng ảnh do shop tự upload' : 'Đang dùng ảnh đường dẫn / mẫu';
@@ -892,10 +990,18 @@
     const id = $('#p-id').value.trim();
     const name = $('#p-name').value.trim();
     const category = $('#p-category').value;
-    const subCategory = subcategorySelect.value || (category === 'ban-phim-co' ? 'layout-75' : 'all');
+    const colors = readColorRows();
+    if (colors.some(c => !c.name)) return toast('Vui lòng nhập tên cho tất cả các màu (hoặc xóa dòng màu trống).');
+    let subCategory = subcategorySelect.value || (category === 'ban-phim-co' ? 'layout-75' : 'all');
+    if (subCategory === NEW_SUB) { // saved for reuse, and shows up in the san-pham.html filters
+      subCategory = addCustomSub(category, subNewInput.value);
+      if (!subCategory) return toast('Vui lòng nhập tên phân loại mới.');
+    }
     const brand = $('#p-brand').value.trim();
     const price = parseInt($('#p-price').value) || 0;
-    const stock = parseInt($('#p-stock').value) || 0;
+    const stock = colors.length ? colorTotal(colors) : (parseInt($('#p-stock').value) || 0);
+    // the catalog keeps each colour's photos (matched by id) next to the admin's name and hex
+    const catColors = (old) => colors.length ? colors.map(c => ({ ...(old?.find(o => o.id === c.id) || {}), id: c.id, name: c.name, hex: c.hex })) : undefined;
     const img = imgInput.value.trim() || 'img/red-translucent.webp';
     const soundId = soundSelect.value;
     const audioData = audioDataInput.value;
@@ -914,6 +1020,7 @@
         item.brand = brand;
         item.price = price;
         item.stock = stock;
+        item.colors = item.isCustom || category === 'custom-build' ? undefined : colors;
         item.img = img;
         item.soundId = soundId;
         item.line = line;
@@ -933,6 +1040,8 @@
         catProd.audioData = audioData;
         catProd.line = line;
         catProd.imgs = [img];
+        catProd.colors = catColors(catProd.colors);
+        catProd.inStock = stock > 0;
         catProd.adminEdited = true;
       }
       toast(`Đã cập nhật sản phẩm: ${name}`);
@@ -949,6 +1058,7 @@
         subCategory,
         price,
         stock,
+        colors: isCustom ? undefined : colors,
         img,
         soundId,
         line,
@@ -971,7 +1081,8 @@
         soundId,
         audioData,
         line,
-        imgs: [img]
+        imgs: [img],
+        colors: catColors()
       };
       catalog.unshift(newCatProd);
       toast(`Đã thêm sản phẩm mới: ${name}`);
@@ -1050,10 +1161,10 @@
       const step = parseInt(stepBtn.dataset.step) || 0;
       const item = inventory.find(i => i.id === id);
       if (item) {
-        item.stock = Math.max(0, item.stock + step);
+        const c = setStock(item, stepBtn.dataset.color, (cur) => cur + step);
         saveInventory();
         renderInventory();
-        toast(`${item.name}: Tồn kho hiện tại ${item.stock}`);
+        toast(`${item.name}${c ? ' · ' + c.name : ''}: Tồn kho hiện tại ${c ? c.stock : item.stock}`);
       }
       return;
     }
@@ -1086,10 +1197,10 @@
       const val = Math.max(0, parseInt(e.target.value) || 0);
       const item = inventory.find(i => i.id === id);
       if (item) {
-        item.stock = val;
+        const c = setStock(item, e.target.dataset.color, () => val);
         saveInventory();
         renderInventory();
-        toast(`${item.name}: Đã cập nhật tồn = ${val}`);
+        toast(`${item.name}${c ? ' · ' + c.name : ''}: Đã cập nhật tồn = ${val}`);
       }
     }
   });

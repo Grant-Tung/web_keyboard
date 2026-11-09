@@ -239,6 +239,7 @@
       <fieldset class="opt" id="color-opt">
         <legend>Màu <span id="color-name"></span></legend>
         <div class="swatches" id="swatches"></div>
+        <p class="color-stock" id="color-stock" aria-live="polite"></p>
       </fieldset>
 
       <fieldset class="opt" id="switch">
@@ -272,12 +273,16 @@
 <script type="module" src="assets/system.js"></script>
 <script type="module" src="assets/motion/motion.js"></script>
 <script type="module">
-  import { CATALOG, PRODUCT, vnd, cart, openCart, bindSoundButtons, isPhoto, canBuy, stockBadge } from './app.js';
+  import { CATALOG, PRODUCT, vnd, cart, openCart, bindSoundButtons, isPhoto, canBuy, stockBadge, esc } from './app.js';
   const $ = (s) => document.querySelector(s);
   const qs = new URLSearchParams(location.search);
   const p = CATALOG.find((x) => x.id === qs.get('id')) || CATALOG[0];
   const kb = p.type === 'keyboard' || p.category === 'ban-phim-co';
-  const state = { color: p.colors?.find((c) => c.id === qs.get('color')) || p.colors?.[0], sw: kb ? PRODUCT.switches[0] : null, qty: 1, img: 0 };
+  // stock of one colour (undefined = not tracked yet); order goods are never "out" of a colour
+  const left = (c) => (p.category === 'hang-order' ? undefined : c?.stock);
+  const isOut = (c) => left(c) === 0;
+  // open on the colour in the link, else the first colour still in stock
+  const state = { color: p.colors?.find((c) => c.id === qs.get('color')) || p.colors?.find((c) => !isOut(c)) || p.colors?.[0], sw: kb ? PRODUCT.switches[0] : null, qty: 1, img: 0 };
   // an image the admin uploaded leads the gallery; colour variants keep their own photos after it
   const imgs = () => {
     const own = p.imgs || [], col = state.color?.imgs || [];
@@ -292,7 +297,7 @@
   $('#line').textContent = p.line;
   $('#color-opt').hidden = !p.colors;
   $('#switch').hidden = !kb;
-  if (p.colors) $('#swatches').innerHTML = p.colors.map((c) => `<button type="button" class="swatch" style="--c:${c.hex}" data-color="${c.id}" aria-label="${c.name}" aria-pressed="${c === state.color}"></button>`).join('');
+  if (p.colors) $('#swatches').innerHTML = p.colors.map((c) => `<button type="button" class="swatch${isOut(c) ? ' is-out' : ''}" style="--c:${esc(c.hex)}" data-color="${esc(c.id)}" aria-label="${esc(c.name)}${isOut(c) ? ' (tạm hết hàng)' : ''}" title="${esc(c.name)}" aria-pressed="${c === state.color}"></button>`).join('');
   if (kb) $('#switches').innerHTML = PRODUCT.switches.map((s) => `
     <div class="sw" data-sound-host>
       <button type="button" class="sw__pick" data-sw="${s.id}" aria-pressed="${s === state.sw}">
@@ -313,11 +318,24 @@
     $('.gallery__main').classList.toggle('is-photo', isPhoto(src));
     $('#thumbs').innerHTML = list.length > 1 ? list.map((s, i) => `<button type="button" data-img="${i}" aria-pressed="${i === state.img}" aria-label="Ảnh ${i + 1}" class="${isPhoto(s) ? 'is-photo' : ''}"><img src="${s}" alt=""></button>`).join('') : '';
   }
+  const buyable = () => canBuy(p) && !isOut(state.color);
   function render() {
     $('#price').textContent = $('#bar-price').textContent = vnd(price());
     $('#bar-var').textContent = variant();
-    if (state.color) $('#color-name').textContent = '· ' + state.color.name;
+    if (state.color) {
+      $('#color-name').textContent = '· ' + state.color.name;
+      const n = left(state.color), msg = $('#color-stock');
+      msg.textContent = n === undefined ? '' : n > 0 ? `Còn ${n} sản phẩm` : 'Màu này tạm hết hàng';
+      msg.classList.toggle('is-out', n === 0);
+    }
+    // never more than this colour has left (5 per order at most)
+    const max = Math.max(1, Math.min(5, left(state.color) ?? 5));
+    state.qty = Math.min(state.qty, max);
     $('#qty').textContent = state.qty;
+    document.querySelectorAll('[data-add]').forEach((b) => {
+      b.disabled = !buyable();
+      b.textContent = p.isCustomBuild ? 'Nhắn shop để đặt build' : !canBuy(p) ? stockBadge(p) : isOut(state.color) ? 'Màu này tạm hết hàng' : 'Thêm vào giỏ';
+    });
   }
   const fade = (fn) => { const m = $('.gallery__main'); m.classList.add('is-fading'); setTimeout(() => { fn(); m.classList.remove('is-fading'); }, 300); };
 
@@ -338,8 +356,8 @@
     if (th) { state.img = +th.dataset.img; fade(gallery); }
     const q = e.target.closest('[data-q]');
     if (q) { state.qty = Math.max(1, Math.min(5, state.qty + +q.dataset.q)); render(); }
-    if (e.target.closest('[data-add]') && canBuy(p)) {
-      cart.add({ key: [p.id, state.color?.id, state.sw?.id].join(':'), title: p.name, variant: variant(), price: price(), qty: state.qty });
+    if (e.target.closest('[data-add]') && buyable()) {
+      cart.add({ key: [p.id, state.color?.id, state.sw?.id].join(':'), id: p.id, colorId: state.color?.id || '', title: p.name, variant: variant(), price: price(), qty: state.qty });
       openCart();
     }
   });
@@ -353,8 +371,7 @@
     bar.setAttribute('aria-hidden', !on);
     bar.querySelector('button').tabIndex = on ? 0 : -1;
   }).observe($('#buy-actions'));
-  // custom builds are ordered by message, out-of-stock items cannot be bought
-  if (!canBuy(p)) document.querySelectorAll('[data-add]').forEach((b) => { b.disabled = true; b.textContent = p.isCustomBuild ? 'Nhắn shop để đặt build' : stockBadge(p); });
+  // render() also locks the buy buttons: custom builds, sold-out products and sold-out colours
   gallery(); render();
 </script>
 </body>

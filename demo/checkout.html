@@ -45,6 +45,7 @@
           <strong>Thanh toán: Cọc 100.000đ + COD</strong>
           <span class="muted">Sau khi đặt, bạn quét mã QR để chuyển 100.000đ tiền cọc. Phần còn lại trả cho shipper khi nhận hàng.</span>
         </div>
+        <p class="stock-error" id="stock-error" role="alert" hidden></p>
         <button class="btn btn--primary submit" type="submit">Hoàn tất đặt hàng</button>
       </form>
 
@@ -87,7 +88,7 @@
 <script type="module" src="assets/system.js"></script>
 <script type="module" src="assets/motion/motion.js"></script>
 <script type="module">
-  import { cart, vnd, orders, BANK, depositFor, adjustStock, esc } from './app.js';
+  import { cart, vnd, orders, BANK, depositFor, adjustStock, esc, itemStock } from './app.js';
   const $ = (s) => document.querySelector(s);
   const items = cart.get();
   if (!items.length) location.replace('san-pham.html');
@@ -106,6 +107,7 @@
   $('#sub').textContent = vnd(sub);
   $('#cod').textContent = vnd(finalTotal - deposit);
 
+  const refKey = (i) => { const [id, color] = String(i.key || '').split(':'); return `${i.id || id}:${i.colorId ?? color ?? ''}`; };
   const rules = {
     name: (v) => v.trim().length >= 2,
     phone: (v) => /^(0|\+84)(3|5|7|8|9)\d{8}$/.test(v.replace(/[\s.]/g, '')),
@@ -122,6 +124,16 @@
       if (bad) first ||= el;
     }
     if (first) return first.focus();
+    // re-check stock per product+colour right before ordering (lines with the same colour but another switch share it)
+    const need = new Map();
+    items.forEach((i) => { const k = refKey(i); need.set(k, { i, qty: (need.get(k)?.qty || 0) + i.qty }); });
+    const short = [...need.values()].filter(({ i, qty }) => itemStock(i) < qty);
+    const err = $('#stock-error');
+    err.hidden = !short.length;
+    if (short.length) {
+      err.innerHTML = 'Không đủ hàng: ' + short.map(({ i }) => `<b>${esc(i.title)}</b> (${esc(i.variant)}) chỉ còn ${itemStock(i)}`).join('; ') + '. Vui lòng sửa giỏ hàng.';
+      return;
+    }
     form.querySelector('.submit').disabled = true; // no double orders
     const page = $('#page');
     page.classList.add('is-sending');
@@ -132,7 +144,7 @@
       let code;
       do code = 'KH-' + String(Math.floor(Math.random() * 1e6)).padStart(6, '0'); while (taken.has(code));
       const f = Object.fromEntries(new FormData(form));
-      orders.save([{ code, name: f.name, phone: f.phone, address: `${f.street}, ${f.ward}, ${f.province}`, notes: f.notes, items: items.map((i) => ({ ...i, id: String(i.key || '').split(':')[0] })), total: finalTotal, deposit, status: 'pending', at: Date.now() }, ...orders.get()]);
+      orders.save([{ code, name: f.name, phone: f.phone, address: `${f.street}, ${f.ward}, ${f.province}`, notes: f.notes, items: items.map((i) => ({ ...i, id: i.id || String(i.key || '').split(':')[0], colorId: i.colorId ?? (String(i.key || '').split(':')[1] || '') })), total: finalTotal, deposit, status: 'pending', at: Date.now() }, ...orders.get()]);
       adjustStock(items, -1);
       cart.set([]);
       localStorage.removeItem('kb-coupon');

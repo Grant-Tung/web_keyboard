@@ -2731,7 +2731,7 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
   }
   #form-product,
   .admin-product-form {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important; /* plain 1fr let the colour rows push past the modal */
   }
 
   /* Carousel Section Head */
@@ -2755,3 +2755,26 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
 
 /* safety net: decorative overflow (the Zalo pulse ring) must never widen the page on phones; clip keeps position: sticky working */
 body { overflow-x: clip; }
+
+/* ---------- Admin: colour variants with their own stock ---------- */
+.color-variants { background: var(--p-surface); padding: 16px; border-radius: 16px; border: 1.5px dashed rgb(0 0 0 / .16); }
+.color-variants__head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.color-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) 96px 40px; gap: 8px; align-items: center; margin-bottom: 8px; }
+.color-row input { height: 40px; border-radius: 10px; border: 1px solid rgb(0 0 0 / .16); background: #fff; font: 15px var(--font-text); padding: 0 10px; min-width: 0; }
+.color-row .c-hex { padding: 3px; cursor: pointer; }
+.color-row .c-del { height: 40px; border-radius: 10px; border: 1px solid #fca5a5; background: #fff; color: #d70015; cursor: pointer; font-size: 15px; }
+.color-variants__total { font-size: 13px; color: var(--p-ink); margin-top: 4px; }
+#p-stock[readonly] { background: var(--p-surface); color: var(--p-muted); }
+.stock-colors { display: flex; flex-direction: column; gap: 6px; align-items: stretch; min-width: 210px; }
+.stock-color { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; font-weight: 600; }
+.stock-color span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.stock-color i { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .2); display: inline-block; }
+.stock-color.is-out span { color: #d70015; }
+.stock-color--total { justify-content: flex-end; border-top: 1px solid rgb(0 0 0 / .08); padding-top: 4px; color: var(--p-muted); }
+
+/* ---------- Product page: stock of the chosen colour ---------- */
+.color-stock { margin: 12px 0 0; font-size: 14px; font-weight: 600; color: #1b6e33; min-height: 1.2em; }
+.color-stock.is-out { color: #d70015; }
+.swatch.is-out { position: relative; opacity: .55; }
+.swatch.is-out::after { content: ''; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; background: #d70015; transform: rotate(45deg); }
+.stock-error { margin: 16px 0 0; padding: 12px 14px; border-radius: 12px; background: #fff1f0; color: #b3261e; font-size: 14px; }

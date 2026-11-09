@@ -179,6 +179,12 @@ export const SUB_FILTERS = {
 * Dữ liệu phân loại con được lưu vào cả `item.subCategory` trong `kb-inventory` và `catProd.subCategory` trong `kb-catalog`.
 * Cột danh mục trong bảng kho hàng hiển thị rõ: `Hãng · Danh mục · Phân loại con` (VD: `Aula · Bàn phím cơ · Layout 75%`).
 
+### Phân loại con tự tạo (Admin gõ thêm)
+* Cuối danh sách `#p-subcategory` luôn có lựa chọn **"➕ Nhập phân loại mới..."** (giá trị `__new`). Chọn nó sẽ hiện ô `#p-subcat-new` để gõ tên bất kỳ (VD: `Layout 80%`, `Switch Dual-Stage`, `Profile KDA`).
+* Khi lưu, `addCustomSub(category, name)` trong `app.js` tạo id bằng `slugify()` (`Layout 80%` → `layout-80`), lưu vào localStorage `kb-custom-subs` dạng `{ "ban-phim-co": [{ id, name }] }` và thêm ngay vào `SUB_FILTERS`. Gõ lại một tên đã có thì dùng lại phân loại cũ, không tạo trùng.
+* Khi tải trang, `app.js` gộp `kb-custom-subs` vào `SUB_FILTERS`, nên phân loại mới tự xuất hiện trong ô chọn của admin và trong bộ lọc cấp 2 của `san-pham.html` (`?cat=ban-phim-co&sub=layout-80`).
+* Menu mega (HTML tĩnh trong 9 trang) **không** tự thêm link cho phân loại mới; muốn có link trong menu thì thêm tay.
+
 ---
 
 ## 5. MÔ HÌNH DỮ LIỆU & LƯU TRỮ (LOCALSTORAGE DATA SCHEMA)
@@ -192,6 +198,7 @@ Hệ thống hoạt động offline-first hoàn chỉnh thông qua `localStorage
 | `kb-orders` | `Array<Order>` | Danh sách đơn đặt hàng của khách hàng |
 | `kb-cart` | `Array<CartItem>` | Giỏ hàng hiện tại |
 | `kb-coupon` | `Object` | Mã giảm giá đang áp dụng (`CHAOBANMOI`, `FREESHIP`, `KMOD10`) |
+| `kb-custom-subs` | `Object` | Phân loại con admin tự gõ thêm: `{ category: [{ id, name }] }` |
 
 ### 5.1. Schema Sản phẩm (`Product`)
 ```javascript
@@ -211,10 +218,30 @@ Hệ thống hoạt động offline-first hoàn chỉnh thông qua `localStorage
   audioData: "data:audio/mp3;base64,...", // File âm thanh upload thực tế (nếu có)
   isCustomBuild: false,            // true nếu là tác phẩm Custom Build
   buildSpecs: null,                // Mảng [k, v] thông số linh kiện nếu là Custom Build
-  colors: [...],                   // Mảng phối màu (nếu có nhiều màu)
+  colors: [                        // Mẫu mã / màu (không bắt buộc). stock được getLiveCatalog() điền từ kb-inventory
+    { id: "blue", name: "Xanh nhạt", hex: "#8fb8de", imgs: ["..."], stock: 5 }
+  ],
   specs: [["Layout", "75%"], ["Kết nối", "Type-C / 2.4G / Bluetooth"]]
 }
 ```
+
+### 5.1b. Schema dòng kho (`InventoryItem`) và Đơn (`Order.items`)
+```javascript
+// kb-inventory
+{
+  id: "aula-f75", name, brand, category, subCategory, price, img, soundId, line,
+  isCustom: false,
+  stock: 11,                       // = tổng các màu khi có colors (luôn tự tính lại, không nhập tay)
+  colors: [                        // undefined = sản phẩm không quản lý theo màu (dùng stock chung)
+    { id: "blue",  name: "Xanh nhạt", hex: "#8fb8de", stock: 5 },
+    { id: "black", name: "Đen",       hex: "#2b2c30", stock: 6 },
+    { id: "white", name: "Trắng ngà", hex: "#e6e3dc", stock: 0 }
+  ]
+}
+// kb-cart và kb-orders[].items: mỗi dòng mang theo màu đã chọn
+{ key: "aula-f75:blue:graywood", id: "aula-f75", colorId: "blue", title, variant: "Màu Xanh nhạt · LEOBOG Graywood V3", price, qty }
+```
+* **Switch không có tồn kho riêng** (không có ma trận Màu × Switch). Switch chỉ là thuộc tính mô tả / sound test; bàn phím có 2 loại switch khác nhau thì tạo thành 2 sản phẩm riêng.
 
 ### 5.2. Đồng bộ Tồn kho & Nguồn Sự Thật (Single Source of Truth)
 * Bảng `kb-inventory` trong Admin là **nguồn sự thật duy nhất** về số lượng tồn kho.
@@ -223,6 +250,15 @@ Hệ thống hoạt động offline-first hoàn chỉnh thông qua `localStorage
   * Nếu `stock > 0`: Huy hiệu hiển thị `SẴN HÀNG`.
   * Hàng order (`hang-order`): Luôn hiển thị `HÀNG ORDER`.
 * Khi khách đặt hàng thành công (`checkout.html`), hàm `adjustStock(items, -1)` tự động trừ kho. Khi admin hủy đơn, hàm `adjustStock(items, +1)` hoàn trả lại tồn kho.
+
+### 5.3. Tồn kho theo từng màu
+* **Admin – form Thêm/Sửa (`#modal-product`):** khu vực "Mẫu mã / Màu sắc" với nút **+ Thêm màu / mẫu**; mỗi dòng gồm ô chọn màu (hex), tên màu, tồn kho riêng và nút ✕ xóa. Có màu thì ô `#p-stock` khóa lại và hiển thị tổng (tự cộng). Không có màu thì dùng một số tồn chung như cũ. Màu giữ `id` khi đổi tên, nên ảnh và tồn kho gắn theo màu không bị mất.
+* **Admin – bảng kho:** sản phẩm có màu hiển thị từng màu kèm nút +/− riêng (`Xanh nhạt [5] · Đen [6] · Trắng ngà [0] ➔ Tổng: 11`), màu hết hàng tô đỏ và có huy hiệu `⚠️ Hết màu: …`. KPI "Sắp hết hàng" tính cả sản phẩm có một màu bằng 0. Hàm `setStock(item, colorId, fn)` cập nhật một màu rồi tính lại tổng.
+* **`getLiveCatalog()`:** dòng kho có `colors` thì thay danh sách màu của sản phẩm (giữ `imgs` theo `id`), gắn `stock` cho từng màu; `inStock = có ít nhất một màu còn hàng`.
+* **`product.html`:** mở trang ở màu còn hàng đầu tiên (hoặc `?color=`). Bấm màu hiển thị `Còn N sản phẩm` hoặc `Màu này tạm hết hàng`; màu hết bị gạch chéo và nút **Thêm vào giỏ** (cả thanh mua dính) bị khóa. Số lượng tối đa = min(5, tồn màu đó). Item giỏ lưu `id` + `colorId`.
+* **`checkout.html`:** trước khi tạo đơn, cộng dồn số lượng theo `sản phẩm + màu` (các dòng cùng màu khác switch dùng chung tồn) và so với `itemStock()`; thiếu hàng thì hiện lỗi đỏ, không tạo đơn. Đơn lưu `colorId` cho từng item.
+* **`adjustStock(items, ±1)`:** trừ/hoàn đúng màu (`colorId`, hoặc phần màu trong `key` của đơn cũ) rồi tính lại tổng; item không có màu thì trừ vào tồn chung.
+* **Dữ liệu cũ:** bảng kho đã lưu trước khi có tính năng này được tự chia tồn cho các màu một lần (`seedColors()`; AULA F75 mẫu: Xanh 5 · Đen 6 · Trắng 0). Bấm "Xóa dữ liệu demo" để về dữ liệu mẫu chuẩn.
 
 ---
 

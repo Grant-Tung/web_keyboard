@@ -103,6 +103,29 @@ export const SUB_FILTERS = {
   ],
 };
 
+export const slugify = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd')
+  .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+// Sub-categories the admin typed in ("Layout 80%", "Profile KDA"...) live in kb-custom-subs as { cat: [{ id, name }] }
+// and are merged into SUB_FILTERS on load, so the san-pham filters and the admin picker both list them.
+const readCustomSubs = () => { try { return JSON.parse(localStorage.getItem('kb-custom-subs') || '{}') || {}; } catch { return {}; } };
+const subList = (cat) => (SUB_FILTERS[cat] ||= [{ id: 'all', name: 'Tất cả' }]);
+if (typeof localStorage !== 'undefined') {
+  for (const [cat, subs] of Object.entries(readCustomSubs())) subs.forEach((s) => subList(cat).some((x) => x.id === s.id) || subList(cat).push(s));
+}
+export function addCustomSub(cat, name) {
+  const label = String(name || '').trim();
+  const id = slugify(label);
+  if (!id) return '';
+  const hit = subList(cat).find((s) => s.id === id || s.name.toLowerCase() === label.toLowerCase());
+  if (hit) return hit.id; // typing an existing name reuses it instead of making a duplicate
+  subList(cat).push({ id, name: label });
+  const store = readCustomSubs();
+  (store[cat] ||= []).push({ id, name: label });
+  localStorage.setItem('kb-custom-subs', JSON.stringify(store));
+  return id;
+}
+
 // Footage tương tự kietmodphimdao.com (Sound test, bóc hộp, test HE 0.1mm, custom mod)
 export const FOOTAGE_ITEMS = [
   {
@@ -719,10 +742,47 @@ export function getLiveCatalog() {
     const photo = photoMap[p.id];
     if (photo && !p.adminEdited && p.imgs?.[0] !== photo) p.imgs = [photo, ...(p.imgs || []).slice(1)];
     const row = Array.isArray(inv) && inv.find((r) => r.id === p.id);
-    if (row && !row.isCustom && p.category !== 'hang-order') p.inStock = row.stock > 0;
+    if (!row || row.isCustom) return;
+    // colours managed in the admin replace the catalog's list; each keeps its photos (matched by id) and gets its own stock
+    if (Array.isArray(row.colors)) {
+      p.colors = row.colors.length
+        ? row.colors.map((rc) => ({ ...(p.colors?.find((c) => c.id === rc.id) || {}), id: rc.id, name: rc.name, hex: rc.hex, stock: rc.stock }))
+        : undefined;
+    }
+    if (p.category !== 'hang-order') p.inStock = row.colors?.length ? row.colors.some((c) => c.stock > 0) : row.stock > 0;
   });
   return list;
 }
+
+// Opening colour stock for the stock table: the F75 example from the spec, otherwise the total split evenly.
+const SEED_COLOR_STOCK = { 'aula-f75': { blue: 5, black: 6, white: 0 }, 'aula-sc620': { black: 4, white: 3 } };
+export function seedColors(p, total) {
+  if (!p.colors?.length) return undefined;
+  const per = Math.floor(total / p.colors.length);
+  return p.colors.map((c, i) => ({
+    id: c.id, name: c.name, hex: c.hex || '#cccccc',
+    stock: SEED_COLOR_STOCK[p.id]?.[c.id] ?? per + (i === 0 ? total - per * p.colors.length : 0),
+  }));
+}
+export const colorTotal = (colors) => (colors || []).reduce((s, c) => s + (Number(c.stock) || 0), 0);
+
+const readInventory = () => { try { const v = JSON.parse(localStorage.getItem('kb-inventory') || 'null'); return Array.isArray(v) ? v : null; } catch { return null; } };
+// Units left for a product, or for one colour of it. Infinity until the admin page has created the stock table.
+export function stockFor(id, colorId) {
+  const row = readInventory()?.find((r) => r.id === id);
+  if (!row || row.isCustom) return Infinity;
+  if (row.colors?.length) {
+    const c = row.colors.find((x) => x.id === colorId);
+    return c ? c.stock : colorTotal(row.colors);
+  }
+  return row.stock;
+}
+// cart/order items carry their colour as colorId, older ones only inside key "productId:colorId:switchId"
+const itemRef = (it) => {
+  const [kid, kcolor] = String(it.key || '').split(':');
+  return { id: it.id || kid, colorId: it.colorId ?? kcolor ?? '' };
+};
+export const itemStock = (it) => { const r = itemRef(it); return stockFor(r.id, r.colorId); };
 
 // Throws on a full browser storage (base64 images/audio); callers show the error instead of half-saving.
 export function saveCatalog(list) {
@@ -736,8 +796,14 @@ export function adjustStock(items, sign) {
   const inv = JSON.parse(getStorage('kb-inventory', 'null'));
   if (!Array.isArray(inv)) return;
   items.forEach((it) => {
-    const row = inv.find((r) => r.id === (it.id || String(it.key || '').split(':')[0]));
-    if (row && !row.isCustom) row.stock = Math.max(0, row.stock + sign * (it.qty || 1));
+    const ref = itemRef(it), q = sign * (it.qty || 1);
+    const row = inv.find((r) => r.id === ref.id);
+    if (!row || row.isCustom) return;
+    const color = row.colors?.find((c) => c.id === ref.colorId);
+    if (color) { // the colour that was ordered; the product total follows
+      color.stock = Math.max(0, color.stock + q);
+      row.stock = colorTotal(row.colors);
+    } else row.stock = Math.max(0, row.stock + q);
   });
   setStorage('kb-inventory', JSON.stringify(inv));
 }
