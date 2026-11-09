@@ -455,10 +455,10 @@
               <a href="product.html?id=${p.id}">${esc(p.name)}</a>
             </h3>
             <p class="kmpd-pcard__line">${esc(p.line)}</p>
-            ${soundId ? `
-              <button class="kmpd-sound-btn" type="button" data-sound="${soundId}">
+            ${(p.audioData || soundId) ? `
+              <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}" ` : ''}data-sound="${soundId || 'graywood'}">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
-                <span>Nghe tiếng gõ</span>
+                <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
               </button>` : ''}
             <div class="kmpd-pcard__footer">
               <span class="kmpd-pcard__price">${vnd(p.price)}</span>

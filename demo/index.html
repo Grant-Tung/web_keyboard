@@ -286,7 +286,7 @@
     <div class="wrap">
       <div class="section-head" data-reveal>
         <div>
-          <h2 id="footage-h">Footage & Sound Studio. <span class="muted">Gõ nghe tận tai, xem tận mắt.</span></h2>
+          <h2 id="footage-h">Footage Reels. <span class="muted">Gõ nghe tận tai, xem tận mắt.</span></h2>
           <p>Xem video review thực tế cận cảnh, test độ trễ phím HE và trải nghiệm tiếng gõ switch chân thực trước khi chốt đơn.</p>
           <div class="footage-channels">
             <a class="channel-pill" href="https://www.tiktok.com/@_strongxxx" target="_blank" rel="noopener">
@@ -303,28 +303,6 @@
 
       <!-- 4 Footage Reels -->
       <div class="footage-grid" id="footage-grid"></div>
-
-      <!-- Interactive Sound Studio Bench -->
-      <div class="sound-bench" id="sound-studio" data-sound-host data-reveal>
-        <div class="rgb-glow" aria-hidden="true"></div>
-        <div class="sound-bench__left">
-          <span class="reel-card__tag" style="position:static;display:inline-block;margin-bottom:12px">Bàn Thử Switch Tương Tác</span>
-          <h3>Trải nghiệm 6 sắc thái âm thanh</h3>
-          <p>Bấm chọn switch bên dưới để nghe âm thanh gõ thực tế được mô phỏng với tần số chuẩn bằng Web Audio API:</p>
-          <div class="switch-picker" id="switch-picker"></div>
-        </div>
-
-        <div class="sound-bench__right" id="sound-bench-visual">
-          <p class="muted" style="font-size:14px;margin:0" id="current-switch-desc">LEOBOG Graywood V3: Linear 40g, âm trầm đầm tay</p>
-          <div class="wave" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-          </div>
-          <button class="btn btn--primary" type="button" id="bench-play-btn" style="border-radius:999px;gap:8px">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
-            <span>Phát tiếng gõ thử</span>
-          </button>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -595,8 +573,7 @@
   // Initialize sound buttons
   bindSoundButtons();
 
-  // State
-  let activeBenchSwitch = PRODUCT.switches[0];
+
 
   // ==========================================
   // 1. FOOTAGE & SOUND STUDIO
@@ -645,44 +622,6 @@
     modal.showModal();
   });
 
-  // Sound Bench Switch Picker
-  const switchPicker = document.getElementById('switch-picker');
-  function renderSwitchPicker() {
-    switchPicker.innerHTML = PRODUCT.switches.map((sw) => `
-      <button type="button" class="sw-choice ${sw.id === activeBenchSwitch.id ? 'is-active' : ''}" data-sw-id="${sw.id}">
-        <div>
-          <span class="sw-choice__title">${sw.name}</span><br>
-          <span class="sw-choice__meta">${sw.kind}</span>
-        </div>
-        <span style="font-size:16px">🎵</span>
-      </button>
-    `).join('');
-    document.getElementById('current-switch-desc').textContent = `${activeBenchSwitch.name}: ${activeBenchSwitch.kind}`;
-  }
-  renderSwitchPicker();
-
-  switchPicker.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-sw-id]');
-    if (!btn) return;
-    activeBenchSwitch = PRODUCT.switches.find(s => s.id === btn.dataset.swId);
-    renderSwitchPicker();
-    triggerBenchSound();
-  });
-
-  const benchPlayBtn = document.getElementById('bench-play-btn');
-  const benchVisual = document.getElementById('sound-bench-visual');
-  function triggerBenchSound() {
-    const bars = benchVisual.querySelectorAll('.wave i');
-    benchVisual.classList.add('is-playing');
-    playSwitch(activeBenchSwitch.sound, (amp) => {
-      bars.forEach((bar, k) => {
-        bar.style.height = Math.max(12, amp * 100 * (0.45 + 0.55 * Math.sin(k * 1.6 + performance.now() / 80))) + '%';
-      });
-    }, () => benchVisual.classList.remove('is-playing'));
-  }
-  benchPlayBtn.addEventListener('click', triggerBenchSound);
-
-
   // ==========================================
   // 2. KMPD 5 DÃY KÉO NGANG (PRODUCT HORIZONTAL CAROUSELS)
   // Matching Ảnh 2: SẴN HÀNG, Dark Photo Container, Giá, XEM SẢN PHẨM ↗
@@ -710,9 +649,9 @@
           <p class="kmpd-pcard__line">${esc(p.line)}</p>
           ${specsHtml}
           ${(p.audioData || soundId) ? `
-            <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}"` : `data-sound="${soundId}"`}>
+            <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}"` : ''} data-sound="${soundId || 'graywood'}">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
-              <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe âm bản build'}</span>
+              <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe âm bản build 🎵'}</span>
             </button>` : ''}
           <div class="kmpd-pcard__footer">
             <div style="display:flex;flex-direction:column">
@@ -740,9 +679,9 @@
         </h3>
         <p class="kmpd-pcard__line">${esc(p.line)}</p>
         ${(p.audioData || soundId) ? `
-          <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}"` : `data-sound="${soundId}"`}>
+          <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}"` : ''} data-sound="${soundId || 'graywood'}">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
-            <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ'}</span>
+            <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
           </button>` : ''}
         <div class="kmpd-pcard__footer">
           <span class="kmpd-pcard__price">${vnd(p.price)}</span>
@@ -784,26 +723,7 @@
 
 
 
-  // ==========================================
-  // 4. DROPDOWN TOGGLE & NAVIGATION SUPPORT
-  // Subcategory & Brand links navigate directly to dedicated separate pages
-  // ==========================================
-  document.querySelectorAll('.menu-item.has-dropdown').forEach((item) => {
-    const arrow = item.querySelector('.arrow-down');
-    if (arrow) {
-      arrow.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        item.classList.toggle('is-open');
-      });
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.menu-item.has-dropdown')) {
-      document.querySelectorAll('.menu-item.has-dropdown.is-open').forEach(el => el.classList.remove('is-open'));
-    }
-  });
+  // Dropdown toggle and touch navigation are initialized globally in app.js
 
 
   // ==========================================

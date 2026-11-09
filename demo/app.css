@@ -2031,11 +2031,16 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
   opacity: 1;
   transform: translateX(0);
 }
+.cart-open .kmod-floating-contact {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
 @media (max-width: 640px) {
-  .kmod-floating-contact { right: 14px !important; bottom: 14px !important; gap: 8px !important; }
+  .kmod-floating-contact { right: 20px !important; bottom: 20px !important; gap: 8px !important; }
   .kmod-contact-btn { width: 46px; height: 46px; }
   .kmod-btn-tooltip { display: none; }
-  .kmod-btn-pulse { inset: 0; } /* ring at scale 1.4 must stay inside the 14px edge gap, else the page scrolls sideways */
+  .kmod-btn-pulse { inset: 0; }
 }
 
 /* ---------- Order & Warranty Lookup Modal ---------- */

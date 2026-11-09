@@ -549,9 +549,9 @@
           <p class="kmpd-pcard__line">${p.line}</p>
           ${specsHtml}
           ${(p.audioData || soundId) ? `
-            <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}"` : `data-sound="${soundId}"`}>
+            <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}" ` : ''}data-sound="${soundId || 'graywood'}">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
-              <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe âm bản build này'}</span>
+              <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe âm bản build 🎵'}</span>
             </button>` : ''}
           <div class="kmpd-pcard__footer">
             <div style="display:flex;flex-direction:column">

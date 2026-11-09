@@ -581,7 +581,7 @@
         const src = firstImg(p);
         const soundId = p.soundId || (p.category === 'ban-phim-co' || p.category === 'switch' ? 'graywood' : null);
         const hasSound = Boolean(p.audioData || soundId);
-        const soundAttr = p.audioData ? `data-sound-file="${p.audioData}"` : (soundId ? `data-sound="${soundId}"` : '');
+        const soundAttr = `${p.audioData ? `data-sound-file="${p.audioData}" ` : ''}data-sound="${soundId || 'graywood'}"`;
         return `
           <article class="kmpd-pcard" data-sound-host>
             <span class="kmpd-badge-stock">${stockBadge(p)}</span>
@@ -596,7 +596,7 @@
             ${hasSound ? `
               <button class="kmpd-sound-btn" type="button" ${soundAttr}>
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
-                <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ'}</span>
+                <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
               </button>` : ''}
             <div class="kmpd-pcard__footer">
               <span class="kmpd-pcard__price">${vnd(p.price)}</span>

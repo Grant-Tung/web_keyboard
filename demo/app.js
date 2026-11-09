@@ -829,13 +829,20 @@ function renderCart() {
   if (!body) return;
   body.innerHTML = items.length
     ? items.map((i, idx) => `
-      <div class="line">
-        <div>
-          <strong>${esc(i.title)}</strong><br>
-          <small class="muted">${esc(i.variant || 'Tiêu chuẩn')} · SL ${i.qty}</small>
+      <div class="line" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0">
+        <div style="flex:1;min-width:0">
+          <strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(i.title)}</strong>
+          <small class="muted">${esc(i.variant || 'Tiêu chuẩn')}</small>
+          <div class="cart-qty-ctrl" style="display:inline-flex;align-items:center;gap:6px;margin-top:6px">
+            <button type="button" class="btn-cart-qty" data-cart-q="-1" data-idx="${idx}" aria-label="Giảm số lượng" style="width:24px;height:24px;border-radius:6px;border:1px solid #ddd;background:#f5f5f7;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1">−</button>
+            <span style="font-weight:600;font-size:13px;min-width:18px;text-align:center">${i.qty}</span>
+            <button type="button" class="btn-cart-qty" data-cart-q="1" data-idx="${idx}" aria-label="Tăng số lượng" style="width:24px;height:24px;border-radius:6px;border:1px solid #ddd;background:#f5f5f7;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1">+</button>
+          </div>
         </div>
-        <span class="price">${vnd(i.price * i.qty)}</span>
-        <button class="line__rm" data-rm="${idx}" aria-label="Xóa sản phẩm">Xóa</button>
+        <div style="text-align:right;flex-shrink:0">
+          <span class="price">${vnd(i.price * i.qty)}</span><br>
+          <button class="line__rm" data-rm="${idx}" aria-label="Xóa sản phẩm" style="margin-top:6px;font-size:13px">Xóa</button>
+        </div>
       </div>`).join('')
     : '<p class="empty" style="text-align:center;padding:40px 0;color:var(--p-muted)">Giỏ hàng đang trống.</p>';
 
@@ -870,7 +877,11 @@ function renderCart() {
   $('.drawer__subtotal') && ($('.drawer__subtotal').textContent = vnd(subtotal));
   $('.drawer__total') && ($('.drawer__total').textContent = vnd(finalTotal));
   const payBtn = $('.drawer__foot .btn');
-  if (payBtn) payBtn.toggleAttribute('aria-disabled', !items.length);
+  if (payBtn) {
+    payBtn.toggleAttribute('aria-disabled', !items.length);
+    payBtn.style.pointerEvents = items.length ? 'auto' : 'none';
+    payBtn.style.opacity = items.length ? '1' : '0.5';
+  }
 }
 
 export function openCart() { document.documentElement.classList.add('cart-open'); $('.drawer')?.focus(); }
@@ -902,6 +913,20 @@ function mountDrawer() {
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-close]')) closeCart();
     if (e.target.closest('.cart-btn')) openCart();
+    const qBtn = e.target.closest('[data-cart-q]');
+    if (qBtn) {
+      const idx = +qBtn.dataset.idx;
+      const delta = +qBtn.dataset.cartQ;
+      const items = cart.get();
+      if (items[idx]) {
+        items[idx].qty += delta;
+        if (items[idx].qty <= 0) {
+          items.splice(idx, 1);
+        }
+        cart.set(items);
+      }
+      return;
+    }
     const rm = e.target.closest('[data-rm]');
     if (rm) { const items = cart.get(); items.splice(+rm.dataset.rm, 1); cart.set(items); }
     if (e.target.closest('[data-rm-coupon]')) cart.removeCoupon();
@@ -981,6 +1006,23 @@ function stroke(p, t, out, vel) {
 
 // Pages call this after every re-render; one delegated listener per root is enough, more would play the sound N times.
 const soundRoots = new WeakSet();
+
+function playFallbackSynth(b) {
+  const soundId = b.dataset.sound || b.closest('[data-sound-host]')?.dataset.sound;
+  const sw = PRODUCT.switches.find((s) => s.id === soundId) || PRODUCT.switches[0];
+  const host = b.closest('[data-sound-host]') || b;
+  const bars = host.querySelectorAll('.wave i');
+  document.querySelectorAll('.is-playing').forEach(el => el !== host && el.classList.remove('is-playing'));
+  host.classList.add('is-playing');
+  toast(`Đang phát âm switch: ${sw.name} 🎵`);
+  playSwitch(sw.sound, (a) => {
+    host.style.setProperty('--amp', a.toFixed(2));
+    bars.forEach((i, k) => {
+      i.style.height = Math.max(12, a * 100 * (0.45 + 0.55 * Math.sin(k * 1.6 + performance.now() / 80))) + '%';
+    });
+  }, () => host.classList.remove('is-playing'));
+}
+
 export function bindSoundButtons(root = document) {
   if (soundRoots.has(root)) return;
   soundRoots.add(root);
@@ -994,26 +1036,20 @@ export function bindSoundButtons(root = document) {
     if (soundFile) {
       try {
         const audio = new Audio(soundFile);
-        audio.play().catch((err) => console.warn('Audio play error:', err));
-        toast('Đang phát âm thanh gõ thực tế của sản phẩm 🎵');
+        audio.play().then(() => {
+          toast('Đang phát âm thanh gõ thực tế của sản phẩm 🎵');
+        }).catch((err) => {
+          console.warn('Audio play error, falling back to synth:', err);
+          playFallbackSynth(b);
+        });
       } catch (err) {
-        console.warn('Audio error:', err);
+        console.warn('Audio error, falling back to synth:', err);
+        playFallbackSynth(b);
       }
       return;
     }
 
-    const soundId = b.dataset.sound;
-    const sw = PRODUCT.switches.find((s) => s.id === soundId) || PRODUCT.switches[0];
-    const host = b.closest('[data-sound-host]') || b;
-    const bars = host.querySelectorAll('.wave i');
-    document.querySelectorAll('.is-playing').forEach(el => el !== host && el.classList.remove('is-playing'));
-    host.classList.add('is-playing');
-    playSwitch(sw.sound, (a) => {
-      host.style.setProperty('--amp', a.toFixed(2));
-      bars.forEach((i, k) => {
-        i.style.height = Math.max(12, a * 100 * (0.45 + 0.55 * Math.sin(k * 1.6 + performance.now() / 80))) + '%';
-      });
-    }, () => host.classList.remove('is-playing'));
+    playFallbackSynth(b);
   });
 }
 
@@ -1048,28 +1084,44 @@ export function openTrackingModal(phone = '') {
   }
 }
 
-// Compare the last 9 digits so 0912… and +84912… match, and demand a full number:
-// a partial query like "0" would list every customer's name and address.
+// Demand a full phone number (last 9 digits) or exact order code (KH-XXXXXX)
+// to prevent partial queries from exposing other customers' details.
 const phoneKey = (s) => String(s || '').replace(/\D/g, '').slice(-9);
-function doTrackOrders(phoneQuery) {
-  const q = phoneKey(phoneQuery);
+function doTrackOrders(rawQuery) {
+  const query = (rawQuery || '').trim();
   const container = $('#track-results-container');
   if (!container) return;
-  if (q.length < 9) {
-    container.innerHTML = '<p class="muted" style="text-align:center;padding:24px 0">Vui lòng nhập đầy đủ số điện thoại đã dùng khi đặt hàng.</p>';
+  if (!query) {
+    container.innerHTML = '<p class="muted" style="text-align:center;padding:24px 0">Vui lòng nhập số điện thoại hoặc mã đơn hàng (VD: KH-123456).</p>';
     return;
   }
 
   const allOrders = orders.get();
-  const matches = allOrders.filter((o) => phoneKey(o.phone) === q);
+  const qUpper = query.toUpperCase();
+  const qPhone = phoneKey(query);
+
+  let matches = [];
+  if (qUpper.startsWith('KH-') || allOrders.some(o => o.code && o.code.toUpperCase() === qUpper)) {
+    // 1. Match by exact order code
+    matches = allOrders.filter(o => o.code && o.code.toUpperCase() === qUpper);
+  } else if (/^\d{6}$/.test(query) && allOrders.some(o => o.code && o.code.toUpperCase() === `KH-${query}`)) {
+    // 1b. Match by 6-digit code part
+    matches = allOrders.filter(o => o.code && o.code.toUpperCase() === `KH-${query}`);
+  } else if (qPhone.length >= 9) {
+    // 2. Match by full phone number
+    matches = allOrders.filter(o => phoneKey(o.phone) === qPhone);
+  } else {
+    container.innerHTML = '<p class="muted" style="text-align:center;padding:24px 0">Vui lòng nhập đầy đủ số điện thoại đặt hàng (10 số) hoặc mã đơn hàng chính xác (dạng KH-XXXXXX).</p>';
+    return;
+  }
 
   if (!matches.length) {
     container.innerHTML = `
       <div style="text-align:center;padding:28px 16px;background:var(--p-surface);border-radius:18px">
         <div style="font-size:36px;margin-bottom:8px">🔍</div>
-        <strong style="font-size:15px">Chưa tìm thấy đơn hàng với số: ${esc(phoneQuery)}</strong>
+        <strong style="font-size:15px">Chưa tìm thấy đơn hàng với thông tin: "${esc(query)}"</strong>
         <p class="muted" style="font-size:13px;margin:8px 0 16px">
-          Quý khách vui lòng kiểm tra lại số điện thoại đã dùng khi đặt hàng, hoặc liên hệ trực tiếp shop để được hỗ trợ kiểm tra nhanh!
+          Quý khách vui lòng kiểm tra lại mã đơn hàng hoặc số điện thoại đã dùng khi đặt hàng, hoặc liên hệ trực tiếp shop để được hỗ trợ kiểm tra nhanh!
         </p>
         <a class="btn btn--secondary btn--sm" href="${CONTACT_ZALO}" target="_blank" rel="noopener">
           💬 Nhắn Zalo shop kiểm tra ngay
@@ -1157,20 +1209,20 @@ function mountTrackingModal() {
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
           <div>
             <h2 style="margin:0;font-size:22px">🔍 Tra cứu Đơn hàng & Bảo hành</h2>
-            <p class="muted" style="margin:4px 0 0;font-size:13px">Nhập số điện thoại đặt hàng để xem tình trạng vận chuyển và hạn bảo hành.</p>
+            <p class="muted" style="margin:4px 0 0;font-size:13px">Nhập số điện thoại hoặc mã đơn hàng (KH-XXXXXX) để xem tình trạng vận chuyển và hạn bảo hành.</p>
           </div>
           <button type="button" class="btn btn--secondary btn--sm" data-close-dialog aria-label="Đóng">✕ Đóng</button>
         </div>
 
         <form id="track-form" style="display:flex;gap:10px;margin-bottom:12px">
-          <input type="tel" id="track-phone-input" placeholder="Nhập số điện thoại (VD: 0912345678)" style="flex:1;height:46px;padding:0 16px;border-radius:12px;border:1.5px solid color-mix(in oklab, var(--p-ink) 14%, transparent);font:600 15px var(--font-text);outline:none" required>
+          <input type="text" id="track-phone-input" placeholder="Nhập SĐT hoặc Mã đơn (VD: KH-123456 hoặc 0912345678)" style="flex:1;height:46px;padding:0 16px;border-radius:12px;border:1.5px solid color-mix(in oklab, var(--p-ink) 14%, transparent);font:600 15px var(--font-text);outline:none" required>
           <button type="submit" class="btn btn--primary" style="height:46px;padding:0 20px">Tra cứu ngay</button>
         </form>
 
         <div style="font-size:12px;color:var(--p-muted);margin-bottom:16px">
-          💡 Gợi ý số thử nghiệm:
+          💡 Gợi ý thử nghiệm:
           <button type="button" class="track-sample-btn link" data-phone="0912345678" style="cursor:pointer;background:none;border:0;padding:0;color:var(--p-action)">0912345678 (Minh Anh)</button> ·
-          <button type="button" class="track-sample-btn link" data-phone="0987654321" style="cursor:pointer;background:none;border:0;padding:0;color:var(--p-action)">0987654321 (Quốc Bảo)</button>
+          <button type="button" class="track-sample-btn link" data-phone="KH-883921" style="cursor:pointer;background:none;border:0;padding:0;color:var(--p-action)">Mã KH-883921</button>
         </div>
 
         <div id="track-results-container"></div>
@@ -1227,7 +1279,14 @@ function mountSpeedDial() {
 if (typeof document !== 'undefined') {
   document.addEventListener('click', (e) => {
     if (e.target.tagName === 'DIALOG') {
-      e.target.close();
+      const rect = e.target.getBoundingClientRect();
+      const isInDialog = (
+        rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width
+      );
+      if (!isInDialog) {
+        e.target.close();
+      }
     }
     const closeBtn = e.target.closest('[data-close-dialog]');
     if (closeBtn) {
@@ -1309,7 +1368,8 @@ function initSearch() {
   const run = () => {
     const q = input.value.trim().toLowerCase();
     if (!q) return box.classList.remove('is-open');
-    const matches = CATALOG.filter((p) => [p.name, p.brand, p.line, p.subCategory].some((v) => v && v.toLowerCase().includes(q))).slice(0, 8);
+    const liveCatalog = getLiveCatalog();
+    const matches = liveCatalog.filter((p) => [p.name, p.brand, p.line, p.subCategory].some((v) => v && v.toLowerCase().includes(q))).slice(0, 8);
     count.textContent = matches.length ? `Tìm thấy ${matches.length} sản phẩm` : 'Không có kết quả';
     list.innerHTML = matches.length
       ? matches.map((p) => `
