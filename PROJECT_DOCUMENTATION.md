@@ -1,299 +1,362 @@
 # MONEYKEYBOARD - TÀI LIỆU TOÀN DIỆN VỀ KIẾN TRÚC & HƯỚNG DẪN PHÁT TRIỂN DỰ ÁN
-> **Dành cho Lập trình viên / AI tiếp quản phát triển và chỉnh sửa mã nguồn**  
-> *Phiên bản tài liệu: 1.1 — Thương hiệu chính thức: **MoneyKeyboard***  
-> *Địa chỉ showroom: 158/65 Phạm Văn Chiêu, Gò Vấp, HCM*  
-> *Hotline / Zalo: 0942 109 929 (https://zalo.me/0942109929)*  
-> *TikTok: https://www.tiktok.com/@_strongxxx (@_strongxxx) | Instagram: https://www.instagram.com/zynxx_ori/ (@zynxx_ori)*
+> **Dành cho Lập trình viên & AI tiếp quản phát triển, bảo trì và mở rộng mã nguồn**  
+> *Phiên bản tài liệu: 2.0 (Cập nhật toàn diện kiến trúc, phân loại con & mobile responsive)*  
+> *Thương hiệu chính thức: **MoneyKeyboard***  
+> *Địa chỉ showroom: 158/65 Phạm Văn Chiêu, Phường 9, Gò Vấp, TP. Hồ Chí Minh*  
+> *Hotline / Zalo hỗ trợ: 0942 109 929 (https://zalo.me/0942109929)*  
+> *Kênh truyền thông: TikTok [@_strongxxx](https://www.tiktok.com/@_strongxxx) | Instagram [@zynxx_ori](https://www.instagram.com/zynxx_ori/)*
 
 ---
 
 ## 1. TỔNG QUAN DỰ ÁN (PROJECT OVERVIEW)
 
 ### 1.1. Giới thiệu
-**MoneyKeyboard** là một nền tảng Web thương mại điện tử chuyên biệt dành cho thị trường **Bàn phím cơ chính hãng, Switch, Keycap, Phụ kiện Mod phím và Dịch vụ Custom Build theo yêu cầu**.
+**MoneyKeyboard** là nền tảng Web thương mại điện tử chuyên biệt dành cho thị trường **Bàn phím cơ chính hãng, Switch, Keycap, Phụ kiện Mod phím chuyên nghiệp và Dịch vụ Custom Build theo yêu cầu**.
 
 ### 1.2. Nguồn cảm hứng & Phong cách thiết kế (Design Benchmark)
-* Dự án được cấu trúc theo phân loại và bố cục của `kietmodphimdao.com` (Kiệt Mod Phím Dạo - Mechkey Studio) với menu thả xuống 4 cột + dãy sản phẩm kéo ngang.
-* **Phong cách chủ đạo:** **Clean Apple Light Aesthetic** (Nền trắng sáng hiện đại `#ffffff`, bề mặt phụ `#f5f5f7`, chữ tối sắc nét `#1d1d1f`, thẻ sản phẩm trắng bo tròn tinh tế với khung ảnh sản phẩm tương phản cao).
-* **Mục tiêu công nghệ:** Xây dựng bằng **Pure Vanilla HTML5 / Modern CSS3 / Modern JavaScript (ES Modules)** không dùng các framework nặng nề (No React, No Vue, No Angular, No Build step). Trang web tải tức thì (<50ms), chạy độc lập không phụ thuộc thư viện bên ngoài.
+* **Cấu trúc chức năng:** Lấy cảm hứng từ chuẩn UI/UX của các website phím cơ hàng đầu như `kietmodphimdao.com` (Kiệt Mod Phím Dạo - Mechkey Studio) với Mega Menu 5 cột, hệ thống dãy kéo ngang carousel 5 danh mục, và bộ phát âm thanh Sound Test trực quan.
+* **Phong cách chủ đạo:** **Clean Apple Light Aesthetic**
+  * Nền sáng sạch sẽ kiểu Apple (`--p-bg: #ffffff`, `--p-surface: #f5f5f7`).
+  * Văn bản tối tương phản cao (`--p-ink: #1d1d1f`, `--p-muted: #6d6d71`).
+  * Màu hành động điểm nhấn (`--p-action: #0071e3` - Apple Blue).
+  * Thẻ sản phẩm nền trắng bo góc tinh tế (`border-radius: 20px`), khung ảnh sản phẩm tương phản tối (`#0b0b0d`) làm nổi bật đèn LED và keycap.
+  * **Zero Wasted Space:** Loại bỏ toàn bộ các khối hero text tiếp thị rườm rà; ngay khi mở trang là khách hàng tiếp cận được ngay video review thực tế và danh sách sản phẩm.
+* **Mục tiêu công nghệ:**
+  * Xây dựng bằng **Pure Vanilla HTML5 / Modern CSS3 / JavaScript ES Modules thuần**.
+  * **Không dùng framework nặng:** Tuyệt đối không cài React, Vue, Angular, jQuery hay Tailwind CSS.
+  * **Zero Build Step:** Chạy trực tiếp trên trình duyệt, tốc độ tải trang cực nhanh (<50ms), dễ bảo trì và dễ mở rộng.
 
 ---
 
-## 2. HƯỚNG DẪN KHỞI CHẠY (QUICK START)
+## 2. HƯỚNG DẪN KHỞI CHẠY & KIỂM TRA (QUICK START)
 
 ### 2.1. Yêu cầu môi trường
-* Node.js phiên bản 18+ trở lên (khuyên dùng Node.js 20 hoặc 22/24).
+* Node.js phiên bản 18+ trở lên (khuyên dùng Node.js 20 hoặc 22/24 LTS).
 * Trình duyệt web hiện đại hỗ trợ ES Modules và Web Audio API (Chrome, Edge, Safari, Firefox).
 
 ### 2.2. Khởi động Local Server
-Mở terminal tại thư mục gốc của dự án (`d:\web_keyboard`):
+Mở terminal tại thư mục gốc dự án (`d:\web_keyboard`):
 ```bash
 npm run dev
 # hoặc
 node server.js
 ```
+> *Lưu ý về server:* File `server.js` tự động phát hiện cổng bận. Nếu cổng `3000` đang được dùng, server sẽ tự nhảy sang `3001`, `3002`,... và in link truy cập rõ ràng ra console.
 
-### 2.3. Các đường dẫn truy cập
-* **Trang chủ Demo (Khách hàng):** `http://localhost:3000/demo/` (hoặc `http://localhost:3000/` tự redirect).
-* **Trang Quản trị viên (Admin):** `http://localhost:3000/demo/admin.html`
-* **Trang Danh mục sản phẩm (Phân loại 2 cấp):** `http://localhost:3000/demo/san-pham.html`
-* **Trang Custom Build (Tác phẩm đã bàn giao):** `http://localhost:3000/demo/custom-build.html`
-* **Trang Thương hiệu:** `http://localhost:3000/demo/thuong-hieu.html`
-* **Trang Thanh toán:** `http://localhost:3000/demo/checkout.html`
-
-> *Lưu ý về server:* File `server.js` được lập trình tự động phát hiện cổng bận: nếu cổng `3000` đang được dùng, server sẽ tự nhảy sang `3001`, `3002`,... và hiển thị rõ ràng trên terminal.
+### 2.3. Sơ đồ các trang chính
+* **Trang chủ (`demo/index.html`):** Mega Menu 5 cột, Video Footage Reels, 5 dãy sản phẩm kéo ngang (Bàn phím cơ, Switch, Keycap, Phụ kiện, Custom Build).
+* **Trang Danh mục sản phẩm (`demo/san-pham.html`):** Bộ lọc 2 tầng (Faceted Filter Hub), lọc theo hãng, thanh sắp xếp giá/tên, phân loại theo URL (`?cat=...&sub=...`).
+* **Trang Custom Build (`demo/custom-build.html`):** Danh sách tác phẩm build hoàn thiện, bảng báo giá tạm tính (Configurator 4 bước), nút copy cấu hình gửi shop qua Zalo.
+* **Trang Thương hiệu (`demo/thuong-hieu.html`):** Tổng hợp sản phẩm theo từng hãng danh tiếng (Aula, Madlions, MonsGeek, Leobog, Akko, Xinmeng, Weikav, GravaStar, Titan Elite).
+* **Trang Chi tiết sản phẩm (`demo/product.html`):** Chọn màu sắc, chọn switch, nghe thử âm gõ switch, chọn số lượng, thêm vào giỏ hàng.
+* **Trang Thanh toán (`demo/checkout.html`):** Form đặt hàng, áp dụng mã giảm giá (`CHAOBANMOI`, `FREESHIP`), tự tính tiền cọc 100k, tạo mã đơn `KH-XXXXXX` và hiển thị mã QR thanh toán.
+* **Trang Quản trị Admin (`demo/admin.html`):** Quản lý kho hàng, quản lý đơn hàng, đổi trạng thái đơn, thêm/sửa/xóa sản phẩm với **bộ chọn phân loại con động** và upload trực tiếp file ảnh / âm thanh từ máy tính.
+* **Các trang thông tin:** `demo/gioi-thieu.html`, `demo/hdsd.html`, `demo/bao-hanh.html`, `demo/lien-he.html`.
 
 ---
 
-## 3. CẤU TRÚC THƯ MỤC & VAI TRÒ CỦA TỪNG FILE
+## 3. CẤU TRÚC THƯ MỤC & FILE TRỌNG YẾU
 
 ```
 d:\web_keyboard\
-├── package.json               # Cấu hình scripts ("dev": "node server.js")
-├── server.js                  # Local Static Web Server viết bằng Node.js thuần
-├── index.html                 # File chuyển hướng root sang /demo/
-├── PROJECT_DOCUMENTATION.md   # File tài liệu này
+├── package.json               # Scripts khởi chạy ("dev": "node server.js")
+├── server.js                  # Local Static Web Server Node.js thuần (port fallback tự động)
+├── index.html                 # Redirect root về demo/
+├── PROJECT_DOCUMENTATION.md   # Tài liệu kiến trúc toàn diện (File này)
 └── demo\
-    ├── assets\                # Các file giao diện hệ thống (system.css, motion, layout, 3D stills)
-    │   ├── layout\
-    │   ├── motion\
-    │   ├── objects\product-render\specs\stills\
-    │   └── system.css         # Hệ thống token biến gốc
-    ├── img\                   # Kho ảnh chụp thực tế sản phẩm và banner
-    │   ├── mad60-v2.jpg       # Ảnh Bàn phím HE Madlions MAD60 V2
-    │   ├── titan-t87.jpg      # Ảnh Bàn Phím Cơ Titan Elite T87
-    │   ├── lingbao-k87.jpg    # Ảnh Bàn Phím Cơ Lingbao K87
-    │   ├── gravastar-k1.jpg   # Ảnh Bàn Phím Cơ Gravastar Mercury K1 Pro
-    │   ├── gravastar-k98-banner.jpg # Banner GravaStar Mercury K98 cột 5 của Mega Menu
-    │   ├── red-translucent.webp
-    │   ├── cathedral-keycaps.webp
-    │   ├── black-knob-screen.webp
+    ├── assets\                # Thư viện dùng chung (system.css, motion, stills)
+    │   ├── system.css         # CSS token hệ thống (Lưu ý: đã được override các lỗi 100vh)
+    │   ├── motion\motion.js   # Script hiệu ứng chuyển động
     │   └── ...
-    ├── app.css                # Toàn bộ CSS phong cách Clean Apple Light & responsive
-    ├── app.js                 # Toàn bộ logic lõi JavaScript, Data Store, Web Audio, Cart, Mega Menu
-    ├── index.html             # Trang chủ (Header, Mega Menu, Hero, Footage, 5 dãy kéo ngang)
-    ├── san-pham.html          # Trang danh mục sản phẩm (Bộ lọc 2 cấp chuẩn, lọc thương hiệu, sort)
-    ├── custom-build.html      # Trang tác phẩm Custom Build (Giá tham khảo, nút copy cấu hình Zalo)
-    ├── thuong-hieu.html       # Trang tất cả thương hiệu (Aula, Madlions, MonsGeek, Leobog,...)
-    ├── product.html           # Trang chi tiết sản phẩm đơn lẻ (Chọn màu, switch, nghe âm, thêm giỏ)
-    ├── checkout.html          # Trang thanh toán & đặt hàng COD / Chuyển khoản QR, mã giảm giá
-    ├── admin.html             # Trang quản trị kho hàng, đơn hàng, upload ảnh Base64 & audio trực tiếp
-    ├── gioi-thieu.html        # Trang Giới thiệu cửa hàng MoneyKeyboard
-    ├── hdsd.html              # Trang Hướng dẫn sử dụng phím cơ
-    ├── bao-hanh.html          # Trang Chính sách bảo hành & Đổi trả
-    └── lien-he.html           # Trang Liên hệ & Bản đồ cửa hàng
+    ├── img\                   # Ảnh chụp thực tế sản phẩm và banner Spotlight
+    │   ├── mad60-v2.jpg       # Ảnh Madlions MAD60 V2 HE
+    │   ├── titan-t87.jpg      # Ảnh Titan Elite T87
+    │   ├── lingbao-k87.jpg    # Ảnh Lingbao K87
+    │   ├── gravastar-k1.jpg   # Ảnh Gravastar Mercury K1 Pro
+    │   ├── gravastar-k98-banner.jpg # Banner Spotlight K98 ở cột 5 Mega Menu
+    │   └── ...
+    ├── app.css                # Toàn bộ CSS phong cách Clean Apple Light, Responsive & Grid
+    ├── app.js                 # Core Store, Audio Engine, Cart, Mega Menu, Search, Orders
+    ├── index.html             # Trang chủ
+    ├── san-pham.html          # Trang danh mục & bộ lọc
+    ├── custom-build.html      # Trang Custom Build
+    ├── thuong-hieu.html       # Trang Thương hiệu
+    ├── product.html           # Trang chi tiết sản phẩm
+    ├── checkout.html          # Trang đặt hàng & thanh toán
+    ├── admin.html             # Trang quản trị kho & đơn hàng
+    ├── gioi-thieu.html        # Trang Giới thiệu
+    ├── hdsd.html              # Hướng dẫn sử dụng
+    ├── bao-hanh.html          # Chính sách bảo hành
+    └── lien-he.html           # Liên hệ & Showroom
 ```
 
 ---
 
-## 4. HỆ THỐNG THIẾT KẾ & BẢNG MÀU (DESIGN SYSTEM)
+## 4. HỆ THỐNG PHÂN LOẠI CON CHI TIẾT (`SUB_FILTERS`)
 
-Hệ thống token màu chuẩn tone sáng hiện đại khai báo tại `:root` trong `demo/app.css`:
+Dữ liệu phân loại 2 cấp được chuẩn hóa trong `SUB_FILTERS` (tại [`demo/app.js`](file:///d:/web_keyboard/demo/app.js)) và được đồng bộ xuyên suốt từ Mega Menu, Trang Danh mục đến Form Thêm/Sửa Sản phẩm trong Admin:
 
-```css
-:root {
-  --p-bg: #ffffff;               /* Nền trắng sáng tinh tế tổng thể trang */
-  --p-surface: #f5f5f7;          /* Nền thẻ bento / dải phụ / container */
-  --p-ink: #1d1d1f;              /* Chữ chính màu tối tương phản cao */
-  --p-muted: #6d6d71;            /* Chữ phụ / mô tả / metadata */
-  --p-accent: #0071e3;           /* Màu điểm nhấn chính (Apple Blue) */
-  --p-accent-ink: #ffffff;       /* Chữ trên nền điểm nhấn */
-  --p-action: #0071e3;           /* Màu nút bấm và liên kết hành động */
-  --p-action-ink: #ffffff;
-}
+```javascript
+export const SUB_FILTERS = {
+  // 1. BÀN PHÍM CƠ (Phân loại theo Layout & Tính năng)
+  'ban-phim-co': [
+    { id: 'all', name: 'Tất cả layout' },
+    { id: 'layout-40', name: 'Layout 40%' },
+    { id: 'layout-65', name: 'Layout 65%' },
+    { id: 'layout-75', name: 'Layout 75%' },
+    { id: 'layout-tkl', name: 'Layout TKL – FRL' },
+    { id: 'layout-96', name: 'Layout 96%' },
+    { id: 'layout-fullsize', name: 'Layout Fullsize' },
+    { id: 'numpad', name: 'Numpad' },
+    { id: 'phim-he', name: 'Phím HE – Chuyên Game' },
+  ],
+
+  // 2. SWITCH (Phân loại theo cơ chế & chất âm)
+  'switch': [
+    { id: 'all', name: 'Tất cả switch' },
+    { id: 'switch-linear', name: 'Switch Linear' },
+    { id: 'switch-tactile', name: 'Switch Tactile' },
+    { id: 'switch-silent', name: 'Switch Silent' },
+    { id: 'switch-clicky', name: 'Switch Clicky' },
+  ],
+
+  // 3. KEYCAP (Phân loại theo Profile & Kiểu thiết kế)
+  'keycap': [
+    { id: 'all', name: 'Tất cả profile' },
+    { id: 'profile-cherry', name: 'Profile Cherry' },
+    { id: 'profile-moa', name: 'Profile MOA' },
+    { id: 'profile-xoa', name: 'Profile XOA' },
+    { id: 'profile-moc-moe', name: 'Profile MOC – MOE' },
+    { id: 'keycap-xuyen-led', name: 'Keycap Xuyên LED' },
+    { id: 'keycap-artisan', name: 'Keycap Artisan' },
+    { id: 'profile-asa', name: 'Profile ASA' },
+    { id: 'keycap-akko', name: 'Keycap Akko' },
+    { id: 'profile-oem', name: 'Profile OEM' },
+    { id: 'profile-xda', name: 'Profile XDA' },
+    { id: 'profile-mao', name: 'Profile MAO' },
+    { id: 'profile-mda', name: 'Profile MDA' },
+    { id: 'profile-khac', name: 'Profile Khác' },
+    { id: 'keycap-piifox', name: 'Keycap Piifox' },
+    { id: 'keycap-fbb', name: 'Keycap FBB' },
+  ],
+
+  // 4. PHỤ KIỆN (Phân loại theo nhóm phụ kiện)
+  'phu-kien': [
+    { id: 'all', name: 'Tất cả phụ kiện' },
+    { id: 'deskmat', name: 'Deskmat' },
+    { id: 'day-cap-custom', name: 'Dây Cáp Custom' },
+    { id: 'chuot-wireless', name: 'Chuột Wireless' },
+    { id: 'dau-lube', name: 'Dầu Lube' },
+    { id: 'dung-cu-mod-phim', name: 'Dụng Cụ Mod Phím' },
+    { id: 'stab', name: 'Stab' },
+    { id: 'plate', name: 'Plate' },
+    { id: 'switches', name: 'SWITCHES' },
+    { id: 'phu-kien-khac', name: 'Phụ Kiện Khác' },
+  ],
+
+  // 5. HÀNG ORDER
+  'hang-order': [
+    { id: 'all', name: 'Tất cả hàng order' },
+    { id: 'phim-chuot', name: 'Phím – Chuột' },
+    { id: 'keycap-order', name: 'Keycap Order' },
+    { id: 'mo-hinh', name: 'Mô Hình' },
+  ],
+
+  // 6. CUSTOM BUILD (Phân loại theo dạng build)
+  'custom-build': [
+    { id: 'all', name: 'Tất cả tác phẩm build' },
+    { id: 'nhom-cnc', name: 'Kit Nhôm Nguyên Khối' },
+    { id: 'he-gaming', name: 'Phím HE Rapid Trigger' },
+    { id: 'am-thock', name: 'Build Âm Thock Trầm' },
+    { id: 'am-clack', name: 'Build Âm Clack Đanh' },
+  ]
+};
 ```
 
-### Các quy tắc màu đặc trưng:
-1. **Huy hiệu tồn kho (`.kmpd-badge-stock`):**
-   * Nền: `#1b6e33` (Xanh lục sang trọng).
-   * Chữ: `#ffffff` (Trắng tinh).
-   * Chữ: `SẴN HÀNG` (In hoa, font size 11px, bold 700, padding 4px 9px, bo góc 5px).
-2. **Khung ảnh sản phẩm (`.kmpd-pcard__img`):**
-   * Hộp ảnh bên trong có nền tối `#0b0b0d` để tôn vinh tối đa đèn LED và đường nét cơ khí của phím cơ.
-3. **Thẻ sản phẩm (`.kmpd-pcard`):**
-   * Nền trắng viền xám nhẹ `border: 1px solid rgb(0 0 0 / .08)` phong cách Apple cao cấp.
-4. **Giá tiền (`.kmpd-pcard__price`):**
-   * Hiển thị chữ tối đậm `#1d1d1f`, font size 17px, font-weight 700.
+### Cơ chế hoạt động trong Admin (`demo/admin.html`):
+* Trong form thêm/sửa sản phẩm `#form-product`, ô chọn danh mục chính `#p-category` lắng nghe sự kiện `onchange`.
+* Khi người dùng đổi danh mục (ví dụ từ *Bàn phím cơ* sang *Switch*), hàm `updateSubcatOptions(cat, val)` tự động đổi nhãn thành `Phân loại switch (Linear, Tactile, Silent...) *` và đổ các option tương ứng vào `#p-subcategory`.
+* Dữ liệu phân loại con được lưu vào cả `item.subCategory` trong `kb-inventory` và `catProd.subCategory` trong `kb-catalog`.
+* Cột danh mục trong bảng kho hàng hiển thị rõ: `Hãng · Danh mục · Phân loại con` (VD: `Aula · Bàn phím cơ · Layout 75%`).
 
 ---
 
-## 5. CẤU TRÚC CHI TIẾT CÁC PHẦN MẪU (THEO ẢNH CHỤP KIETMODPHIMDAO)
+## 5. MÔ HÌNH DỮ LIỆU & LƯU TRỮ (LOCALSTORAGE DATA SCHEMA)
 
-### 5.1. Thanh Menu Điều Hướng & Mega Dropdown "SẢN PHẨM" (Khớp Ảnh 1 & 3)
-* **Thanh menu chính:**
-  * Đầu thanh menu có icon Hamburger 3 vạch vàng đồng `☰` (`.nav__hamburger-kmpd`).
-  * Danh sách menu in hoa: `GIỚI THIỆU` | `SẢN PHẨM ⌄` | `THƯƠNG HIỆU ⌄` | `CUSTOM BUILD` | `HƯỚNG DẪN SỬ DỤNG` | `CHÍNH SÁCH BẢO HÀNH` | `LIÊN HỆ`.
-* **Mega Menu Dropdown xổ xuống (5 cột):**
-  * **Cột 1: `BÀN PHÍM CƠ →`**
-    * `Layout 40% ›` (`san-pham.html?cat=ban-phim-co&sub=layout-40`)
-    * `Layout 65% ›` (`san-pham.html?cat=ban-phim-co&sub=layout-65`)
-    * `Layout 75% ›` (`san-pham.html?cat=ban-phim-co&sub=layout-75`)
-    * `Layout 96% ›` (`san-pham.html?cat=ban-phim-co&sub=layout-96`)
-    * `Layout Fullsize ›` (`san-pham.html?cat=ban-phim-co&sub=layout-fullsize`)
-    * `Layout TKL – FRL ›` (`san-pham.html?cat=ban-phim-co&sub=layout-tkl`)
-    * `Numpad ›` (`san-pham.html?cat=ban-phim-co&sub=numpad`)
-    * `Phím HE – Chuyên Game ›` (`san-pham.html?cat=ban-phim-co&sub=phim-he`)
-  * **Cột 2: `SWITCH →`**
-    * `Switch Clicky ›`
-    * `Switch Linear ›`
-    * `Switch Silent ›`
-    * `Switch Tactile ›`
-  * **Cột 3: `KEYCAP →`**
-    * `Keycap Akko ›`, `Keycap Artisan ›`, `Keycap FBB ›`, `Keycap Piifox ›`, `Keycap Xuyên LED ›`
-    * Profiles: `Profile ASA ›`, `Profile Cherry ›`, `Profile Khác ›`, `Profile MAO ›`, `Profile MDA ›`, `Profile MOA ›`, `Profile MOC – MOE ›`
-  * **Cột 4: `PHỤ KIỆN →`**
-    * `Chuột Wireless ›`, `Dầu Lube ›`, `Dây Cáp Custom ›`, `Deskmat ›`, `Dụng Cụ Mod Phím ›`, `Phụ Kiện Khác ›`, `Plate ›`, `Stab ›`, `SWITCHES ›`
-  * **Cột 5: `GRAVASTAR SPOTLIGHT BANNER`**
-    * Card ảnh kích thước chuẩn hiển thị banner GravaStar Mercury K98 (`img/gravastar-k98-banner.jpg`) với robot nhện mecha và phím viễn tưởng kèm thông số kỹ thuật.
-* **Cơ chế chống hụt hover (Hover Bridge):**
-  * Sử dụng pseudo-element `.dropdown-mega-rich::before` cao 14px nằm trên đỉnh dropdown che phủ khoảng cách giữa thanh navbar và menu.
-  * Trong `app.js`, hàm `initMegaMenu()` áp dụng thời gian chờ `mouseleave` 180ms giúp người dùng di chuột thoải mái mà không bị menu đóng đột ngột.
+Hệ thống hoạt động offline-first hoàn chỉnh thông qua `localStorage`:
 
-### 5.2. Dãy Sản Phẩm Kéo Ngang Tại Trang Chủ (Khớp 100% Ảnh 2)
-Trang chủ bao gồm 5 section kéo ngang dạng carousel với 2 nút mũi tên tròn `‹` và `›`:
-1. `Bàn phím cơ nổi bật ↗` (Nhãn: `LATEST ARRIVALS`)
-2. `Switch bàn phím ↗` (Nhãn: `SWITCH & MOD SOUND`)
-3. `Keycap cá tính ↗` (Nhãn: `KEYCAP COLLECTION`)
-4. `Phụ kiện setup ↗` (Nhãn: `DESK ACCESSORIES`)
-5. `Custom build nổi bật ↗` (Nhãn: `CUSTOM WORKSHOP - Tác phẩm đã từng build`)
-
-#### Thứ tự 4 sản phẩm đầu tiên của dãy Bàn phím cơ (Khớp 100% ảnh 2):
-1. **Bàn phím HE Madlions MAD60 V2**
-   * Giá: `550.000 đ`
-   * Ảnh: `img/mad60-v2.jpg`
-   * Mô tả: Layout 60%, Hall Effect Rapid Trigger 0.1mm, 8000Hz, Snap Tap.
-2. **Bàn Phím Cơ Titan Elite T87**
-   * Giá: `750.000 đ`
-   * Ảnh: `img/titan-t87.jpg`
-   * Mô tả: T87 công nghệ chơi game, trục Black Warrior, gasket mount, kết nối 3 chế độ.
-3. **Bàn Phím Cơ Lingbao K87**
-   * Giá: `700.000 đ`
-   * Ảnh: `img/lingbao-k87.jpg`
-   * Mô tả: K87 tùy chỉnh cấp độ thi đấu 3 chế độ, hotswap, cấu trúc Gasket, pin 8000mAh.
-4. **Bàn Phím Cơ Gravastar Mercury K1 Pro - Ghost Silver | BH 12 Tháng**
-   * Giá: `3.900.000 đ`
-   * Ảnh: `img/gravastar-k1.jpg`
-   * Mô tả: Khung hợp kim nhôm Magie xuyên thấu phong cách viễn tưởng, hot-swap 3/5 pin, RGB.
-
----
-
-## 6. MÔ HÌNH DỮ LIỆU & LƯU TRỮ (DATA SCHEMA)
-
-Toàn bộ dữ liệu được lưu cục bộ trong `localStorage` giúp ứng dụng hoạt động không cần database server:
-
-| Khóa LocalStorage | Kiểu dữ liệu | Ý nghĩa |
+| Khóa | Kiểu dữ liệu | Ý nghĩa |
 | :--- | :--- | :--- |
 | `kb-catalog` | `Array<Product>` | Danh mục sản phẩm (sản phẩm stock & custom build) |
-| `kb-inventory` | `Array<InventoryItem>` | Danh sách quản lý tồn kho cho trang Quản trị |
-| `kb-orders` | `Array<Order>` | Danh sách đơn đặt hàng của khách |
-| `kb-cart` | `Array<CartItem>` | Giỏ hàng hiện tại của người dùng |
+| `kb-inventory` | `Array<InventoryItem>` | Danh sách quản lý kho hàng của Admin (nguồn sự thật về số lượng tồn) |
+| `kb-orders` | `Array<Order>` | Danh sách đơn đặt hàng của khách hàng |
+| `kb-cart` | `Array<CartItem>` | Giỏ hàng hiện tại |
+| `kb-coupon` | `Object` | Mã giảm giá đang áp dụng (`CHAOBANMOI`, `FREESHIP`, `KMOD10`) |
 
-### 6.1. Schema của một Sản phẩm (`Product`)
+### 5.1. Schema Sản phẩm (`Product`)
 ```javascript
 {
-  id: "madlions-mad60-v2",         // ID duy nhất (slug)
-  brand: "Madlions",               // Tên hãng
-  name: "Bàn phím HE Madlions MAD60 V2",
-  category: "ban-phim-co",         // 'ban-phim-co' | 'switch' | 'keycap' | 'phu-kien' | 'custom-build'
-  subCategory: "phim-he",          // slug phân loại con (layout-75, switch-linear,...)
-  badge: "SẴN HÀNG",
-  inStock: true,                   // true nếu còn hàng
-  price: 550000,                   // Đơn vị VND (số nguyên)
-  line: "Layout 60%, Hall Effect Rapid Trigger 0.1mm...", // Tóm tắt 1 dòng
-  imgs: ["img/mad60-v2.jpg"],      // Mảng đường dẫn ảnh hoặc chuỗi Base64 DataURL
-  audioData: null,                 // Chuỗi DataURL file audio upload trực tiếp (nếu có)
-  soundId: "magnetic-he",          // Sound ID dự phòng cho Web Audio Synth ('graywood'|'reaper'|'magnetic-he'|'silent')
-  specs: [["Layout", "60%"], ...], // Thông số kỹ thuật chi tiết
+  id: "aula-f75",                  // ID duy nhất (slug)
+  brand: "Aula",                   // Thương hiệu
+  name: "Bàn phím cơ AULA F75 Gasket Mount",
+  category: "ban-phim-co",         // 'ban-phim-co' | 'switch' | 'keycap' | 'phu-kien' | 'hang-order' | 'custom-build'
+  subCategory: "layout-75",        // Phân loại con (khớp với SUB_FILTERS)
+  type: "ban-phim-co",
+  badge: "BÁN CHẠY NHẤT",
+  inStock: true,                   // Đồng bộ tự động từ số lượng tồn kho của admin
+  price: 890000,                   // Giá bán (VNĐ)
+  line: "Layout 75%, núm xoay kim loại, mạch xuôi, 3 chế độ kết nối",
+  imgs: ["assets/.../keyboard-75.webp"], // Mảng URL ảnh hoặc DataURL Base64
+  soundId: "graywood",             // ID âm thanh fallback cho Web Audio Synth
+  audioData: "data:audio/mp3;base64,...", // File âm thanh upload thực tế (nếu có)
   isCustomBuild: false,            // true nếu là tác phẩm Custom Build
-  buildSpecs: null                 // Dành riêng cho Custom Build (Kit, Switch, Keycap, Mod)
+  buildSpecs: null,                // Mảng [k, v] thông số linh kiện nếu là Custom Build
+  colors: [...],                   // Mảng phối màu (nếu có nhiều màu)
+  specs: [["Layout", "75%"], ["Kết nối", "Type-C / 2.4G / Bluetooth"]]
 }
 ```
 
-### 6.2. Phân biệt Sản phẩm Thường vs Sản phẩm Custom Build
-* **Sản phẩm Thường (Stock):** Nằm trong danh mục bán hàng thường, có số lượng tồn kho `quantity`, khách bấm được nút "Thêm vào giỏ" / "Mua ngay".
-* **Sản phẩm Custom Build:** `category: 'custom-build'`, `isCustomBuild: true`. **Không nằm trong tồn kho stock**, chỉ có **"Chi phí tham khảo"**. Thẻ card có nút **"Nhắn tin đặt build 💬"** — khi bấm sẽ tự động sao chép cấu hình phím vào clipboard để khách gửi cho shop qua Zalo/Facebook Messenger.
+### 5.2. Đồng bộ Tồn kho & Nguồn Sự Thật (Single Source of Truth)
+* Bảng `kb-inventory` trong Admin là **nguồn sự thật duy nhất** về số lượng tồn kho.
+* Hàm `getLiveCatalog()` trong `demo/app.js` luôn tự động đọc bảng `kb-inventory` để tính toán trạng thái `inStock`:
+  * Nếu `stock === 0`: Huy hiệu tự đổi thành `TẠM HẾT HÀNG`, nút mua hàng tự động khóa (`canBuy(p) === false`).
+  * Nếu `stock > 0`: Huy hiệu hiển thị `SẴN HÀNG`.
+  * Hàng order (`hang-order`): Luôn hiển thị `HÀNG ORDER`.
+* Khi khách đặt hàng thành công (`checkout.html`), hàm `adjustStock(items, -1)` tự động trừ kho. Khi admin hủy đơn, hàm `adjustStock(items, +1)` hoàn trả lại tồn kho.
 
 ---
 
-## 7. CÁC TÍNH NĂNG ĐẶC BIỆT & KỸ THUẬT LÕI
+## 6. NHỮNG LỖI LỚN ĐÃ ĐƯỢC KHẮC PHỤC TRIỆT ĐỂ (QUAN TRỌNG)
 
-### 7.1. Hệ thống Âm thanh kép (Sound Engine)
-Hàm `bindSoundButtons()` trong `demo/app.js` hỗ trợ 2 cơ chế phát âm thanh:
-1. **Âm thanh thực tế (Uploaded Audio File):**
-   * Nếu sản phẩm có thuộc tính `data-sound-file` (chứa DataURL base64 của file `.mp3`/`.wav` tải lên từ trang admin), trình duyệt sẽ ưu tiên phát file này qua `new Audio(soundFile).play()`.
-   * Thẻ card hiển thị nút: `Nghe âm thực tế 🎵`.
-2. **Bộ tổng hợp âm thanh giả lập (Web Audio API Synthesizer):**
-   * Nếu không có file thực tế, hệ thống fallback sang bộ tạo sóng âm thanh qua hàm `playSwitch(soundType)`.
-   * Hỗ trợ 4 profile âm thanh gõ thực thụ:
-     * `graywood`: Linear, âm Thock trầm (tần số thấp).
-     * `reaper`: Linear, âm Clack đanh giòn (tần số cao hơn).
-     * `magnetic-he`: Phím từ tính Hall Effect, hành trình cực ngắn, click nhẹ.
-     * `silent`: Phím tĩnh âm, triệt tiêu tiếng ồn đến 95%.
+Khi tiếp quản dự án, **tuyệt đối không để xảy ra các lỗi sau**:
 
-### 7.2. Upload ảnh và âm thanh trực tiếp trong Quản trị (`admin.html`)
-Khắc phục hoàn toàn việc phải dán link Google Drive hay link web ngoài:
-* **Upload ảnh:**
-  * Thẻ `<input type="file" id="p-img-file" accept="image/*">`.
-  * Ảnh tải lên được xử lý qua `<canvas>` tự động nén kích thước tối đa 640px, lưu dưới dạng JPEG chất lượng cao (~40KB - 70KB).
-  * Hiển thị khung xem trước (Live Preview) ngay lập tức.
-* **Upload âm thanh gõ phím:**
-  * Thẻ `<input type="file" id="p-audio-file" accept="audio/*,.mp3,.wav,.ogg,.m4a">`.
-  * Sử dụng `FileReader.readAsDataURL` để nén thành Base64 DataURL.
-  * Tích hợp thẻ `<audio controls>` nghe thử trực tiếp ngay bên trong form thêm/sửa sản phẩm.
+### 6.1. Lỗi Cắt Nửa Dưới Thẻ Custom Build (Height 100vh Clipping)
+* **Nguyên nhân gốc:** Template cũ trong `assets/system.css` (dòng 218-223) ép cứng `main > :is(section, .section) { height: 100vh; }` và `.wrap { height: 100%; display: flex; flex-direction: column; }`. Khi kết hợp với `.kmpd-track-wrap { overflow: hidden; }`, trên màn hình laptop/điện thoại, vùng chứa chỉ cao ~450px khiến thẻ Custom Build (cao ~610px do có khung Specs, nút nghe âm thanh, giá tham khảo, nút đặt build) **bị cắt đứt ngang chân**.
+* **Giải pháp đã sửa trong `demo/app.css`:**
+  ```css
+  main > :is(section, .section),
+  main > section,
+  .kmpd-carousel-section,
+  .footage-section,
+  .cb-configurator-section,
+  .section-xl {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+  main > :is(section, .section) > :is(.wrap, .container),
+  main > section > .wrap,
+  .kmpd-carousel-section > .wrap {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    display: block !important;
+  }
+  .kmpd-track-wrap {
+    position: relative;
+    overflow: visible !important;
+    width: 100%;
+  }
+  ```
 
-### 7.3. Widget Liên hệ Đa kênh Nổi (`.kmod-floating-contact`)
-* Được ghim **chắc chắn ở góc dưới cùng bên phải màn hình**:
-  `position: fixed !important; right: 20px !important; bottom: 20px !important; z-index: 99999 !important;`
-* Bao gồm 3 nút hành động nhanh:
-  1. **Zalo:** Mở trực tiếp hộp thoại chat Zalo tư vấn (`https://zalo.me/...`).
-  2. **Hotline:** Gọi trực tiếp số điện thoại cửa hàng (`tel:...`).
-  3. **Tra cứu đơn hàng:** Mở modal tra cứu tiến độ đơn hàng và bảo hành bằng mã vận đơn hoặc số điện thoại.
+### 6.2. Loại Bỏ Khối Hero Cồng Kềnh (Zero Wasted Space Homepage)
+* Đã gỡ bỏ hoàn toàn thẻ `<section class="hero--kb">` khỏi `demo/index.html` (tiêu đề khổng lồ *"Chất riêng trên từng phím"*, văn bản chiếm chỗ và ảnh lớn).
+* Giảm `padding-top` phần nội dung chính xuống `36px` (và `20px` trên mobile). Khách hàng mở web là nhìn thấy ngay các video review chân thực và dãy sản phẩm nổi bật mà không cần cuộn chuột.
 
-### 7.4. Quy chuẩn đóng Modal / Dialog trên toàn bộ website
-* **Nguyên tắc kỹ thuật:** Trong JavaScript ES Modules (`<script type="module">`), các biến như `$` không thuộc phạm vi toàn cục `window`. Vì vậy **tuyệt đối không dùng inline `onclick="$('#modal').close()"`**.
-* **Giải pháp chuẩn hóa:**
-  * Mọi nút đóng trong toàn bộ các file đều sử dụng thuộc tính: `data-close-dialog`.
-  * Có listener toàn cục bắt sự kiện click:
-    ```javascript
-    document.addEventListener('click', (e) => {
-      // Đóng khi click vào vùng mờ backdrop bên ngoài
-      if (e.target.tagName === 'DIALOG') e.target.close();
-      // Đóng khi click vào nút có data-close-dialog
-      const closeBtn = e.target.closest('[data-close-dialog]');
-      if (closeBtn) closeBtn.closest('dialog')?.close();
-    });
-    ```
+### 6.3. Sửa Lỗi Giao Diện Trên Điện Thoại & Tablet (Mobile Responsive)
+1. **Thanh Header:**
+   * File `system.css` cũ có rule ẩn `.nav__actions` trên màn hình `< 1023px`, làm mất nút Giỏ hàng và Tra cứu trên tablet/mobile. Đã sửa trong `app.css` với `.nav__actions { display: flex !important; }`.
+   * Trên màn hình `≤ 540px` (iPhone 375px/390px), tự động ẩn chữ `.action-btn__label` và chuyển các nút thành icon tròn 38px chuẩn Apple, không bị vỡ hàng.
+2. **Thanh Lọc Sản Phẩm (Filter Hubs):**
+   * Các nút lọc `.tier-1`, `.tier-2`, `.brand-pills`, `.brand-showcase-bar`, `.cb-filter-bar` trên màn hình `≤ 640px` chuyển từ dạng xếp chồng 5 tầng thành **thanh vuốt trượt ngang cảm ứng mượt mà** (`flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-inline: -16px; padding-inline: 16px;`).
+3. **Lưới Sản Phẩm (`.catalog-grid`, `.brand-grid`, `.cb-grid`):**
+   * Trước đây không có CSS Grid và thẻ `.kmpd-pcard` bị cố định 290px gây tràn mép trên điện thoại. Đã bổ sung CSS Grid tự động co giãn 1 cột trên mobile (`grid-template-columns: 1fr; .kmpd-pcard { width: 100% !important; flex: none; }`).
+4. **Sửa Lỗi Nút Phụ `.btn--secondary`:**
+   * Rule cũ của `system.css` dòng 449 lột sạch viền và nền của nút phụ trên mobile biến thành link gạch chân. Đã override để giữ nguyên nút bo tròn Apple pill button sạch sẽ.
+5. **Trang Chi Tiết Sản Phẩm (PDP):**
+   * Bảng thông số kỹ thuật `.specs dl div` trên mobile chuyển sang 1 cột (nhãn nằm trên, giá trị nằm dưới), không ép chật nội dung.
+6. **Trang Quản Trị Admin:**
+   * Form sản phẩm tự co thành 1 cột trên mobile (`grid-template-columns: 1fr !important;`).
+   * Thanh công cụ tồn kho (tìm kiếm, nút ẩn tồn = 0, sort) tự động căn chỉnh full-width.
+   * Modal dialog có `max-height: calc(100svh - 32px); overflow-y: auto;` để luôn bấm được nút Lưu/Đóng.
+
+### 6.4. Sửa Lỗi Hộp Đen Trống Trải (Interactive Switch Sound Bench)
+* Đã xóa bỏ chiếc hộp đen trống không có nội dung nằm trên đỉnh dãy sản phẩm `index.html`.
+
+### 6.5. Widget Liên Hệ Nổi (`.kmod-floating-contact`)
+* Được ghim cố định ở góc dưới cùng bên phải: `position: fixed !important; right: 20px !important; bottom: 20px !important; z-index: 99999 !important;`.
+* Khi ngăn kéo giỏ hàng mở (`.cart-open`), widget tự động ẩn đi (`opacity: 0 !important; visibility: hidden !important;`) để không che khuất nút thanh toán.
+
+---
+
+## 7. CÔNG NGHỆ LÕI (CORE ENGINES)
+
+### 7.1. Bộ Tổng Hợp Âm Thanh Kép (Sound Engine)
+* **Phát file âm thanh thật:** Nếu thẻ có thuộc tính `data-sound-file="data:audio/..."` (do admin upload trực tiếp), trình duyệt sẽ ưu tiên phát file âm thanh thật này qua `new Audio(file).play()`.
+* **Fallback Web Audio API Synthesizer:** Nếu không có file âm thanh tải lên, hàm `playFallbackSynth(b)` sẽ tự động phát âm thanh giả lập dựa trên profile:
+  * `graywood`: Âm Thock trầm đầm (tần số thấp ~180Hz).
+  * `reaper`: Âm Clack đanh giòn (tần số cao ~420Hz).
+  * `magnetic-he`: Phím từ tính Hall Effect, hành trình ngắn, click dứt khoát.
+  * `silent`: Phím tĩnh âm, triệt tiêu tiếng ồn.
+* **Nguyên tắc an toàn:** Hàm `bindSoundButtons()` chỉ gắn 1 listener duy nhất trên `document.body` (sử dụng cờ `_soundBound`), có thể gọi lại nhiều lần sau mỗi lần render mà không sợ bị chồng lặp âm thanh.
+
+### 7.2. Tra Cứu Đơn Hàng Thông Minh & Bảo Mật
+* Hàm `doTrackOrders(query)` trong `demo/app.js`:
+  * Tìm kiếm theo mã đơn chính xác `KH-XXXXXX` (hoặc nhập 6 chữ số).
+  * Tìm kiếm theo số điện thoại (so sánh 9 chữ số cuối).
+  * **Chặn tìm kiếm chuỗi ngắn:** Bắt buộc nhập đủ số điện thoại hoặc mã đơn hoàn chỉnh để bảo vệ quyền riêng tư của khách hàng khác.
+
+### 7.3. Giỏ Hàng & Tăng Giảm Số Lượng
+* Ngăn kéo giỏ hàng (`renderCart`) tích hợp cụm nút điều khiển số lượng `+` / `−` ngay trên từng sản phẩm, tự động cập nhật tổng tiền và kiểm tra điều kiện mã giảm giá.
 
 ---
 
-## 8. HƯỚNG DẪN DÀNH CHO AI / LẬP TRÌNH VIÊN TIẾP QUẢN
+## 8. QUY TRÌNH KIỂM THỬ KHI CHỈNH SỬA CODE (VERIFICATION SCRIPTS)
 
-Khi bạn (AI hoặc dev mới) tiếp nhận dự án này để thêm tính năng hay sửa lỗi, hãy tuân theo các chỉ dẫn sau:
+Trước khi bàn giao bất kỳ chỉnh sửa nào, hãy chạy 3 script kiểm tra cú pháp và tính toàn vẹn:
 
-### 8.1. Những điều NÊN làm:
-1. **Giữ phong cách Clean Apple Light nhất quán:** Nền sáng `--p-bg: #ffffff`, `--p-surface: #f5f5f7`, chữ `--p-ink: #1d1d1f`, nút `--p-action: #0071e3` (mục 4). Không đổi nền toàn trang sang tối; chỉ khung ảnh sản phẩm và vài khối nhấn dùng nền tối.
-2. **Đồng bộ Navigation Menu:** Khi sửa menu điều hướng, hãy đồng bộ trên cả 9 file HTML (`index.html`, `san-pham.html`, `custom-build.html`, `thuong-hieu.html`, `product.html`, `gioi-thieu.html`, `hdsd.html`, `bao-hanh.html`, `lien-he.html`).
-3. **Thêm sản phẩm mới:** Hãy thêm thông qua trang `admin.html` hoặc thêm vào mảng `DEFAULT_CATALOG` trong `demo/app.js`.
-4. **Giữ tính gọn nhẹ:** Không tự ý cài đặt thêm các thư viện NPM nặng (như React, Bootstrap, Tailwind, jQuery,...) vào repo trừ khi người dùng yêu cầu rõ ràng.
+```bash
+# 1. Kiểm tra cú pháp tất cả các script trong HTML
+node --experimental-vm-modules -e "
+import fs from 'fs';
+import vm from 'vm';
+const htmlFiles = fs.readdirSync('demo').filter(f => f.endsWith('.html'));
+for (const file of htmlFiles) {
+  const content = fs.readFileSync('demo/' + file, 'utf8');
+  const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+  let match;
+  while ((match = scriptRegex.exec(content)) !== null) {
+    const code = match[1].trim();
+    if (code && !match[0].includes('src=')) {
+      new vm.SourceTextModule(code, { initializeImportMeta() {} });
+    }
+  }
+}
+console.log('All inline scripts valid!');
+"
 
-### 8.2. Những lỗi ĐÃ FIX cần tránh lặp lại:
-1. Không đặt widget `.kmod-floating-contact` nằm lơ lửng ở giữa trang — nó bắt buộc phải nằm cố định góc dưới bên phải (`bottom: 20px; right: 20px`).
-2. Không bắt người dùng nhập link URL ảnh/nhạc từ Google Drive — tính năng upload file trực tiếp từ máy tính đã được tích hợp hoàn chỉnh trong `admin.html`.
-3. Không để mất hover của Mega Menu — luôn giữ pseudo-element `.dropdown-mega-rich::before` và hàm `initMegaMenu()` để ngăn dropdown bị giật tắt khi rê chuột.
-4. Không xóa thuộc tính `data-close-dialog` trên các nút đóng modal.
-5. `bindSoundButtons()` chỉ gắn **một** listener cho mỗi root (gọi lại sau mỗi lần render là an toàn). Đừng tự thêm listener âm thanh khác, nếu không mỗi cú bấm sẽ phát nhiều lần.
-6. Ô tìm kiếm đầu trang dùng chung hàm `initSearch()` trong `app.js` cho mọi trang. Không chép lại code tìm kiếm vào từng trang, và luôn escape chuỗi người dùng gõ (hàm `esc()`) trước khi chèn vào `innerHTML`.
-7. Thanh menu ngang dài ~1020px: ở màn ≤1024px nó cuộn ngang bên trong chính nó (`.menu-list { overflow-x: auto }`). Thêm mục menu mới thì kiểm tra lại ở 375px để trang không bị rộng ra.
-8. Tồn kho: bảng `kb-inventory` của admin là nguồn sự thật. `getLiveCatalog()` đọc nó để tính `inStock` (nhãn SẴN HÀNG / TẠM HẾT HÀNG / HÀNG ORDER qua `stockBadge()`; hết hàng thì nút mua bị khóa qua `canBuy()`). Đặt hàng trừ kho, hủy đơn cộng lại (`adjustStock()`).
-9. Mã đơn có dạng `KH-XXXXXX` (6 số, không trùng). Tiền cọc = min(100.000đ, tổng đơn), lưu trong `order.deposit`.
-10. Tra cứu đơn chỉ khớp **đủ số điện thoại** (so 9 số cuối), không khớp một phần, để không lộ đơn của người khác.
-11. File âm thanh upload ≤ 1,5MB và chỉ lưu một lần (trong `kb-catalog`). localStorage của cả trang chỉ khoảng 5MB.
-
-### 8.3. Gợi ý các tính năng có thể mở rộng tiếp theo (Roadmap):
-* **Backend Database:** Thay thế `localStorage` bằng Backend Node.js / Express kết nối cơ sở dữ liệu SQLite hoặc PostgreSQL.
-* **Webhook Telegram/Zalo:** Gửi thông báo có đơn hàng mới tức thì về nhóm Telegram hoặc Zalo OA của chủ shop.
-* **Tích hợp VietQR động:** Tạo mã VietQR chuẩn NAPAS tự động điền sẵn số tài khoản, số tiền và nội dung chuyển khoản `KH-XXXXXX` khi khách chọn phương thức chuyển khoản ngân hàng.
-* **Hệ thống Đăng nhập / Phân quyền:** Thêm xác thực Admin Login (mật khẩu) để bảo vệ trang `admin.html`.
+# 2. Kiểm tra tính đồng bộ của Mega Menu trên cả 9 trang HTML
+node -e "
+import fs from 'fs';
+const pages = ['index.html', 'san-pham.html', 'custom-build.html', 'thuong-hieu.html', 'product.html', 'gioi-thieu.html', 'hdsd.html', 'bao-hanh.html', 'lien-he.html'];
+const getNav = (f) => {
+  const m = fs.readFileSync('demo/' + f, 'utf8').match(/<nav class=\"main-menu\"[\s\S]*?<\/nav>/);
+  return m ? m[0] : '';
+};
+const base = getNav('index.html');
+pages.forEach(p => console.log(p, getNav(p) === base ? '100% IDENTICAL' : 'MISMATCH!'));
+"
+```
 
 ---
-*Tài liệu này được tạo tự động bởi AI trợ lý để lưu lại toàn bộ tri thức và bối cảnh mã nguồn của dự án MoneyKeyboard.*
+
+## 9. HƯỚNG DẪN DÀNH CHO AI / LẬP TRÌNH VIÊN PHÁT TRIỂN TIẾP THEO
+
+1. **Tuân thủ tone nền sáng Apple Clean:** `--p-bg: #ffffff`, `--p-surface: #f5f5f7`, chữ `--p-ink: #1d1d1f`. Không tự ý đổi nền trang web sang màu tối.
+2. **Không dùng thư viện nặng:** Duy trì kiến trúc thuần Vanilla HTML5, CSS3, ES Modules.
+3. **Đồng bộ Mega Menu:** Bất kỳ thay đổi nào trên thanh menu ngang phải được áp dụng đồng thời trên cả 9 trang HTML.
+4. **Không tái tạo lỗi `height: 100vh`:** Tuyệt đối không thêm thuộc tính `height: 100vh` hoặc `height: 100%` vào các thẻ `section` hoặc `.wrap`.
+5. **Đóng modal đúng chuẩn:** Luôn dùng `data-close-dialog` cho nút đóng modal, không dùng inline `onclick="$('#modal').close()"`.
+
+---
+*Tài liệu được cập nhật toàn diện để lưu giữ trọn vẹn bối cảnh kỹ thuật cho các kỹ sư và AI tiếp tục phát triển MoneyKeyboard.*

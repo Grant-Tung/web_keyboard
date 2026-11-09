@@ -586,9 +586,27 @@ body { font-family: var(--font-text); color: var(--p-ink); background: var(--p-b
 
 
 
-/* the user's spec wants 120-160px section spacing, not the kit's one-screen sections: size by content */
-main > section.section-xl, main > section.hero--kb { height: auto !important; }
-main > section.section-xl > .wrap { height: auto !important; display: block !important; }
+/* Ensure all sections size by content, completely overriding system.css's 100vh lock */
+main > :is(section, .section),
+main > section,
+.kmpd-carousel-section,
+.footage-section,
+.cb-configurator-section,
+.section-xl {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+main > :is(section, .section) > :is(.wrap, .container),
+main > section > .wrap,
+.kmpd-carousel-section > .wrap,
+.footage-section > .wrap {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  display: block !important;
+}
 
 /* ---------- home: hero ---------- */
 .hero--kb { min-height: 100svh; padding-top: calc(var(--nav) + 48px); display: flex; flex-direction: column; text-align: center; }
@@ -992,8 +1010,13 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
 
 /* ---------- Footage & Reels Grid ---------- */
 .footage-section {
-  padding: 110px 0 80px;
+  padding: 36px 0 64px;
   background: var(--p-bg);
+}
+@media (max-width: 640px) {
+  .footage-section {
+    padding: 20px 0 40px;
+  }
 }
 .footage-grid {
   display: grid;
@@ -1496,7 +1519,8 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
 /* Horizontal Track Wrap & Track (Dãy kéo ngang) */
 .kmpd-track-wrap {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  width: 100%;
 }
 .kmpd-track {
   display: flex;

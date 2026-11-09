@@ -606,11 +606,13 @@
       return `
         <article class="kmpd-pcard" data-prod-id="${p.id}" data-cat="${p.category}" data-sub="${p.subCategory}" data-sound-host>
           <span class="kmpd-badge-custom">${p.badge || 'TÁC PHẨM ĐÃ BÀN GIAO'}</span>
-          <div class="kmpd-pcard__img">
+          <div class="kmpd-pcard__img" data-cb-id="${p.id}" style="cursor:pointer" title="Bấm để xem chi tiết tác phẩm">
             <img src="${src}" alt="${esc(p.name)}" loading="lazy">
           </div>
           <span class="kmpd-pcard__brand">${esc(p.brand)}</span>
-          <h3 class="kmpd-pcard__name">${esc(p.name)}</h3>
+          <h3 class="kmpd-pcard__name" data-cb-id="${p.id}" style="cursor:pointer" title="Bấm để xem chi tiết tác phẩm">
+            <a href="javascript:void(0)">${esc(p.name)}</a>
+          </h3>
           <p class="kmpd-pcard__line">${esc(p.line)}</p>
           ${specsHtml}
           ${(p.audioData || soundId) ? `
