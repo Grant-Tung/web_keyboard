@@ -44,7 +44,7 @@ node server.js
 > *Lưu ý về server:* File `server.js` tự động phát hiện cổng bận. Nếu cổng `3000` đang được dùng, server sẽ tự nhảy sang `3001`, `3002`,... và in link truy cập rõ ràng ra console.
 
 ### 2.3. Sơ đồ các trang chính
-* **Trang chủ (`demo/index.html`):** Mega Menu 5 cột, Video Footage Reels, 5 dãy sản phẩm kéo ngang (Bàn phím cơ, Switch, Keycap, Phụ kiện, Custom Build).
+* **Trang chủ (`demo/index.html`):** Mega Menu 5 cột, rồi 6 section theo thứ tự: Hero (một sản phẩm chủ lực, mặc định `aula-f75`) → Danh mục → Sản phẩm nổi bật (8 thẻ) → Nghe thử switch → Thương hiệu → Mua yên tâm (cọc/COD/bảo hành) → footer.
 * **Trang Danh mục sản phẩm (`demo/san-pham.html`):** Bộ lọc 2 tầng (Faceted Filter Hub), lọc theo hãng, thanh sắp xếp giá/tên, phân loại theo URL (`?cat=...&sub=...`).
 * **Trang Custom Build (`demo/custom-build.html`):** Danh sách tác phẩm build hoàn thiện, bảng báo giá tạm tính (Configurator 4 bước), nút copy cấu hình gửi shop qua Zalo.
 * **Trang Thương hiệu (`demo/thuong-hieu.html`):** Tổng hợp sản phẩm theo từng hãng danh tiếng (Aula, Madlions, MonsGeek, Leobog, Akko, Xinmeng, Weikav, GravaStar, Titan Elite).
@@ -253,7 +253,8 @@ Hệ thống hoạt động offline-first hoàn chỉnh thông qua `localStorage
 
 ### 5.3. Tồn kho theo từng màu
 * **Admin – form Thêm/Sửa (`#modal-product`):** khu vực "Mẫu mã / Màu sắc" với nút **+ Thêm màu / mẫu**; mỗi dòng gồm ô chọn màu (hex), tên màu, tồn kho riêng và nút ✕ xóa. Có màu thì ô `#p-stock` khóa lại và hiển thị tổng (tự cộng). Không có màu thì dùng một số tồn chung như cũ. Màu giữ `id` khi đổi tên, nên ảnh và tồn kho gắn theo màu không bị mất.
-* **Admin – bảng kho:** sản phẩm có màu hiển thị từng màu kèm nút +/− riêng (`Xanh nhạt [5] · Đen [6] · Trắng ngà [0] ➔ Tổng: 11`), màu hết hàng tô đỏ và có huy hiệu `⚠️ Hết màu: …`. KPI "Sắp hết hàng" tính cả sản phẩm có một màu bằng 0. Hàm `setStock(item, colorId, fn)` cập nhật một màu rồi tính lại tổng.
+* **Admin – bảng kho (mỗi màu là một SKU):** `renderInventory()` trải mỗi màu thành một dòng `tr.stock-sku` riêng: ảnh màu (lấy từ `colors[].imgs[0]` của catalog, không có thì ô màu hex), tên `AULA F75 — Xanh nhạt`, SKU `aula-f75-blue` (= `productId-colorId`, chỉ tính khi render, không lưu), tồn kho, huy hiệu cảnh báo và nút +/− riêng. Các dòng cùng sản phẩm nằm dưới dòng tiêu đề `tr.stock-group` (tổng tồn, `⚠️ Hết k/n màu`, nút Sửa/Xóa). Sản phẩm không có màu và Custom Build vẫn là một dòng. Tìm kiếm khớp từng từ trên tên + hãng + id + tên màu + SKU (gõ `f75 xanh` ra đúng một màu). "Ẩn tồn = 0" và KPI "Sắp hết hàng (< 3)" (bấm để bật/tắt lọc, `aria-pressed`) lọc theo từng SKU; KPI và bộ đếm đếm theo SKU. Hàm `setStock(item, colorId, fn)` cập nhật một màu rồi tính lại tổng.
+* **Admin – đơn hàng:** mỗi dòng sản phẩm hiện chấm màu + tên màu (`lineLabel(i)`, đọc `colorId` hoặc phần màu trong `key` của đơn cũ, tra tên/hex trong `kb-inventory`); dùng chung cho bảng đơn, popup chi tiết và phiếu in giao hàng.
 * **`getLiveCatalog()`:** dòng kho có `colors` thì thay danh sách màu của sản phẩm (giữ `imgs` theo `id`), gắn `stock` cho từng màu; `inStock = có ít nhất một màu còn hàng`.
 * **`product.html`:** mở trang ở màu còn hàng đầu tiên (hoặc `?color=`). Bấm màu hiển thị `Còn N sản phẩm` hoặc `Màu này tạm hết hàng`; màu hết bị gạch chéo và nút **Thêm vào giỏ** (cả thanh mua dính) bị khóa. Số lượng tối đa = min(5, tồn màu đó). Item giỏ lưu `id` + `colorId`.
 * **`checkout.html`:** trước khi tạo đơn, cộng dồn số lượng theo `sản phẩm + màu` (các dòng cùng màu khác switch dùng chung tồn) và so với `itemStock()`; thiếu hàng thì hiện lỗi đỏ, không tạo đơn. Đơn lưu `colorId` cho từng item.
@@ -295,9 +296,14 @@ Khi tiếp quản dự án, **tuyệt đối không để xảy ra các lỗi sa
   }
   ```
 
-### 6.2. Loại Bỏ Khối Hero Cồng Kềnh (Zero Wasted Space Homepage)
-* Đã gỡ bỏ hoàn toàn thẻ `<section class="hero--kb">` khỏi `demo/index.html` (tiêu đề khổng lồ *"Chất riêng trên từng phím"*, văn bản chiếm chỗ và ảnh lớn).
-* Giảm `padding-top` phần nội dung chính xuống `36px` (và `20px` trên mobile). Khách hàng mở web là nhìn thấy ngay các video review chân thực và dãy sản phẩm nổi bật mà không cần cuộn chuột.
+### 6.2. Trang chủ v2 (Phase 2)
+* `demo/index.html` gồm 6 section, mỗi section một mục đích: `#hero` → `#categories` → `#featured` → `#sound` → `#brands` → `#promise`. Markup tĩnh chứa tiêu đề; nội dung các lưới do script inline render từ `CATALOG` / `PRODUCT.switches` (sản phẩm admin thêm sẽ tự xuất hiện ở Danh mục/Thương hiệu).
+* Hero: `CATALOG.find(p => p.id === 'aula-f75')`; các nút màu đổi ảnh và gắn `&color=` vào link mua (`product.html` mở đúng màu). Đổi sản phẩm chủ lực ở hằng trong script.
+* Nghe thử: mỗi ô là `<button data-sound data-sound-host>` có `.wave i`, dùng `bindSoundButtons()` sẵn có (Web Audio).
+* CSS nằm trong khối `/* Home v2 (Phase 2) */` cuối `app.css`, mọi class đều có tiền tố `.home-`.
+* Đã bỏ Footage Reels, 5 dãy carousel, `#reel-modal`, `#custom-build-modal` khỏi trang chủ (CSS `.kmpd-pcard` vẫn được `san-pham` / `thuong-hieu` / `custom-build` dùng).
+* **Mega menu:** `initMegaMenu()` tự ẩn link danh mục con / hãng không có sản phẩm nào trong catalog (link chết) và tự hiện lại khi admin thêm sản phẩm. Cột danh mục không còn giới hạn chiều cao (trước đây cột Keycap bị cắt). Dropdown Thương hiệu có CSS cho thẻ sản phẩm mẫu (trước đây ảnh hiện full size). Sửa markup menu ở `index.html` rồi chép khối `<nav class="main-menu">` sang 8 trang còn lại (script kiểm tra ở mục 8).
+* Mọi trang có `<link rel="icon" href="data:,">` để không còn lỗi 404 `favicon.ico` trên console.
 
 ### 6.3. Sửa Lỗi Giao Diện Trên Điện Thoại & Tablet (Mobile Responsive)
 1. **Thanh Header:**

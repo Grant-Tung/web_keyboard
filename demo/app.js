@@ -1412,6 +1412,15 @@ export function initMegaMenu() {
       burger?.setAttribute('aria-expanded', 'false');
     }
   });
+
+  // a menu link to an empty listing is a dead end: hide it until the admin adds a product there
+  const live = getLiveCatalog();
+  document.querySelectorAll('.main-menu a[href*="sub="], .brands-pill-list a[href*="brand="]').forEach((a) => {
+    const q = new URL(a.href).searchParams, cat = q.get('cat'), sub = q.get('sub'), brand = q.get('brand')?.toLowerCase();
+    const has = live.some((p) => (!cat || p.category === cat) && (!sub || p.subCategory === sub) && (!brand || p.brand.toLowerCase() === brand));
+    (a.parentElement.tagName === 'LI' ? a.parentElement : a).hidden = !has; // brand pills sit inside the menu's own <li>
+
+  });
 }
 
 /* ---------- header search (shared by every storefront page) ---------- */
