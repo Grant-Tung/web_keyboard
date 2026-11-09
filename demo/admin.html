@@ -60,10 +60,12 @@
         <h2>Danh sách đơn</h2>
         <div class="tabs" id="tabs"></div>
       </div>
-      <table class="orders">
-        <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>SĐT</th><th>Sản phẩm</th><th>Tổng</th><th>Trạng thái</th><th>Đặt lúc</th></tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+        <table class="orders">
+          <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>SĐT</th><th>Sản phẩm</th><th>Tổng</th><th>Trạng thái</th><th>Đặt lúc</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Panel 2: Inventory & Product Management -->
@@ -166,7 +168,7 @@
       <button type="button" class="btn btn--secondary btn--sm" data-close-dialog aria-label="Đóng">✕ Đóng</button>
     </div>
 
-    <form id="form-product" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <form id="form-product" class="admin-product-form" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <input type="hidden" id="p-id">
 
       <!-- Tên sản phẩm -->
@@ -186,6 +188,14 @@
           <option value="custom-build">Custom Build</option>
         </select>
         <label for="p-category">Danh mục chính *</label>
+      </div>
+
+      <!-- Phân loại chi tiết (Layout / Loại switch / Profile...) -->
+      <div class="fl" id="p-subcat-wrap" style="margin-bottom:0">
+        <select id="p-subcategory" required>
+          <!-- Tự động cập nhật theo danh mục chính -->
+        </select>
+        <label for="p-subcategory" id="p-subcat-label">Phân loại chi tiết (Layout / Loại switch) *</label>
       </div>
 
       <!-- Thương hiệu -->
@@ -303,7 +313,7 @@
 </dialog>
 
 <script type="module">
-  import { orders, vnd, toast, getLiveCatalog, saveCatalog, PRODUCT, playSwitch, adjustStock, firstImg, orderDeposit } from './app.js';
+  import { orders, vnd, toast, getLiveCatalog, saveCatalog, PRODUCT, playSwitch, adjustStock, firstImg, orderDeposit, SUB_FILTERS } from './app.js';
   const $ = (s) => document.querySelector(s);
   const H = 3600e3;
   const STATUS = {
@@ -445,7 +455,16 @@
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const liveCat = getLiveCatalog();
+          parsed.forEach(item => {
+            if (!item.subCategory) {
+              const cp = liveCat.find(p => p.id === item.id);
+              if (cp?.subCategory) item.subCategory = cp.subCategory;
+            }
+          });
+          return parsed;
+        }
       } catch (e) {}
     }
 
@@ -475,6 +494,7 @@
         name: p.name,
         brand: p.brand || 'MoneyKeyboard',
         category: p.category,
+        subCategory: p.subCategory || '',
         price: p.price,
         img: firstImg(p),
         isCustom: p.category === 'custom-build',
@@ -501,6 +521,22 @@
     'hang-order': 'Hàng Order',
     'custom-build': 'Custom Build'
   };
+
+  const SUBCAT_LABELS = {
+    'ban-phim-co': 'Layout bàn phím *',
+    'switch': 'Phân loại switch (Linear, Tactile, Silent...) *',
+    'keycap': 'Profile keycap (Cherry, MOA, XOA...) *',
+    'phu-kien': 'Phân loại phụ kiện *',
+    'hang-order': 'Nhóm hàng order *',
+    'custom-build': 'Dạng custom build *'
+  };
+
+  function getSubName(cat, subId) {
+    if (!subId || subId === 'all') return '';
+    const list = SUB_FILTERS[cat] || [];
+    const item = list.find(s => s.id === subId);
+    return item ? item.name : subId;
+  }
 
   // the storefront reads this table for SẴN HÀNG / TẠM HẾT HÀNG (getLiveCatalog); throws if browser storage is full
   function saveInventory() {
@@ -605,7 +641,7 @@
           </td>
           <td>
             <span style="font-weight:600">${esc(item.brand)}</span>
-            <div class="muted" style="font-size:12px">${catNames[item.category] || item.category}</div>
+            <div class="muted" style="font-size:12px">${catNames[item.category] || item.category}${getSubName(item.category, item.subCategory) ? ` · <span style="color:var(--p-action);font-weight:600">${esc(getSubName(item.category, item.subCategory))}</span>` : ''}</div>
           </td>
           <td style="text-align:right;font-weight:600">
             ${vnd(item.price)}
@@ -660,6 +696,36 @@
   const audioPreviewWrap = $('#p-audio-preview-wrap');
   const btnRemoveAudio = $('#btn-remove-audio');
   const audioDataInput = $('#p-audio-data');
+
+  const categorySelect = $('#p-category');
+  const subcategorySelect = $('#p-subcategory');
+  const subcategoryLabel = $('#p-subcat-label');
+
+  function updateSubcatOptions(cat, selectedVal = '') {
+    const subs = (SUB_FILTERS[cat] || []).filter(s => s.id !== 'all');
+    if (subcategoryLabel) {
+      subcategoryLabel.textContent = SUBCAT_LABELS[cat] || 'Phân loại chi tiết *';
+    }
+    if (!subs.length) {
+      subcategorySelect.innerHTML = '<option value="">(Không có phân loại con)</option>';
+      return;
+    }
+    subcategorySelect.innerHTML = subs.map(s => `
+      <option value="${s.id}" ${s.id === selectedVal ? 'selected' : ''}>${esc(s.name)}</option>
+    `).join('');
+
+    if (selectedVal && subs.some(s => s.id === selectedVal)) {
+      subcategorySelect.value = selectedVal;
+    } else {
+      subcategorySelect.value = subs[0]?.id || '';
+    }
+  }
+
+  if (categorySelect) {
+    categorySelect.onchange = () => {
+      updateSubcatOptions(categorySelect.value);
+    };
+  }
 
   // 1. Upload ảnh trực tiếp từ máy tính
   btnBrowseImg.onclick = () => imgFileInput.click();
@@ -751,6 +817,8 @@
     $('#mp-title').textContent = 'Thêm sản phẩm mới';
     $('#p-id').value = '';
     formProduct.reset();
+    $('#p-category').value = 'ban-phim-co';
+    updateSubcatOptions('ban-phim-co', 'layout-75');
     imgInput.value = 'img/red-translucent.webp';
     imgPreview.src = 'img/red-translucent.webp';
     imgFilename.textContent = 'Chưa tải file mới (đang dùng ảnh mặc định)';
@@ -766,10 +834,14 @@
   function openEditProduct(id) {
     const item = inventory.find(i => i.id === id);
     if (!item) return;
+    const catProd = getLiveCatalog().find(p => p.id === id);
+    const subCat = item.subCategory || catProd?.subCategory || '';
+
     $('#mp-title').textContent = 'Chỉnh sửa sản phẩm: ' + item.name;
     $('#p-id').value = item.id;
     $('#p-name').value = item.name;
     $('#p-category').value = item.category || 'ban-phim-co';
+    updateSubcatOptions(item.category || 'ban-phim-co', subCat);
     $('#p-brand').value = item.brand || 'MoneyKeyboard';
     $('#p-price').value = item.price || 0;
     $('#p-stock').value = item.stock ?? 10;
@@ -778,7 +850,7 @@
     imgFilename.textContent = item.img?.startsWith('data:') ? '✅ Đang dùng ảnh do shop tự upload' : 'Đang dùng ảnh đường dẫn / mẫu';
     
     soundSelect.value = item.soundId || '';
-    const audio = getLiveCatalog().find((p) => p.id === id)?.audioData; // stored once, in the catalog
+    const audio = catProd?.audioData; // stored once, in the catalog
     if (audio) {
       audioDataInput.value = audio;
       audioPlayer.src = audio;
@@ -820,6 +892,7 @@
     const id = $('#p-id').value.trim();
     const name = $('#p-name').value.trim();
     const category = $('#p-category').value;
+    const subCategory = subcategorySelect.value || (category === 'ban-phim-co' ? 'layout-75' : 'all');
     const brand = $('#p-brand').value.trim();
     const price = parseInt($('#p-price').value) || 0;
     const stock = parseInt($('#p-stock').value) || 0;
@@ -837,6 +910,7 @@
       if (item) {
         item.name = name;
         item.category = category;
+        item.subCategory = subCategory;
         item.brand = brand;
         item.price = price;
         item.stock = stock;
@@ -851,6 +925,7 @@
       if (catProd) {
         catProd.name = name;
         catProd.category = category;
+        catProd.subCategory = subCategory;
         catProd.type = category;
         catProd.brand = brand;
         catProd.price = price;
@@ -871,6 +946,7 @@
         name,
         brand,
         category,
+        subCategory,
         price,
         stock,
         img,
@@ -888,7 +964,7 @@
         brand,
         category,
         type: category,
-        subCategory: category === 'ban-phim-co' ? 'layout-75' : 'all',
+        subCategory,
         price,
         badge: 'MỚI VỀ',
         inStock: stock > 0,
