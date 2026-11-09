@@ -3,34 +3,59 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quản trị đơn hàng | KeyHouse</title>
+<title>Quản trị đơn hàng & Kho hàng | MoneyKeyboard</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
 <link rel="stylesheet" href="assets/system.css">
 <link rel="stylesheet" href="app.css">
+<style>
+  .stock-actions-cell { display: flex; gap: 6px; justify-content: center; align-items: center; }
+  .btn-mini-action { border: 1px solid rgb(0 0 0 / .12); background: #fff; border-radius: 8px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all .15s; }
+  .btn-mini-action:hover { border-color: var(--p-action); color: var(--p-action); background: var(--p-surface); }
+  .btn-mini-action--del:hover { border-color: #d70015; color: #d70015; background: #fff5f5; }
+</style>
 </head>
 <body class="admin">
 <header class="admin__top">
   <div class="wrap">
-    <strong>KeyHouse Admin</strong>
-    <nav><a href="#" aria-current="page">Đơn hàng</a><a href="#">Sản phẩm</a><a href="#">Tổng quan</a></nav>
-    <button class="btn btn--secondary btn--sm" type="button" id="reset" style="margin-left:auto">Xóa dữ liệu demo</button>
-    <a class="link" href="index.html">Xem cửa hàng</a>
+    <strong>MoneyKeyboard Admin</strong>
+    <nav>
+      <a href="#section-orders" aria-current="page">Đơn hàng</a>
+      <a href="#section-inventory">Kho hàng & Sản phẩm</a>
+      <a href="san-pham.html" target="_blank">Xem catalog shop</a>
+    </nav>
+    <button class="btn btn--secondary btn--sm" type="button" id="reset" style="margin-left:auto">Khôi phục demo</button>
+    <a class="link" href="index.html">Về trang chủ</a>
   </div>
 </header>
 <main>
   <div class="wrap">
-    <h1>Đơn hàng</h1>
-    <div class="kpis">
-      <div class="kpi"><span>Chờ cọc</span><b id="k-pending"></b></div>
-      <div class="kpi"><span>Đang giao</span><b id="k-ship"></b></div>
-      <div class="kpi"><span>Doanh thu tháng này</span><b id="k-rev"></b></div>
-      <div class="kpi kpi--warn"><span>Sắp hết hàng</span><b>2 loại</b></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1 style="margin:0 0 6px">Bảng điều khiển & Quản trị</h1>
+        <p class="muted" style="margin:0">Quản lý đơn hàng, điều phối vận chuyển, thêm bớt và kiểm soát tồn kho sản phẩm.</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="#section-orders" class="btn btn--secondary btn--sm">⬇ Xem danh sách đơn</a>
+        <a href="#section-inventory" class="btn btn--primary btn--sm">📦 Quản lý kho hàng</a>
+      </div>
     </div>
 
-    <div class="panelbox">
+    <!-- KPIs Ribbon -->
+    <div class="kpis">
+      <div class="kpi"><span>Chờ cọc</span><b id="k-pending">0</b></div>
+      <div class="kpi"><span>Đang giao</span><b id="k-ship">0</b></div>
+      <div class="kpi"><span>Doanh thu tháng này</span><b id="k-rev">0 ₫</b></div>
+      <div class="kpi kpi--warn" id="kpi-lowstock" style="cursor:pointer" title="Nhấn để cuộn nhanh đến các mặt hàng dưới 3 tồn kho">
+        <span>Sắp hết hàng (&lt; 3)</span>
+        <b id="k-lowstock" style="color:#d70015">0 loại</b>
+      </div>
+    </div>
+
+    <!-- Panel 1: Orders -->
+    <div class="panelbox" id="section-orders">
       <div class="panelbox__head">
         <h2>Danh sách đơn</h2>
         <div class="tabs" id="tabs"></div>
@@ -41,33 +66,244 @@
       </table>
     </div>
 
-    <div class="panelbox lowstock">
-      <div class="panelbox__head"><h2>Cảnh báo tồn kho</h2></div>
-      <ul>
-        <li><span>AULA F75 · Vỏ Trắng ngà · LEOBOG Reaper</span><b style="color:#b25000">Còn 2</b></li>
-        <li><span>AULA F75 · Vỏ Đen · Tactile Brown</span><b style="color:#d70015">Còn 1</b></li>
-      </ul>
+    <!-- Panel 2: Inventory & Product Management -->
+    <div class="panelbox stock-panel" id="section-inventory">
+      <div class="panelbox__head stock-head">
+        <div>
+          <h2 style="display:flex;align-items:center;gap:10px;margin:0">
+            📦 Quản lý Kho & Sản phẩm
+            <span class="stock-count-badge" id="stock-count-summary">0 sản phẩm</span>
+          </h2>
+          <p class="muted" style="margin:4px 0 0;font-size:13px">
+            Thêm mới, sửa, xóa sản phẩm và quản lý số lượng tồn. Sản phẩm tồn &lt; 3 được cảnh báo đỏ.
+          </p>
+        </div>
+
+        <div class="stock-toolbar">
+          <!-- Button Add Product -->
+          <button type="button" class="btn btn--primary btn--sm" id="btn-add-product" style="display:inline-flex;align-items:center;gap:6px;height:38px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Thêm sản phẩm mới
+          </button>
+
+          <!-- Quick search -->
+          <div class="stock-search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="stock-search" placeholder="Tìm tên sp, hãng..." aria-label="Tìm kiếm trong kho">
+          </div>
+
+          <!-- Button Hide Zero Stock -->
+          <button type="button" class="btn-stock-toggle" id="btn-toggle-zero" data-active="false" title="Nhấn để ẩn hoặc hiện các sản phẩm có số lượng tồn = 0">
+            <span id="btn-toggle-zero-icon">👁️</span>
+            <span id="btn-toggle-zero-text">Ẩn tồn = 0</span>
+            <span class="zero-count-pill" id="zero-count-pill">0</span>
+          </button>
+
+          <!-- Sort Select -->
+          <div class="stock-sort-wrap">
+            <label for="stock-sort-select" class="muted" style="font-size:13px;font-weight:500">Sắp xếp:</label>
+            <select id="stock-sort-select" class="stock-select">
+              <option value="stock-asc">⚠️ Tồn kho: Thấp → Cao (Ưu tiên cảnh báo)</option>
+              <option value="stock-desc">📦 Tồn kho: Cao → Thấp</option>
+              <option value="name-asc">🔤 Tên sản phẩm: A → Z</option>
+              <option value="name-desc">🔤 Tên sản phẩm: Z → A</option>
+              <option value="price-desc">💰 Giá bán: Cao → Thấp</option>
+              <option value="price-asc">💰 Giá bán: Thấp → Cao</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th style="width:52px">Ảnh</th>
+              <th class="th-sortable" data-sort="name" title="Nhấn để sắp xếp theo tên">Tên sản phẩm <span class="sort-indicator" id="si-name"></span></th>
+              <th>Phân loại / Hãng</th>
+              <th class="th-sortable" data-sort="price" style="text-align:right" title="Nhấn để sắp xếp theo giá">Giá bán <span class="sort-indicator" id="si-price"></span></th>
+              <th class="th-sortable" data-sort="stock" style="text-align:center" title="Nhấn để sắp xếp theo số lượng tồn">Tồn kho <span class="sort-indicator" id="si-stock">▲</span></th>
+              <th style="text-align:center">Trạng thái cảnh báo</th>
+              <th style="text-align:center;width:130px">Chỉnh số lượng</th>
+              <th style="text-align:center;width:140px">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="stock-rows"></tbody>
+        </table>
+      </div>
+      <div id="stock-empty" style="display:none;padding:40px;text-align:center;color:var(--p-muted)">
+        Không tìm thấy sản phẩm nào trong kho khớp với điều kiện lọc.
+      </div>
     </div>
   </div>
 </main>
 
+<!-- Modal 1: Chi tiết đơn hàng & In phiếu bưu tá -->
 <dialog class="modal" id="modal">
   <div class="modal__in">
-    <h2 id="m-code"></h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h2 id="m-code" style="margin:0"></h2>
+      <button type="button" class="btn btn--secondary btn--sm" data-close-dialog aria-label="Đóng">✕</button>
+    </div>
     <span id="m-status"></span>
     <div class="copybox" id="m-info"></div>
     <div id="m-items" class="muted" style="margin-bottom:20px"></div>
     <div class="modal__actions">
-      <button class="btn btn--secondary" type="button" id="m-copy">Copy nhanh</button>
+      <button class="btn btn--secondary" type="button" id="m-copy">📋 Copy nhanh</button>
+      <button class="btn btn--secondary" type="button" id="m-print">🖨️ In phiếu gửi hàng</button>
       <button class="btn btn--primary" type="button" id="m-next"></button>
       <button class="btn btn--secondary" type="button" id="m-cancel">Hủy đơn</button>
-      <button class="btn btn--secondary" type="button" onclick="this.closest('dialog').close()" style="margin-left:auto">Đóng</button>
+      <button class="btn btn--secondary" type="button" data-close-dialog style="margin-left:auto">Đóng</button>
     </div>
   </div>
 </dialog>
 
+<!-- Modal 2: Thêm & Chỉnh sửa sản phẩm (Có Upload File Ảnh & Âm Thanh Trực Tiếp Từ Máy) -->
+<dialog class="modal modal--lg" id="modal-product">
+  <div class="modal__in">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 id="mp-title" style="margin:0;font-size:22px">Thêm sản phẩm mới</h2>
+      <button type="button" class="btn btn--secondary btn--sm" data-close-dialog aria-label="Đóng">✕ Đóng</button>
+    </div>
+
+    <form id="form-product" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <input type="hidden" id="p-id">
+
+      <!-- Tên sản phẩm -->
+      <div class="fl" style="grid-column:1 / -1;margin-bottom:0">
+        <input type="text" id="p-name" placeholder=" " required>
+        <label for="p-name">Tên sản phẩm *</label>
+      </div>
+
+      <!-- Danh mục chính -->
+      <div class="fl" style="margin-bottom:0">
+        <select id="p-category" required>
+          <option value="ban-phim-co">Bàn phím cơ</option>
+          <option value="switch">Switch</option>
+          <option value="keycap">Keycap</option>
+          <option value="phu-kien">Phụ kiện</option>
+          <option value="hang-order">Hàng Order</option>
+          <option value="custom-build">Custom Build</option>
+        </select>
+        <label for="p-category">Danh mục chính *</label>
+      </div>
+
+      <!-- Thương hiệu -->
+      <div class="fl" style="margin-bottom:0">
+        <input type="text" id="p-brand" placeholder=" " list="brand-list" required>
+        <label for="p-brand">Thương hiệu *</label>
+        <datalist id="brand-list">
+          <option value="Aula">
+          <option value="Leobog">
+          <option value="Madlions">
+          <option value="Akko">
+          <option value="MonsGeek">
+          <option value="Xinmeng">
+          <option value="Weikav">
+          <option value="Titan Elite">
+          <option value="Lingbao">
+          <option value="GravaStar">
+          <option value="MoneyKeyboard">
+        </datalist>
+      </div>
+
+      <!-- Giá bán -->
+      <div class="fl" style="margin-bottom:0">
+        <input type="number" id="p-price" placeholder=" " min="1000" step="1000" required>
+        <label for="p-price">Giá bán (VNĐ) *</label>
+      </div>
+
+      <!-- Tồn kho ban đầu -->
+      <div class="fl" style="margin-bottom:0">
+        <input type="number" id="p-stock" placeholder=" " min="0" value="10" required>
+        <label for="p-stock">Tồn kho ban đầu (&lt; 3 sẽ báo đỏ) *</label>
+      </div>
+
+      <!-- KHỐI 1: UPLOAD FILE ẢNH TỪ MÁY TÍNH -->
+      <div style="grid-column:1 / -1;background:var(--p-surface);padding:16px;border-radius:16px;border:1.5px dashed rgb(0 0 0 / .16)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <strong style="font-size:14px">🖼️ Hình ảnh sản phẩm (Upload từ máy tính)</strong>
+          <span class="muted" style="font-size:12px">Hỗ trợ file .png, .jpg, .webp (Tự động nén tối ưu)</span>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+          <div style="width:72px;height:72px;border-radius:12px;border:1.5px solid #d1d1d6;overflow:hidden;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+            <img id="p-img-preview" src="img/red-translucent.webp" style="width:100%;height:100%;object-fit:cover" alt="Preview ảnh">
+          </div>
+          <div style="flex:1;min-width:220px">
+            <input type="file" id="p-img-file" accept="image/*" style="display:none">
+            <button type="button" class="btn btn--secondary btn--sm" id="btn-browse-img" style="height:40px;padding:0 16px;font-weight:600">
+              📁 Chọn file ảnh từ máy tính
+            </button>
+            <span id="p-img-filename" class="muted" style="display:block;font-size:12px;margin-top:6px">Chưa tải file mới (đang dùng ảnh mặc định)</span>
+          </div>
+          <div style="min-width:200px">
+            <select id="p-img-preset" style="height:40px;font-size:12.5px;padding:0 10px;border-radius:10px;border:1px solid #ccc;background:#fff;width:100%">
+              <option value="">-- Hoặc chọn ảnh mẫu có sẵn --</option>
+              <option value="img/red-translucent.webp">Bàn phím HE Đỏ Trong Suốt (Madlions)</option>
+              <option value="img/black-knob-screen.webp">Bàn phím Đen Núm Màn Hình (Hi75C)</option>
+              <option value="img/cathedral-keycaps.webp">Keycap Nhà Thờ Đức Bà PBT</option>
+              <option value="img/akko-white-rgb.webp">Bàn phím Akko Trắng RGB</option>
+              <option value="img/aula-sc620.webp">Chuột AULA SC620 PAW3395</option>
+              <option value="assets/objects/product-render/specs/stills/keyboard-75-three-quarter-blue.webp">AULA F75 Xanh Nhạt</option>
+              <option value="assets/objects/product-render/specs/stills/keyboard-75-three-quarter-black.webp">AULA F75 Đen Tuyển</option>
+              <option value="assets/objects/product-render/specs/stills/keyboard-75-three-quarter-white.webp">AULA F75 Trắng Ngà</option>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" id="p-img" value="img/red-translucent.webp">
+      </div>
+
+      <!-- KHỐI 2: UPLOAD FILE ÂM THANH GÕ TỪ MÁY TÍNH -->
+      <div style="grid-column:1 / -1;background:var(--p-surface);padding:16px;border-radius:16px;border:1.5px dashed rgb(0 0 0 / .16)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <strong style="font-size:14px">🎵 Âm thanh gõ thử Sound Test (Upload file từ máy tính)</strong>
+          <span class="muted" style="font-size:12px">Hỗ trợ file .mp3, .wav, .m4a, .ogg</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <input type="file" id="p-audio-file" accept="audio/*,.mp3,.wav,.ogg,.m4a" style="display:none">
+          <button type="button" class="btn btn--secondary btn--sm" id="btn-browse-audio" style="height:40px;padding:0 16px;font-weight:600">
+            🎙️ Chọn file âm thanh (.mp3, .wav) từ máy
+          </button>
+          <span id="p-audio-filename" class="muted" style="font-size:12px;flex:1;min-width:180px">Chưa chọn file âm thanh riêng</span>
+          
+          <div style="min-width:200px">
+            <select id="p-sound" style="height:40px;font-size:12.5px;padding:0 10px;border-radius:10px;border:1px solid #ccc;background:#fff;width:100%">
+              <option value="">Hoặc chọn âm switch mẫu:</option>
+              <option value="graywood">LEOBOG Graywood V3 (Thock trầm)</option>
+              <option value="reaper">LEOBOG Reaper Axis (Clack giòn)</option>
+              <option value="tactile">Tactile Holy Panda (Khấc nảy)</option>
+              <option value="silent">Outemu Silent Peach V3 (Siêu êm)</option>
+              <option value="clicky">Kailh Box White (Clicky)</option>
+              <option value="magnetic-he">Hall Effect Magnetic (Rapid Trigger)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Audio preview player -->
+        <div id="p-audio-preview-wrap" style="margin-top:12px;display:none;align-items:center;gap:12px;background:#fff;padding:10px 14px;border-radius:12px;border:1px solid rgb(0 0 0 / .08)">
+          <span style="font-size:13px;font-weight:600">Nghe lại file:</span>
+          <audio id="p-audio-player" controls style="height:36px;flex:1"></audio>
+          <button type="button" class="btn btn--secondary btn--sm" id="btn-remove-audio" style="height:36px;color:#d70015;border-color:#fca5a5">Xóa file</button>
+        </div>
+        <input type="hidden" id="p-audio-data" value="">
+      </div>
+
+      <!-- Mô tả tóm tắt -->
+      <div class="fl" style="grid-column:1 / -1;margin-bottom:0">
+        <textarea id="p-line" placeholder=" " style="height:76px"></textarea>
+        <label for="p-line">Mô tả đặc điểm nổi bật</label>
+      </div>
+
+      <div style="grid-column:1 / -1;display:flex;gap:10px;margin-top:10px">
+        <button type="submit" class="btn btn--primary" style="flex:1;height:46px">Lưu sản phẩm</button>
+        <button type="button" class="btn btn--secondary" data-close-dialog style="height:46px">Hủy</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
 <script type="module">
-  import { orders, vnd, toast } from './app.js';
+  import { orders, vnd, toast, getLiveCatalog, saveCatalog, PRODUCT, playSwitch, adjustStock, firstImg, orderDeposit } from './app.js';
   const $ = (s) => document.querySelector(s);
   const H = 3600e3;
   const STATUS = {
@@ -78,7 +314,7 @@
     done: ['Hoàn tất', 'st--done'],
     cancel: ['Đã hủy', 'st--cancel'],
   };
-  const it = (v, sw) => [{ title: 'AULA F75', variant: `Vỏ ${v} · ${sw}`, qty: 1, price: 1290000 }];
+  const it = (v, sw) => [{ id: 'aula-f75', title: 'AULA F75', variant: `Vỏ ${v} · ${sw}`, qty: 1, price: 1290000 }];
   if (!localStorage.getItem('kb-seeded')) { // demo data
     const now = Date.now();
     orders.save([
@@ -92,55 +328,709 @@
     localStorage.setItem('kb-seeded', '1');
   }
 
+  // --- ORDERS MANAGEMENT ---
   let filter = 'pending';
   const fmt = (t) => new Date(t).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
-  function render() {
+  function renderOrders() {
     const list = orders.get();
     const count = (s) => list.filter((o) => o.status === s).length;
     $('#k-pending').textContent = count('pending');
     $('#k-ship').textContent = count('shipping');
-    $('#k-rev').textContent = vnd(list.filter((o) => o.status !== 'cancel').reduce((s, o) => s + o.total, 0));
+    // revenue counts orders the customer has committed to (deposit paid or later), not unpaid or cancelled ones
+    $('#k-rev').textContent = vnd(list.filter((o) => !['pending', 'cancel'].includes(o.status)).reduce((s, o) => s + o.total, 0));
     $('#tabs').innerHTML = [['pending', 'Chờ cọc'], ['paid', 'Đã cọc'], ['packing', 'Đóng gói'], ['shipping', 'Đang giao'], ['done', 'Hoàn tất'], ['all', 'Tất cả']]
       .map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${l}${k === 'all' ? '' : ' (' + count(k) + ')'}</button>`).join('');
     const rows = list.filter((o) => filter === 'all' || o.status === filter);
     $('#rows').innerHTML = rows.length ? rows.map((o) => {
       const late = o.status === 'pending' && Date.now() - o.at > 24 * H;
       const [label, cls] = STATUS[o.status];
-      return `<tr data-code="${o.code}" class="${late ? 'is-late' : ''}" tabindex="0"><td><b>${o.code}</b></td><td>${esc(o.name)}</td><td>${esc(o.phone)}</td><td>${o.items.map((i) => esc(i.variant)).join('<br>')}</td><td style="font-weight:600">${vnd(o.total)}</td><td><span class="st ${cls}">${label}</span>${late ? '<span class="late">Quá 24 giờ chưa cọc</span>' : ''}</td><td>${fmt(o.at)}</td></tr>`;
+      return `<tr data-code="${o.code}" class="${late ? 'is-late' : ''}" tabindex="0"><td><b>${o.code}</b></td><td>${esc(o.name)}</td><td>${esc(o.phone)}</td><td>${o.items.map((i) => esc(i.title) + ' · ' + esc(i.variant)).join('<br>')}</td><td style="font-weight:600">${vnd(o.total)}</td><td><span class="st ${cls}">${label}</span>${late ? '<span class="late">Quá 24 giờ chưa cọc</span>' : ''}</td><td>${fmt(o.at)}</td></tr>`;
     }).join('') : '<tr><td colspan="7" class="muted">Không có đơn nào.</td></tr>';
   }
-  const esc = (s = '') => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`); // customer input is untrusted
+  const esc = (s = '') => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
   let cur;
-  function open(code) {
+  function openOrder(code) {
     cur = orders.get().find((o) => o.code === code);
     const [label, cls, next] = STATUS[cur.status];
     $('#m-code').textContent = cur.code;
     $('#m-status').className = 'st ' + cls; $('#m-status').textContent = label;
     $('#m-info').textContent = `${cur.name}\n${cur.phone}\n${cur.address}${cur.notes ? '\nGhi chú: ' + cur.notes : ''}`;
-    $('#m-items').textContent = cur.items.map((i) => `${i.title} · ${i.variant} × ${i.qty}`).join(', ') + ` · Thu COD ${vnd(cur.total - 100000)}`;
+    $('#m-items').textContent = cur.items.map((i) => `${i.title} · ${i.variant} × ${i.qty}`).join(', ') + ` · Cọc ${vnd(orderDeposit(cur))} · Thu COD ${vnd(Math.max(0, cur.total - orderDeposit(cur)))}`;
     $('#m-next').hidden = !next; $('#m-next').textContent = next || '';
     $('#m-cancel').hidden = ['done', 'cancel'].includes(cur.status);
     $('#modal').showModal();
   }
   function setStatus(s) {
+    if (s === 'cancel' && cur.status !== 'cancel') { // give the stock back, then reload the table adjustStock rewrote
+      adjustStock(cur.items, +1);
+      inventory = initInventory();
+      renderInventory();
+    }
     orders.save(orders.get().map((o) => (o.code === cur.code ? { ...o, status: s } : o)));
-    $('#modal').close(); render(); toast(`${cur.code}: ${STATUS[s][0]}`);
+    $('#modal').close(); renderOrders(); toast(`${cur.code}: ${STATUS[s][0]}`);
   }
+
+  // --- PRINT SHIPPING SLIP (In phiếu gửi hàng chuẩn bưu tá) ---
+  function printShippingSlip(o) {
+    const deposit = orderDeposit(o);
+    const cod = Math.max(0, o.total - deposit);
+    const itemsText = o.items.map(i => `<li><b>${esc(i.title)}</b> · ${esc(i.variant)} × ${i.qty} — ${vnd(i.price * i.qty)}</li>`).join('');
+    const printHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Phiếu Giao Hàng - ${o.code}</title>
+<style>
+  @page { size: A6; margin: 6mm; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; padding: 12px; color: #111; font-size: 13px; line-height: 1.4; }
+  .header { display: flex; justify-content: space-between; border-bottom: 2px dashed #000; padding-bottom: 8px; margin-bottom: 10px; }
+  .logo { font-size: 16px; font-weight: 800; }
+  .code { font-size: 17px; font-weight: 900; text-align: right; }
+  .barcode { font-family: monospace; font-size: 18px; letter-spacing: 3px; font-weight: bold; margin-top: 4px; }
+  .section { margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #ddd; }
+  .section strong { display: block; margin-bottom: 2px; text-transform: uppercase; font-size: 11px; color: #555; }
+  .cod-box { background: #000; color: #fff; padding: 10px; border-radius: 6px; text-align: center; margin: 12px 0; }
+  .cod-box b { font-size: 22px; }
+  .footer { font-size: 11px; text-align: center; color: #555; margin-top: 14px; border-top: 1px dashed #aaa; padding-top: 6px; }
+  ul { margin: 4px 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="logo">MONEYKEYBOARD</div>
+      <small>Hotline: 0942 109 929 · 158/65 Phạm Văn Chiêu, Gò Vấp, HCM</small>
+    </div>
+    <div>
+      <div class="code">${o.code}</div>
+      <div class="barcode">|||| ||| ||||||| ||</div>
+    </div>
+  </div>
+  <div class="section">
+    <strong>Người nhận:</strong>
+    <div style="font-size:15px;font-weight:700">${esc(o.name)} - ${esc(o.phone)}</div>
+    <div>${esc(o.address)}</div>
+    ${o.notes ? `<div style="margin-top:4px;color:#d70015"><b>Ghi chú:</b> ${esc(o.notes)}</div>` : ''}
+  </div>
+  <div class="section">
+    <strong>Hàng hóa trong kiện:</strong>
+    <ul>${itemsText}</ul>
+  </div>
+  <div class="cod-box">
+    TIỀN THU NGƯỜI NHẬN (COD):<br>
+    <b>${vnd(cod)}</b>
+    <div style="font-size:11px;font-weight:normal">(Đã cọc trước: ${vnd(deposit)})</div>
+  </div>
+  <div class="footer">
+    ⚠️ <b>LƯU Ý BƯU TÁ:</b> Cho khách kiểm tra hàng trước khi nhận.<br>
+    Hàng điện tử & mod phím dễ vỡ - Xin nhẹ tay!
+  </div>
+  <script>
+    window.onload = () => { window.print(); };
+  <\/script>
+</body>
+</html>
+    `;
+    const w = window.open('', '_blank', 'width=460,height=680');
+    if (!w) return toast('Trình duyệt đang chặn cửa sổ in. Hãy cho phép popup cho trang này.');
+    w.document.write(printHtml);
+    w.document.close();
+  }
+
+  // --- INVENTORY & PRODUCT MANAGEMENT ---
+  function initInventory() {
+    const raw = localStorage.getItem('kb-inventory');
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+    }
+
+    const currentCatalog = getLiveCatalog();
+    const seed = currentCatalog.map((p, idx) => {
+      let initStock = 12;
+      if (p.id === 'titan-elite-t87' || p.id === 'sw-kailh-box-white') {
+        initStock = 0;
+      } else if (p.id === 'aula-f75') {
+        initStock = 1;
+      } else if (p.id === 'madlions-mad60-v2') {
+        initStock = 2;
+      } else if (p.id === 'kc-artisan-koi') {
+        initStock = 2;
+      } else if (p.id === 'aula-hero68-he') {
+        initStock = 4;
+      } else if (p.id === 'aula-s75-pro') {
+        initStock = 7;
+      } else if (p.category === 'custom-build') {
+        initStock = 999;
+      } else {
+        initStock = [5, 8, 10, 15, 20, 25][idx % 6];
+      }
+
+      return {
+        id: p.id,
+        name: p.name,
+        brand: p.brand || 'MoneyKeyboard',
+        category: p.category,
+        price: p.price,
+        img: firstImg(p),
+        isCustom: p.category === 'custom-build',
+        soundId: p.soundId || '',
+        line: p.line || '',
+        stock: initStock,
+        hidden: false
+      };
+    });
+    localStorage.setItem('kb-inventory', JSON.stringify(seed));
+    return seed;
+  }
+
+  let inventory = initInventory();
+  let hideZeroStock = false;
+  let stockSort = 'stock-asc';
+  let stockSearchQuery = '';
+
+  const catNames = {
+    'ban-phim-co': 'Bàn phím cơ',
+    'switch': 'Switch',
+    'keycap': 'Keycap',
+    'phu-kien': 'Phụ kiện',
+    'hang-order': 'Hàng Order',
+    'custom-build': 'Custom Build'
+  };
+
+  // the storefront reads this table for SẴN HÀNG / TẠM HẾT HÀNG (getLiveCatalog); throws if browser storage is full
+  function saveInventory() {
+    localStorage.setItem('kb-inventory', JSON.stringify(inventory));
+  }
+  function trySave(fn) {
+    try { fn(); return true; } catch (err) {
+      console.warn(err);
+      toast('Bộ nhớ trình duyệt đã đầy (ảnh/âm thanh quá lớn). Hãy dùng file nhỏ hơn hoặc xóa bớt sản phẩm có file upload.');
+      return false;
+    }
+  }
+
+  function updateSortIndicators() {
+    ['name', 'price', 'stock'].forEach(col => {
+      const ind = $(`#si-${col}`);
+      if (!ind) return;
+      if (stockSort.startsWith(col)) {
+        ind.textContent = stockSort.endsWith('asc') ? '▲' : '▼';
+        ind.style.color = 'var(--p-action)';
+      } else {
+        ind.textContent = '';
+      }
+    });
+    $('#stock-sort-select').value = stockSort;
+  }
+
+  function renderInventory() {
+    const stockItems = inventory.filter(i => !i.isCustom);
+    const zeroCount = stockItems.filter(i => i.stock === 0 && !i.hidden).length;
+    const lowStockCount = stockItems.filter(i => i.stock < 3 && !i.hidden).length;
+
+    $('#k-lowstock').textContent = `${lowStockCount} loại`;
+    $('#zero-count-pill').textContent = zeroCount;
+
+    let list = [...inventory];
+
+    if (hideZeroStock) {
+      list = list.filter(i => i.isCustom || i.stock > 0);
+    }
+    list = list.filter(i => !i.hidden);
+
+    if (stockSearchQuery.trim()) {
+      const q = stockSearchQuery.trim().toLowerCase();
+      list = list.filter(i => i.name.toLowerCase().includes(q) || i.brand.toLowerCase().includes(q) || i.id.toLowerCase().includes(q));
+    }
+
+    list.sort((a, b) => {
+      if (stockSort === 'stock-asc') {
+        if (a.isCustom !== b.isCustom) return a.isCustom ? 1 : -1;
+        return a.stock - b.stock;
+      }
+      if (stockSort === 'stock-desc') {
+        if (a.isCustom !== b.isCustom) return a.isCustom ? 1 : -1;
+        return b.stock - a.stock;
+      }
+      if (stockSort === 'price-asc') return a.price - b.price;
+      if (stockSort === 'price-desc') return b.price - a.price;
+      if (stockSort === 'name-asc') return a.name.localeCompare(b.name, 'vi');
+      if (stockSort === 'name-desc') return b.name.localeCompare(a.name, 'vi');
+      return 0;
+    });
+
+    $('#stock-count-summary').textContent = `${list.length} / ${inventory.length} sản phẩm`;
+
+    const tbody = $('#stock-rows');
+    if (!list.length) {
+      tbody.innerHTML = '';
+      $('#stock-empty').style.display = 'block';
+      return;
+    }
+    $('#stock-empty').style.display = 'none';
+
+    tbody.innerHTML = list.map(item => {
+      const isZero = !item.isCustom && item.stock === 0;
+      const isLow = !item.isCustom && item.stock > 0 && item.stock < 3;
+      const isDanger = !item.isCustom && item.stock < 3;
+
+      let rowCls = '';
+      if (isZero) rowCls = 'stock-row--zero';
+      else if (isLow) rowCls = 'stock-row--danger';
+
+      let statusBadge = '';
+      if (item.isCustom) {
+        statusBadge = `<span class="stock-badge stock-badge--custom">⭐ Custom Build (Order)</span>`;
+      } else if (isZero) {
+        statusBadge = `<span class="stock-badge stock-badge--zero">🚫 Hết hàng (0)</span>`;
+      } else if (isLow) {
+        statusBadge = `<span class="stock-badge stock-badge--danger"><span class="pulse-dot"></span> ⚠️ Cảnh báo: Chỉ còn ${item.stock}</span>`;
+      } else {
+        statusBadge = `<span class="stock-badge stock-badge--ok">✅ Sẵn hàng (${item.stock})</span>`;
+      }
+
+      return `
+        <tr class="${rowCls}">
+          <td>
+            <img src="${item.img}" class="stock-thumb" alt="${esc(item.name)}" onerror="this.src='img/red-translucent.webp'">
+          </td>
+          <td>
+            <div class="stock-prod-title">${esc(item.name)}</div>
+            <div class="stock-prod-sku">ID: ${item.id}</div>
+          </td>
+          <td>
+            <span style="font-weight:600">${esc(item.brand)}</span>
+            <div class="muted" style="font-size:12px">${catNames[item.category] || item.category}</div>
+          </td>
+          <td style="text-align:right;font-weight:600">
+            ${vnd(item.price)}
+          </td>
+          <td style="text-align:center">
+            <span style="font-size:16px;font-weight:700;color:${isDanger ? '#d70015' : 'inherit'}">
+              ${item.isCustom ? '∞' : item.stock}
+            </span>
+          </td>
+          <td style="text-align:center">
+            ${statusBadge}
+          </td>
+          <td style="text-align:center">
+            ${item.isCustom ? '<span class="muted" style="font-size:12px">Không giới hạn kho</span>' : `
+              <div class="stock-stepper">
+                <button type="button" class="btn-step" data-step="-1" data-id="${item.id}" title="Giảm 1 sp">-</button>
+                <input type="number" class="stock-input ${isDanger ? 'is-low' : ''}" value="${item.stock}" min="0" max="9999" data-id="${item.id}" aria-label="Tồn kho">
+                <button type="button" class="btn-step" data-step="1" data-id="${item.id}" title="Tăng 1 sp">+</button>
+              </div>
+            `}
+          </td>
+          <td style="text-align:center">
+            <div class="stock-actions-cell">
+              <button type="button" class="btn-mini-action" data-edit-id="${item.id}" title="Chỉnh sửa sản phẩm">
+                ✏️ Sửa
+              </button>
+              <button type="button" class="btn-mini-action btn-mini-action--del" data-del-id="${item.id}" title="Xóa sản phẩm">
+                🗑️ Xóa
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // --- PRODUCT CRUD LOGIC (Thêm, Sửa, Xóa & Upload File) ---
+  const modalProduct = $('#modal-product');
+  const formProduct = $('#form-product');
+  const imgInput = $('#p-img');
+  const imgPreset = $('#p-img-preset');
+  const imgPreview = $('#p-img-preview');
+  const imgFileInput = $('#p-img-file');
+  const btnBrowseImg = $('#btn-browse-img');
+  const imgFilename = $('#p-img-filename');
+
+  const soundSelect = $('#p-sound');
+  const audioFileInput = $('#p-audio-file');
+  const btnBrowseAudio = $('#btn-browse-audio');
+  const audioFilename = $('#p-audio-filename');
+  const audioPlayer = $('#p-audio-player');
+  const audioPreviewWrap = $('#p-audio-preview-wrap');
+  const btnRemoveAudio = $('#btn-remove-audio');
+  const audioDataInput = $('#p-audio-data');
+
+  // 1. Upload ảnh trực tiếp từ máy tính
+  btnBrowseImg.onclick = () => imgFileInput.click();
+  imgFileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    imgFilename.textContent = `Đang nén ${file.name}...`;
+
+    const reader = new FileReader();
+    reader.onload = (re) => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 640;
+        let w = img.width, h = img.height;
+        if (w > max || h > max) {
+          if (w > h) { h = Math.round((h * max) / w); w = max; }
+          else { w = Math.round((w * max) / h); h = max; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const compressed = canvas.toDataURL('image/jpeg', 0.85);
+        imgInput.value = compressed;
+        imgPreview.src = compressed;
+        imgFilename.textContent = `✅ Đã nhận: ${file.name} (${Math.round(compressed.length / 1024)} KB)`;
+        toast(`Đã tải ảnh "${file.name}" thành công!`);
+      };
+      img.src = re.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  imgPreset.onchange = () => {
+    if (imgPreset.value) {
+      imgInput.value = imgPreset.value;
+      imgPreview.src = imgPreset.value;
+      imgFilename.textContent = `Đang dùng ảnh mẫu: ${imgPreset.options[imgPreset.selectedIndex].text}`;
+    }
+  };
+
+  // 2. Upload file âm thanh gõ từ máy tính (.mp3, .wav)
+  btnBrowseAudio.onclick = () => audioFileInput.click();
+  audioFileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    // localStorage holds ~5MB for the whole site and base64 adds a third: keep a sound test short
+    if (file.size > 1.5 * 1024 * 1024) {
+      alert('Vui lòng chọn file âm thanh dưới 1,5MB (đoạn gõ 5–10 giây, mp3).');
+      return;
+    }
+    audioFilename.textContent = `Đang tải ${file.name}...`;
+
+    const reader = new FileReader();
+    reader.onload = (re) => {
+      const dataUrl = re.target.result;
+      audioDataInput.value = dataUrl;
+      soundSelect.value = '';
+      audioPlayer.src = dataUrl;
+      audioPreviewWrap.style.display = 'flex';
+      audioFilename.textContent = `✅ Đã nhận: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+      toast(`Đã tải file âm thanh "${file.name}" thành công! Bấm Play để nghe.`);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  btnRemoveAudio.onclick = () => {
+    audioDataInput.value = '';
+    audioPlayer.src = '';
+    audioPreviewWrap.style.display = 'none';
+    audioFilename.textContent = 'Chưa chọn file âm thanh riêng';
+    audioFileInput.value = '';
+    toast('Đã gỡ file âm thanh upload');
+  };
+
+  soundSelect.onchange = () => {
+    if (soundSelect.value) {
+      audioDataInput.value = '';
+      audioPlayer.src = '';
+      audioPreviewWrap.style.display = 'none';
+      audioFilename.textContent = `Dùng âm switch mẫu: ${soundSelect.options[soundSelect.selectedIndex].text}`;
+      const sw = PRODUCT.switches.find(s => s.id === soundSelect.value);
+      if (sw && sw.sound) playSwitch(sw.sound);
+    }
+  };
+
+  // Open Add Product Modal
+  $('#btn-add-product').onclick = () => {
+    $('#mp-title').textContent = 'Thêm sản phẩm mới';
+    $('#p-id').value = '';
+    formProduct.reset();
+    imgInput.value = 'img/red-translucent.webp';
+    imgPreview.src = 'img/red-translucent.webp';
+    imgFilename.textContent = 'Chưa tải file mới (đang dùng ảnh mặc định)';
+    audioDataInput.value = '';
+    audioPlayer.src = '';
+    audioPreviewWrap.style.display = 'none';
+    audioFilename.textContent = 'Chưa chọn file âm thanh riêng';
+    $('#p-stock').value = 10;
+    modalProduct.showModal();
+  };
+
+  // Open Edit Product Modal
+  function openEditProduct(id) {
+    const item = inventory.find(i => i.id === id);
+    if (!item) return;
+    $('#mp-title').textContent = 'Chỉnh sửa sản phẩm: ' + item.name;
+    $('#p-id').value = item.id;
+    $('#p-name').value = item.name;
+    $('#p-category').value = item.category || 'ban-phim-co';
+    $('#p-brand').value = item.brand || 'MoneyKeyboard';
+    $('#p-price').value = item.price || 0;
+    $('#p-stock').value = item.stock ?? 10;
+    imgInput.value = item.img || 'img/red-translucent.webp';
+    imgPreview.src = item.img || 'img/red-translucent.webp';
+    imgFilename.textContent = item.img?.startsWith('data:') ? '✅ Đang dùng ảnh do shop tự upload' : 'Đang dùng ảnh đường dẫn / mẫu';
+    
+    soundSelect.value = item.soundId || '';
+    const audio = getLiveCatalog().find((p) => p.id === id)?.audioData; // stored once, in the catalog
+    if (audio) {
+      audioDataInput.value = audio;
+      audioPlayer.src = audio;
+      audioPreviewWrap.style.display = 'flex';
+      audioFilename.textContent = '✅ Đang dùng file âm thanh riêng của sản phẩm';
+    } else {
+      audioDataInput.value = '';
+      audioPlayer.src = '';
+      audioPreviewWrap.style.display = 'none';
+      audioFilename.textContent = item.soundId ? `Dùng âm switch mẫu: ${item.soundId}` : 'Chưa chọn file âm thanh riêng';
+    }
+
+    $('#p-line').value = item.line || '';
+    modalProduct.showModal();
+  }
+
+  // Delete Product
+  function deleteProduct(id) {
+    const item = inventory.find(i => i.id === id);
+    if (!item) return;
+    if (!confirm(`Bạn có chắc muốn xóa vĩnh viễn sản phẩm "${item.name}" khỏi kho và cửa hàng?`)) return;
+
+    // Remove from inventory
+    inventory = inventory.filter(i => i.id !== id);
+    saveInventory();
+
+    // Remove from catalog
+    let catalog = getLiveCatalog();
+    catalog = catalog.filter(p => p.id !== id);
+    saveCatalog(catalog);
+
+    renderInventory();
+    toast(`Đã xóa sản phẩm: ${item.name}`);
+  }
+
+  // Handle Save (Create or Update)
+  formProduct.onsubmit = (e) => {
+    e.preventDefault();
+    const id = $('#p-id').value.trim();
+    const name = $('#p-name').value.trim();
+    const category = $('#p-category').value;
+    const brand = $('#p-brand').value.trim();
+    const price = parseInt($('#p-price').value) || 0;
+    const stock = parseInt($('#p-stock').value) || 0;
+    const img = imgInput.value.trim() || 'img/red-translucent.webp';
+    const soundId = soundSelect.value;
+    const audioData = audioDataInput.value;
+    const line = $('#p-line').value.trim();
+    const isCustom = category === 'custom-build';
+
+    let catalog = getLiveCatalog();
+
+    if (id) {
+      // EDIT EXISTING PRODUCT
+      const item = inventory.find(i => i.id === id);
+      if (item) {
+        item.name = name;
+        item.category = category;
+        item.brand = brand;
+        item.price = price;
+        item.stock = stock;
+        item.img = img;
+        item.soundId = soundId;
+        item.line = line;
+        item.isCustom = isCustom;
+      }
+
+      // Update in catalog
+      const catProd = catalog.find(p => p.id === id);
+      if (catProd) {
+        catProd.name = name;
+        catProd.category = category;
+        catProd.type = category;
+        catProd.brand = brand;
+        catProd.price = price;
+        catProd.soundId = soundId;
+        catProd.audioData = audioData;
+        catProd.line = line;
+        catProd.imgs = [img];
+        catProd.adminEdited = true;
+      }
+      toast(`Đã cập nhật sản phẩm: ${name}`);
+    } else {
+      // CREATE NEW PRODUCT
+      const slug = name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'sp';
+      const newId = `${slug}-${Date.now().toString().slice(-4)}`;
+
+      const newItem = {
+        id: newId,
+        name,
+        brand,
+        category,
+        price,
+        stock,
+        img,
+        soundId,
+        line,
+        isCustom,
+        hidden: false
+      };
+      inventory.unshift(newItem);
+
+      // Add to catalog
+      const newCatProd = {
+        id: newId,
+        name,
+        brand,
+        category,
+        type: category,
+        subCategory: category === 'ban-phim-co' ? 'layout-75' : 'all',
+        price,
+        badge: 'MỚI VỀ',
+        inStock: stock > 0,
+        soundId,
+        audioData,
+        line,
+        imgs: [img]
+      };
+      catalog.unshift(newCatProd);
+      toast(`Đã thêm sản phẩm mới: ${name}`);
+    }
+
+    if (!trySave(() => { saveCatalog(catalog); saveInventory(); })) { inventory = initInventory(); return; }
+    modalProduct.close();
+    renderInventory();
+  };
+
+  // --- EVENT LISTENERS ---
+  // Orders tabs & click
   document.addEventListener('click', (e) => {
-    const f = e.target.closest('[data-f]'); if (f) { filter = f.dataset.f; render(); }
-    const r = e.target.closest('tr[data-code]'); if (r) open(r.dataset.code);
+    const f = e.target.closest('[data-f]');
+    if (f) {
+      filter = f.dataset.f;
+      renderOrders();
+    }
+    const r = e.target.closest('tr[data-code]');
+    if (r) openOrder(r.dataset.code);
   });
-  document.addEventListener('keydown', (e) => { const r = e.target.closest?.('tr[data-code]'); if (r && e.key === 'Enter') open(r.dataset.code); });
+  document.addEventListener('keydown', (e) => {
+    const r = e.target.closest?.('tr[data-code]');
+    if (r && e.key === 'Enter') openOrder(r.dataset.code);
+  });
+
+  // Modal actions
   $('#m-copy').onclick = () => navigator.clipboard.writeText($('#m-info').textContent).then(() => toast('Đã copy, dán sang GHN/GHTK'));
+  $('#m-print').onclick = () => cur && printShippingSlip(cur);
   $('#m-next').onclick = () => setStatus(STATUS[cur.status][3]);
   $('#m-cancel').onclick = () => confirm(`Hủy đơn ${cur.code}? Kho sẽ được cộng lại.`) && setStatus('cancel');
+
+  // Toggle Hide Zero Stock
+  $('#btn-toggle-zero').onclick = () => {
+    hideZeroStock = !hideZeroStock;
+    $('#btn-toggle-zero').setAttribute('data-active', hideZeroStock);
+    $('#btn-toggle-zero-text').textContent = hideZeroStock ? 'Đang ẩn tồn = 0' : 'Ẩn tồn = 0';
+    $('#btn-toggle-zero-icon').textContent = hideZeroStock ? '🙈' : '👁️';
+    renderInventory();
+    toast(hideZeroStock ? 'Đã ẩn các sản phẩm có tồn kho = 0' : 'Đang hiển thị tất cả sản phẩm');
+  };
+
+  // Sort dropdown
+  $('#stock-sort-select').onchange = (e) => {
+    stockSort = e.target.value;
+    updateSortIndicators();
+    renderInventory();
+  };
+
+  // Clickable column headers for sorting
+  document.addEventListener('click', (e) => {
+    const th = e.target.closest('th.th-sortable');
+    if (th) {
+      const col = th.dataset.sort;
+      if (stockSort === `${col}-asc`) {
+        stockSort = `${col}-desc`;
+      } else {
+        stockSort = `${col}-asc`;
+      }
+      updateSortIndicators();
+      renderInventory();
+    }
+  });
+
+  // Search input
+  $('#stock-search').oninput = (e) => {
+    stockSearchQuery = e.target.value;
+    renderInventory();
+  };
+
+  // Stepper adjustments & edit/delete buttons
+  document.addEventListener('click', (e) => {
+    const stepBtn = e.target.closest('.btn-step');
+    if (stepBtn) {
+      const id = stepBtn.dataset.id;
+      const step = parseInt(stepBtn.dataset.step) || 0;
+      const item = inventory.find(i => i.id === id);
+      if (item) {
+        item.stock = Math.max(0, item.stock + step);
+        saveInventory();
+        renderInventory();
+        toast(`${item.name}: Tồn kho hiện tại ${item.stock}`);
+      }
+      return;
+    }
+
+    const editBtn = e.target.closest('[data-edit-id]');
+    if (editBtn) {
+      openEditProduct(editBtn.dataset.editId);
+      return;
+    }
+
+    const delBtn = e.target.closest('[data-del-id]');
+    if (delBtn) {
+      deleteProduct(delBtn.dataset.delId);
+      return;
+    }
+
+    const kpiLow = e.target.closest('#kpi-lowstock');
+    if (kpiLow) {
+      stockSort = 'stock-asc';
+      updateSortIndicators();
+      renderInventory();
+      $('#section-inventory').scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  // Direct number input change
+  document.addEventListener('change', (e) => {
+    if (e.target.classList.contains('stock-input')) {
+      const id = e.target.dataset.id;
+      const val = Math.max(0, parseInt(e.target.value) || 0);
+      const item = inventory.find(i => i.id === id);
+      if (item) {
+        item.stock = val;
+        saveInventory();
+        renderInventory();
+        toast(`${item.name}: Đã cập nhật tồn = ${val}`);
+      }
+    }
+  });
+
+  // Reset demo data
   $('#reset').onclick = () => {
-    if (!confirm('Xóa toàn bộ đơn và giỏ hàng demo, nạp lại 5 đơn mẫu?')) return;
-    ['kb-orders', 'kb-cart', 'kb-seeded'].forEach((k) => localStorage.removeItem(k));
+    if (!confirm('Khôi phục toàn bộ đơn hàng, catalog và tồn kho demo về mặc định?')) return;
+    ['kb-orders', 'kb-cart', 'kb-seeded', 'kb-inventory', 'kb-catalog'].forEach((k) => localStorage.removeItem(k));
     location.reload();
   };
-  render();
+
+  // dialogs close via the shared handler in app.js (data-close-dialog and backdrop click)
+
+  // Initial renders
+  renderOrders();
+  updateSortIndicators();
+  renderInventory();
 </script>
 </body>
 </html>

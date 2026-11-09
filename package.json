@@ -1,0 +1,17 @@
+{
+  "name": "web-keyboard",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "MoneyKeyboard - Mechanical Keyboard Store Demo",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "mechanical-keyboard",
+    "moneykeyboard",
+    "demo"
+  ],
+  "author": "",
+  "license": "ISC"
+}

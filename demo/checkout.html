@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Thanh toán | KeyHouse</title>
+<title>Thanh toán | MoneyKeyboard</title>
 <meta name="site-kind" content="tech">
 <meta name="page-type" content="product">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,7 @@
 <body>
 <header class="nav">
   <div class="wrap nav__bar">
-    <a class="nav__logo" href="index.html"><span class="mark" data-mark="stack" aria-hidden="true"></span>KeyHouse</a>
+    <a class="nav__logo" href="index.html"><span class="mark" data-mark="stack" aria-hidden="true"></span>MoneyKeyboard</a>
     <div class="nav__actions">
       <button class="cart-btn" type="button" aria-label="Mở giỏ hàng">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
@@ -52,8 +52,9 @@
         <h2>Đơn hàng</h2>
         <div id="lines"></div>
         <div class="sum"><span class="muted">Tạm tính</span><span class="price" id="sub"></span></div>
+        <div class="sum" id="coupon-row" style="display:none;color:#d70015;font-weight:600"><span>Mã giảm giá (<span id="coupon-name"></span>)</span><span class="price" id="coupon-val"></span></div>
         <div class="sum"><span class="muted">Phí giao hàng</span><span>Tính khi lên đơn</span></div>
-        <div class="sum sum--total"><span>Cọc trước</span><span class="price">100.000đ</span></div>
+        <div class="sum sum--total"><span>Cọc trước</span><span class="price" id="deposit">100.000đ</span></div>
         <div class="sum"><span class="muted">Trả khi nhận (COD)</span><span class="price" id="cod"></span></div>
       </aside>
     </div>
@@ -73,7 +74,7 @@
       <p class="done__code" id="code"></p>
       <div class="qr"><img id="qr" alt="Mã QR chuyển khoản tiền cọc 100.000đ"></div>
       <dl>
-        <div><dt>Số tiền cọc</dt><dd>100.000đ</dd></div>
+        <div><dt>Số tiền cọc</dt><dd id="done-deposit">100.000đ</dd></div>
         <div><dt>Nội dung chuyển khoản</dt><dd id="memo"></dd></div>
         <div><dt>Ngân hàng</dt><dd id="bank"></dd></div>
       </dl>
@@ -86,14 +87,24 @@
 <script type="module" src="assets/system.js"></script>
 <script type="module" src="assets/motion/motion.js"></script>
 <script type="module">
-  import { cart, vnd, orders, BANK, DEPOSIT } from './app.js';
+  import { cart, vnd, orders, BANK, depositFor, adjustStock, esc } from './app.js';
   const $ = (s) => document.querySelector(s);
   const items = cart.get();
-  if (!items.length) location.replace('product.html');
+  if (!items.length) location.replace('san-pham.html');
   const sub = cart.total();
-  $('#lines').innerHTML = items.map((i) => `<div class="sum"><span>${i.title} × ${i.qty}<br><small class="muted">${i.variant}</small></span><span class="price">${vnd(i.price * i.qty)}</span></div>`).join('');
+  const coupon = cart.getCoupon();
+  const discount = cart.discount();
+  const finalTotal = cart.finalTotal();
+  const deposit = depositFor(finalTotal);
+  $('#deposit').textContent = vnd(deposit);
+  if (coupon && discount > 0) {
+    $('#coupon-row').style.display = 'flex';
+    $('#coupon-name').textContent = coupon.code;
+    $('#coupon-val').textContent = '-' + vnd(discount);
+  }
+  $('#lines').innerHTML = items.map((i) => `<div class="sum"><span>${esc(i.title)} × ${i.qty}<br><small class="muted">${esc(i.variant)}</small></span><span class="price">${vnd(i.price * i.qty)}</span></div>`).join('');
   $('#sub').textContent = vnd(sub);
-  $('#cod').textContent = vnd(sub - DEPOSIT);
+  $('#cod').textContent = vnd(finalTotal - deposit);
 
   const rules = {
     name: (v) => v.trim().length >= 2,
@@ -116,14 +127,20 @@
     page.classList.add('is-sending');
     scrollTo({ top: 0 });
     setTimeout(() => { // demo: stands in for the backend's stock check and save
-      const code = 'DH' + String(Math.floor(1000 + Math.random() * 9000));
+      // KH- + 6 digits, re-rolled until unused so the admin never opens the wrong order
+      const taken = new Set(orders.get().map((o) => o.code));
+      let code;
+      do code = 'KH-' + String(Math.floor(Math.random() * 1e6)).padStart(6, '0'); while (taken.has(code));
       const f = Object.fromEntries(new FormData(form));
-      orders.save([{ code, name: f.name, phone: f.phone, address: `${f.street}, ${f.ward}, ${f.province}`, notes: f.notes, items, total: sub, status: 'pending', at: Date.now() }, ...orders.get()]);
+      orders.save([{ code, name: f.name, phone: f.phone, address: `${f.street}, ${f.ward}, ${f.province}`, notes: f.notes, items: items.map((i) => ({ ...i, id: String(i.key || '').split(':')[0] })), total: finalTotal, deposit, status: 'pending', at: Date.now() }, ...orders.get()]);
+      adjustStock(items, -1);
       cart.set([]);
+      localStorage.removeItem('kb-coupon');
       $('#code').textContent = code;
       $('#memo').textContent = code + ' coc';
+      $('#done-deposit').textContent = vnd(deposit);
       $('#bank').textContent = `${BANK.id} · ${BANK.acc} · ${BANK.name}`;
-      $('#qr').src = `https://img.vietqr.io/image/${BANK.id}-${BANK.acc}-compact2.png?amount=${DEPOSIT}&addInfo=${encodeURIComponent(code + ' coc')}&accountName=${encodeURIComponent(BANK.name)}`;
+      $('#qr').src = `https://img.vietqr.io/image/${BANK.id}-${BANK.acc}-compact2.png?amount=${deposit}&addInfo=${encodeURIComponent(code + ' coc')}&accountName=${encodeURIComponent(BANK.name)}`;
       page.classList.remove('is-sending');
       page.classList.add('is-done');
     }, 1600);

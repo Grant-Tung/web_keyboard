@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="vi" data-type="product" data-radius="round" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hướng Dẫn Sử Dụng Bàn Phím Cơ | MoneyKeyboard</title>
+<meta name="description" content="Hướng dẫn chi tiết kết nối 3 mode, tổ hợp phím Fn, chỉnh LED RGB, cài đặt driver và lưu ý an toàn sạc pin phím cơ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="index.html">
+      <span class="mark" data-mark="stack" aria-hidden="true"></span>MoneyKeyboard
+    </a>
+
+    <div class="nav__search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" id="top-search" placeholder="Tìm kiếm bàn phím cơ, switch, keycap..." aria-label="Tìm kiếm">
+    </div>
+
+    <div class="nav__actions">
+      <a class="account-btn" href="admin.html" aria-label="Tài khoản">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span class="action-btn__label">Tài khoản</span>
+      </a>
+
+      <button class="cart-btn" type="button" aria-label="Mở giỏ hàng">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="cart-btn__n"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Menu Bar -->
+<nav class="main-menu" aria-label="Menu điều hướng chính">
+  <div class="wrap main-menu__inner">
+    <button class="nav__hamburger-kmpd" type="button" aria-label="Menu mở rộng">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="menu-list">
+      <!-- 1. GIỚI THIỆU -->
+      <li class="menu-item">
+        <a class="menu-link" href="gioi-thieu.html">GIỚI THIỆU</a>
+      </li>
+
+      <!-- 2. SẢN PHẨM -->
+      <li class="menu-item has-dropdown">
+        <a class="menu-link" href="san-pham.html" id="menu-btn-san-pham">
+          SẢN PHẨM <span class="arrow-down" aria-hidden="true">⌄</span>
+        </a>
+        <div class="dropdown-mega-rich">
+          <div class="kmpd-dropdown__cols">
+            <!-- Cột 1: BÀN PHÍM CƠ -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=ban-phim-co">
+                <span>BÀN PHÍM CƠ</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-40"><span>Layout 40%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-65"><span>Layout 65%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-75"><span>Layout 75%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-96"><span>Layout 96%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-fullsize"><span>Layout Fullsize</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-tkl"><span>Layout TKL – FRL</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=numpad"><span>Numpad</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=phim-he" class="is-highlight"><span>Phím HE – Chuyên Game</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 2: SWITCH -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=switch">
+                <span>SWITCH</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=switch&sub=switch-clicky"><span>Switch Clicky</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=switch&sub=switch-linear"><span>Switch Linear</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=switch&sub=switch-silent"><span>Switch Silent</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=switch&sub=switch-tactile"><span>Switch Tactile</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 3: KEYCAP -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=keycap">
+                <span>KEYCAP</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-akko"><span>Keycap Akko</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-artisan"><span>Keycap Artisan</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-fbb"><span>Keycap FBB</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-piifox"><span>Keycap Piifox</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-xuyen-led"><span>Keycap Xuyên LED</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-asa"><span>Profile ASA</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-cherry"><span>Profile Cherry</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-khac"><span>Profile Khác</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-mao"><span>Profile MAO</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-mda"><span>Profile MDA</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-moa"><span>Profile MOA</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-moc-moe"><span>Profile MOC – MOE</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 4: PHỤ KIỆN -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=phu-kien">
+                <span>PHỤ KIỆN</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=phu-kien&sub=chuot-wireless"><span>Chuột Wireless</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=dau-lube"><span>Dầu Lube</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=day-cap-custom"><span>Dây Cáp Custom</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=deskmat"><span>Deskmat</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=dung-cu-mod-phim"><span>Dụng Cụ Mod Phím</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=phu-kien-khac"><span>Phụ Kiện Khác</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=plate"><span>Plate</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=stab"><span>Stab</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=switches"><span>SWITCHES</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 5: Spotlight Banner Card chuẩn Ảnh 1 (GravaStar Mercury K98 Beyond The Ordinary) -->
+            <div class="kmpd-dropdown__spotlight">
+              <a class="spotlight-card" href="product.html?id=gravastar-mercury-k1-pro" title="GravaStar Mercury K98">
+                <img src="img/gravastar-k98-banner.jpg" alt="GravaStar Mercury K98 Beyond The Ordinary" loading="lazy">
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- 3. THƯƠNG HIỆU -->
+      <li class="menu-item has-dropdown">
+        <a class="menu-link" href="thuong-hieu.html">
+          THƯƠNG HIỆU <span class="arrow-down" aria-hidden="true">⌄</span>
+        </a>
+        <div class="dropdown-brands-rich">
+          <div class="brands-pill-list">
+            <a href="thuong-hieu.html?brand=Aula">Aula</a>
+            <a href="thuong-hieu.html?brand=Madlions">Madlions</a>
+            <a href="thuong-hieu.html?brand=MonsGeek">MonsGeek</a>
+            <a href="thuong-hieu.html?brand=Leobog">Leobog</a>
+            <a href="thuong-hieu.html?brand=Akko">AKKO</a>
+            <a href="thuong-hieu.html?brand=Xinmeng">Xinmeng</a>
+            <a href="thuong-hieu.html?brand=Weikav">Weikav</a>
+            <a href="thuong-hieu.html?brand=GravaStar">GravaStar</a>
+            <a href="thuong-hieu.html?brand=Titan Elite">Titan Elite</a>
+            <a href="thuong-hieu.html">Tất cả hãng →</a>
+          </div>
+
+          <!-- Danh sách sản phẩm của các hãng nổi bật -->
+          <div class="mega-products-preview">
+            <div class="mega-products-preview__head">
+              <span>Mẫu phím tiêu biểu theo từng thương hiệu</span>
+            </div>
+            <div class="mega-prod-grid">
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=Aula">
+                <img src="img/black-knob-screen.webp" alt="Aula" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">Aula F75 / F99 / SC620</span>
+                  <span class="mega-prod-card__price">Xem sản phẩm Aula →</span>
+                </div>
+              </a>
+
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=Madlions">
+                <img src="img/mad60-v2.jpg" alt="Madlions" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">Madlions MAD60 V2 HE</span>
+                  <span class="mega-prod-card__price">Xem phím HE Rapid Trigger →</span>
+                </div>
+              </a>
+
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=MonsGeek">
+                <img src="assets/objects/product-render/specs/stills/keyboard-75-three-quarter-black.webp" alt="MonsGeek" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">MonsGeek M1 Nhôm CNC</span>
+                  <span class="mega-prod-card__price">Kit phím cao cấp →</span>
+                </div>
+              </a>
+
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=Leobog">
+                <img src="img/cathedral-keycaps.webp" alt="Leobog" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">Leobog Hi75C & Switch</span>
+                  <span class="mega-prod-card__price">Xem sản phẩm Leobog →</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- 4. CUSTOM BUILD -->
+      <li class="menu-item">
+        <a class="menu-link highlight-link" href="custom-build.html">
+          CUSTOM BUILD <span class="badge-mini">HOT</span>
+        </a>
+      </li>
+
+      <!-- 5. HƯỚNG DẪN SỬ DỤNG -->
+      <li class="menu-item">
+        <a class="menu-link" href="hdsd.html">HƯỚNG DẪN SỬ DỤNG</a>
+      </li>
+
+      <!-- 6. CHÍNH SÁCH BẢO HÀNH -->
+      <li class="menu-item">
+        <a class="menu-link" href="bao-hanh.html">CHÍNH SÁCH BẢO HÀNH</a>
+      </li>
+
+      <!-- 7. LIÊN HỆ -->
+      <li class="menu-item">
+        <a class="menu-link" href="lien-he.html">LIÊN HỆ</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main class="info-page">
+  <div class="wrap">
+    <div class="info-hero">
+      <span class="catnav__badge" style="display:inline-block;margin-bottom:12px;font-size:12px;padding:3px 12px">TÀI LIỆU HỖ TRỢ</span>
+      <h1>Hướng Dẫn Sử Dụng Bàn Phím Cơ</h1>
+      <p>Tổng hợp các hướng dẫn kết nối 3 mode, tổ hợp phím Fn phổ biến, cài đặt driver và những lưu ý an toàn sạc pin cần biết.</p>
+    </div>
+
+    <div class="info-grid">
+      <!-- Card 1: Kết nối 3 mode -->
+      <article class="info-card">
+        <h3>🔌 1. Kết Nối 3 Chế Độ (3-Mode)</h3>
+        <p>Bàn phím cơ hiện đại hỗ trợ chuyển đổi linh hoạt giữa 3 phương thức kết nối:</p>
+        <ul>
+          <li><strong>Có dây (Type-C)</strong>: Gạt công tắc ở mặt đáy hoặc cạnh trên phím về vị trí <em>USB / Cable</em>, sau đó cắm dây cáp Type-C trực tiếp vào máy tính.</li>
+          <li><strong>Không dây 2.4GHz</strong>: Gạt công tắc sang <em>2.4G</em> và cắm đầu USB Receiver đi kèm vào cổng USB của PC / Laptop. Phím sẽ nhận lệnh tức thì với độ trễ siêu thấp 1ms.</li>
+          <li><strong>Bluetooth 5.0</strong>: Gạt công tắc sang <em>BT</em>, nhấn giữ tổ hợp <code>Fn + Q</code> (hoặc <code>Fn + W</code> / <code>Fn + E</code>) trong 3 giây cho đèn nháy nhanh. Vào cài đặt Bluetooth trên thiết bị và bấm Kết nối.</li>
+        </ul>
+      </article>
+
+      <!-- Card 2: Tổ hợp phím Fn thông dụng -->
+      <article class="info-card">
+        <h3>⌨️ 2. Các Tổ Hợp Phím Fn Thông Dụng</h3>
+        <p>Điều khiển nhanh các tính năng phím tắt mà không cần mở phần mềm:</p>
+        <ul>
+          <li><code>Fn + \</code> hoặc <code>Fn + |</code>: Đổi qua lại 16 – 20 hiệu ứng đèn LED RGB.</li>
+          <li><code>Fn + Mũi tên Lên / Xuống</code>: Tăng / giảm độ sáng của dải đèn LED.</li>
+          <li><code>Fn + Mũi tên Trái / Phải</code>: Tăng / giảm tốc độ chuyển động của sóng LED.</li>
+          <li><code>Fn + Win</code>: Khóa / mở khóa phím Windows (tránh bấm nhầm khi chơi game).</li>
+          <li><code>Fn + A</code> / <code>Fn + S</code>: Chuyển đổi layout giữa Windows và macOS.</li>
+          <li><code>Fn + Space (giữ 3s)</code>: Khôi phục cài đặt gốc của nhà sản xuất (Reset Factory).</li>
+        </ul>
+      </article>
+
+      <!-- Card 3: Cài đặt Driver & Web Config -->
+      <article class="info-card">
+        <h3>⚙️ 3. Cài Đặt Driver & Rapid Trigger</h3>
+        <p>Tùy chỉnh sâu macro, ánh xạ phím và cài ảnh GIF cho màn hình mini:</p>
+        <ul>
+          <li><strong>Phím cơ thường (Aula, Leobog, Akko)</strong>: Tải phần mềm chính hãng tương ứng với mã bàn phím để gán macro, chỉnh đèn theo điệu nhạc và cài ảnh GIF lên màn hình.</li>
+          <li><strong>Phím HE Hall Effect (Madlions, Win68 HE)</strong>: Truy cập trang Web Driver chuyên dụng để chỉnh điểm nhận phím từng phím độc lập từ 0.1mm – 4.0mm, bật tính năng Snap Tap và DKS.</li>
+          <li><strong>Kit Custom QMK/VIA (MonsGeek)</strong>: Truy cập trực tiếp trang web <code>usevia.app</code> trên Chrome để remap phím trực tiếp không cần cài app.</li>
+        </ul>
+      </article>
+
+      <!-- Card 4: Cảnh báo an toàn sạc pin -->
+      <article class="info-card">
+        <h3>🔋 4. Lưu Ý Tối Quan Trọng Khi Sạc Pin</h3>
+        <p>Bàn phím cơ không dây tích hợp pin Li-ion cần được sạc đúng cách để đảm bảo an toàn và tuổi thọ:</p>
+        <div class="info-callout">
+          <strong>⚠️ TUYỆT ĐỐI KHÔNG DÙNG CỦ SẠC NHANH ĐIỆN THOẠI</strong>
+          Không sử dụng củ sạc nhanh điện thoại công suất cao (18W, 30W, 65W, sạc dự phòng sạc nhanh Type-C PD) để cắm sạc cho bàn phím. Dòng điện áp cao có thể làm phù pin và cháy hỏng mạch nguồn.
+        </div>
+        <ul style="margin-top:16px">
+          <li>Chỉ cắm sạc phím thông qua cổng USB máy tính hoặc củ sạc tiêu chuẩn 5V - 1A.</li>
+          <li>Thời gian sạc đầy thông thường từ 3 – 5 tiếng (đèn báo pin chuyển xanh).</li>
+        </ul>
+      </article>
+
+      <!-- Card 5: Thay Switch Hotswap đúng cách -->
+      <article class="info-card">
+        <h3>🛠️ 5. Cách Nhổ & Cắm Switch Hotswap</h3>
+        <p>Mẹo tránh làm gãy hoặc cong chân switch khi tự thay thế tại nhà:</p>
+        <ul>
+          <li>Dùng switch puller kẹp đúng 2 ngàm khóa trên và dưới của switch, kéo thẳng đứng theo góc 90 độ.</li>
+          <li>Trước khi cắm switch mới: Luôn kiểm tra 2 chân đồng có bị cong lệch không, dùng nhíp nắn thẳng lại.</li>
+          <li>Đặt switch thẳng hàng với 2 lỗ hotswap trên mạch PCB, dùng lực ngón cái ấn nhẹ dứt khoát cho switch vào khớp.</li>
+        </ul>
+      </article>
+
+      <!-- Card 6: Hỗ trợ kỹ thuật trực tiếp -->
+      <article class="info-card" style="justify-content:center;text-align:center;align-items:center">
+        <h3>❓ Bạn Vẫn Cần Hỗ Trợ?</h3>
+        <p>Đội ngũ kỹ thuật của MoneyKeyboard luôn sẵn sàng hỗ trợ bạn cài đặt driver, hướng dẫn mod phím và giải đáp thắc mắc qua Zalo / Hotline.</p>
+        <a class="btn btn--primary" href="https://zalo.me/0942109929" target="_blank" rel="noopener" style="margin-top:8px">
+          Nhắn tin Zalo kỹ thuật: 0942 109 929 ↗
+        </a>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer class="section-xl" id="footer" style="background:var(--p-surface);padding:64px 0">
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+      <p class="muted" style="font-size:14px;margin:0">© 2026 MoneyKeyboard. Địa chỉ: 158/65 Phạm Văn Chiêu, Gò Vấp, HCM. Hotline: 0942 109 929.</p>
+      <a class="link" href="index.html" style="font-size:14px">← Quay lại trang chủ</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
