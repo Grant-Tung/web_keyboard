@@ -1396,8 +1396,12 @@ export function initMegaMenu() {
   // the ☰ button opens the product mega menu (all categories)
   const burger = document.querySelector('.nav__hamburger-kmpd');
   burger?.setAttribute('aria-expanded', 'false');
+  const menu = document.querySelector('.main-menu');
+  const sheet = (open) => { menu?.classList.toggle('is-sheet', open); burger?.setAttribute('aria-expanded', String(open)); };
   burger?.addEventListener('click', (e) => {
     e.stopPropagation();
+    // phones/tablets: the button sits at the bottom (thumb reach) and opens the whole menu as a bottom sheet
+    if (matchMedia('(max-width: 1024px)').matches) return sheet(!menu.classList.contains('is-sheet'));
     const first = dropdownItems[0];
     if (!first) return;
     const open = !first.classList.contains('is-open');
@@ -1411,6 +1415,17 @@ export function initMegaMenu() {
       dropdownItems.forEach(item => item.classList.remove('is-open'));
       burger?.setAttribute('aria-expanded', 'false');
     }
+    if (menu?.classList.contains('is-sheet') && !e.target.closest('.menu-list')) sheet(false); // tap on the dimmed backdrop
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu?.classList.contains('is-sheet')) sheet(false); });
+
+  // a menu link to an empty listing is a dead end: hide it until the admin adds a product there
+  const live = getLiveCatalog();
+  document.querySelectorAll('.main-menu a[href*="sub="], .brands-pill-list a[href*="brand="]').forEach((a) => {
+    const q = new URL(a.href).searchParams, cat = q.get('cat'), sub = q.get('sub'), brand = q.get('brand')?.toLowerCase();
+    const has = live.some((p) => (!cat || p.category === cat) && (!sub || p.subCategory === sub) && (!brand || p.brand.toLowerCase() === brand));
+    (a.parentElement.tagName === 'LI' ? a.parentElement : a).hidden = !has; // brand pills sit inside the menu's own <li>
+
   });
 }
 

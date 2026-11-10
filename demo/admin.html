@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quản trị đơn hàng & Kho hàng | MoneyKeyboard</title>
+<link rel="icon" href="data:,">
+
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,9 +50,9 @@
       <div class="kpi"><span>Chờ cọc</span><b id="k-pending">0</b></div>
       <div class="kpi"><span>Đang giao</span><b id="k-ship">0</b></div>
       <div class="kpi"><span>Doanh thu tháng này</span><b id="k-rev">0 ₫</b></div>
-      <div class="kpi kpi--warn" id="kpi-lowstock" style="cursor:pointer" title="Nhấn để cuộn nhanh đến các mặt hàng dưới 3 tồn kho">
+      <div class="kpi kpi--warn" id="kpi-lowstock" style="cursor:pointer" role="button" tabindex="0" aria-pressed="false" title="Nhấn để chỉ hiện các màu/SKU còn dưới 3 (nhấn lại để bỏ lọc)">
         <span>Sắp hết hàng (&lt; 3)</span>
-        <b id="k-lowstock" style="color:#d70015">0 loại</b>
+        <b id="k-lowstock" style="color:#d70015">0 SKU</b>
       </div>
     </div>
 
@@ -341,7 +343,8 @@
     done: ['Hoàn tất', 'st--done'],
     cancel: ['Đã hủy', 'st--cancel'],
   };
-  const it = (v, sw) => [{ id: 'aula-f75', title: 'AULA F75', variant: `Vỏ ${v} · ${sw}`, qty: 1, price: 1290000 }];
+  const SEED_CID = { 'Xanh nhạt': 'blue', 'Đen': 'black', 'Trắng ngà': 'white' };
+  const it = (v, sw) => [{ id: 'aula-f75', colorId: SEED_CID[v], title: 'AULA F75', variant: `Màu ${v} · ${sw}`, qty: 1, price: 1290000 }];
   if (!localStorage.getItem('kb-seeded')) { // demo data
     const now = Date.now();
     orders.save([
@@ -371,10 +374,18 @@
     $('#rows').innerHTML = rows.length ? rows.map((o) => {
       const late = o.status === 'pending' && Date.now() - o.at > 24 * H;
       const [label, cls] = STATUS[o.status];
-      return `<tr data-code="${o.code}" class="${late ? 'is-late' : ''}" tabindex="0"><td><b>${o.code}</b></td><td>${esc(o.name)}</td><td>${esc(o.phone)}</td><td>${o.items.map((i) => esc(i.title) + ' · ' + esc(i.variant)).join('<br>')}</td><td style="font-weight:600">${vnd(o.total)}</td><td><span class="st ${cls}">${label}</span>${late ? '<span class="late">Quá 24 giờ chưa cọc</span>' : ''}</td><td>${fmt(o.at)}</td></tr>`;
+      return `<tr data-code="${o.code}" class="${late ? 'is-late' : ''}" tabindex="0"><td><b>${o.code}</b></td><td>${esc(o.name)}</td><td>${esc(o.phone)}</td><td>${o.items.map((i) => lineLabel(i, true)).join('<br>')}</td><td style="font-weight:600">${vnd(o.total)}</td><td><span class="st ${cls}">${label}</span>${late ? '<span class="late">Quá 24 giờ chưa cọc</span>' : ''}</td><td>${fmt(o.at)}</td></tr>`;
     }).join('') : '<tr><td colspan="7" class="muted">Không có đơn nào.</td></tr>';
   }
   const esc = (s = '') => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+  // "AULA F75 · ● Xanh nhạt · Graywood V3": colour from colorId, or from key "productId:colorId:switchId" on older orders
+  function lineLabel(i, html) {
+    const cid = i.colorId || String(i.key || '').split(':')[1];
+    const c = cid && inventory.find(r => r.id === i.id)?.colors?.find(x => x.id === cid);
+    const rest = c ? String(i.variant || '').replace(/^(Màu|Vỏ) [^·]*·?\s*/, '') : i.variant || '';
+    if (!html) return [i.title, c && `Màu ${c.name}`, rest].filter(Boolean).join(' · ');
+    return [esc(i.title), c && `<span class="stock-color-chip"><i style="background:${esc(c.hex)}"></i>${esc(c.name)}</span>`, esc(rest)].filter(Boolean).join(' · ');
+  }
 
   let cur;
   function openOrder(code) {
@@ -383,7 +394,7 @@
     $('#m-code').textContent = cur.code;
     $('#m-status').className = 'st ' + cls; $('#m-status').textContent = label;
     $('#m-info').textContent = `${cur.name}\n${cur.phone}\n${cur.address}${cur.notes ? '\nGhi chú: ' + cur.notes : ''}`;
-    $('#m-items').textContent = cur.items.map((i) => `${i.title} · ${i.variant} × ${i.qty}`).join(', ') + ` · Cọc ${vnd(orderDeposit(cur))} · Thu COD ${vnd(Math.max(0, cur.total - orderDeposit(cur)))}`;
+    $('#m-items').textContent = cur.items.map((i) => `${lineLabel(i)} × ${i.qty}`).join(', ') + ` · Cọc ${vnd(orderDeposit(cur))} · Thu COD ${vnd(Math.max(0, cur.total - orderDeposit(cur)))}`;
     $('#m-next').hidden = !next; $('#m-next').textContent = next || '';
     $('#m-cancel').hidden = ['done', 'cancel'].includes(cur.status);
     $('#modal').showModal();
@@ -402,7 +413,7 @@
   function printShippingSlip(o) {
     const deposit = orderDeposit(o);
     const cod = Math.max(0, o.total - deposit);
-    const itemsText = o.items.map(i => `<li><b>${esc(i.title)}</b> · ${esc(i.variant)} × ${i.qty} — ${vnd(i.price * i.qty)}</li>`).join('');
+    const itemsText = o.items.map(i => `<li>${esc(lineLabel(i))} × ${i.qty} — ${vnd(i.price * i.qty)}</li>`).join('');
     const printHtml = `
 <!DOCTYPE html>
 <html>
@@ -535,6 +546,7 @@
 
   let inventory = initInventory();
   let hideZeroStock = false;
+  let lowOnly = false;
   let stockSort = 'stock-asc';
   let stockSearchQuery = '';
 
@@ -598,128 +610,220 @@
   }
 
   function renderInventory() {
-    const stockItems = inventory.filter(i => !i.isCustom);
-    const zeroCount = stockItems.filter(i => i.stock === 0 && !i.hidden).length;
-    // low = total under 3, or any single colour sold out
-    const lowStockCount = stockItems.filter(i => (i.stock < 3 || i.colors?.some(c => c.stock === 0)) && !i.hidden).length;
+    const imgOf = {}; // colour photo from the catalog, keyed "productId:colorId"
+    getLiveCatalog().forEach(p => p.colors?.forEach(c => { if (c.imgs?.[0]) imgOf[p.id + ':' + c.id] = c.imgs[0]; }));
+    const skus = inventory.filter(i => !i.hidden).flatMap(item => (!item.isCustom && item.colors?.length)
+      ? item.colors.map(c => ({ item, color: c, stock: c.stock, sku: `${item.id}-${c.id}` }))
+      : [{ item, color: null, stock: item.stock, sku: item.id }]);
 
-    $('#k-lowstock').textContent = `${lowStockCount} loại`;
+    const lowStockCount = skus.filter(s => !s.item.isCustom && s.stock < 3).length;
+    const zeroCount = skus.filter(s => !s.item.isCustom && s.stock === 0).length;
+
+    $('#k-lowstock').textContent = `${lowStockCount} SKU`;
     $('#zero-count-pill').textContent = zeroCount;
 
-    let list = [...inventory];
-
+    let visibleSkus = skus;
     if (hideZeroStock) {
-      list = list.filter(i => i.isCustom || i.stock > 0);
+      visibleSkus = visibleSkus.filter(s => s.item.isCustom || s.stock > 0);
     }
-    list = list.filter(i => !i.hidden);
-
+    if (lowOnly) {
+      visibleSkus = visibleSkus.filter(s => !s.item.isCustom && s.stock < 3);
+    }
     if (stockSearchQuery.trim()) {
-      const q = stockSearchQuery.trim().toLowerCase();
-      list = list.filter(i => i.name.toLowerCase().includes(q) || i.brand.toLowerCase().includes(q) || i.id.toLowerCase().includes(q));
+      // every typed word must appear somewhere in the SKU, so "f75 xanh" finds AULA F75 — Xanh nhạt
+      const words = stockSearchQuery.trim().toLowerCase().split(/\s+/);
+      visibleSkus = visibleSkus.filter(s => {
+        const hay = [s.item.name, s.item.brand, s.item.id, s.color?.name, s.sku].join(' ').toLowerCase();
+        return words.every(w => hay.includes(w));
+      });
     }
 
-    list.sort((a, b) => {
+    const groupsMap = new Map();
+    for (const s of visibleSkus) {
+      if (!groupsMap.has(s.item.id)) {
+        groupsMap.set(s.item.id, { item: s.item, skus: [] });
+      }
+      groupsMap.get(s.item.id).skus.push(s);
+    }
+    const groups = Array.from(groupsMap.values());
+
+    groups.sort((a, b) => {
       if (stockSort === 'stock-asc') {
-        if (a.isCustom !== b.isCustom) return a.isCustom ? 1 : -1;
-        return a.stock - b.stock;
+        if (a.item.isCustom !== b.item.isCustom) return a.item.isCustom ? 1 : -1;
+        const minA = Math.min(...a.skus.map(s => s.stock));
+        const minB = Math.min(...b.skus.map(s => s.stock));
+        return minA - minB;
       }
       if (stockSort === 'stock-desc') {
-        if (a.isCustom !== b.isCustom) return a.isCustom ? 1 : -1;
-        return b.stock - a.stock;
+        if (a.item.isCustom !== b.item.isCustom) return a.item.isCustom ? 1 : -1;
+        const maxA = Math.max(...a.skus.map(s => s.stock));
+        const maxB = Math.max(...b.skus.map(s => s.stock));
+        return maxB - maxA;
       }
-      if (stockSort === 'price-asc') return a.price - b.price;
-      if (stockSort === 'price-desc') return b.price - a.price;
-      if (stockSort === 'name-asc') return a.name.localeCompare(b.name, 'vi');
-      if (stockSort === 'name-desc') return b.name.localeCompare(a.name, 'vi');
+      if (stockSort === 'price-asc') return a.item.price - b.item.price;
+      if (stockSort === 'price-desc') return b.item.price - a.item.price;
+      if (stockSort === 'name-asc') return a.item.name.localeCompare(b.item.name, 'vi');
+      if (stockSort === 'name-desc') return b.item.name.localeCompare(a.item.name, 'vi');
       return 0;
     });
 
-    $('#stock-count-summary').textContent = `${list.length} / ${inventory.length} sản phẩm`;
+    $('#stock-count-summary').textContent = `${visibleSkus.length} / ${skus.length} SKU`;
 
     const tbody = $('#stock-rows');
-    if (!list.length) {
+    if (!groups.length) {
       tbody.innerHTML = '';
       $('#stock-empty').style.display = 'block';
       return;
     }
     $('#stock-empty').style.display = 'none';
 
-    tbody.innerHTML = list.map(item => {
-      const isZero = !item.isCustom && item.stock === 0;
-      const isLow = !item.isCustom && item.stock > 0 && item.stock < 3;
-      const isDanger = !item.isCustom && item.stock < 3;
+    function badge(stock, isCustom = false) {
+      if (isCustom) return `<span class="stock-badge stock-badge--custom">⭐ Custom Build (Order)</span>`;
+      if (stock === 0) return `<span class="stock-badge stock-badge--zero">🚫 Hết hàng (0)</span>`;
+      if (stock < 3) return `<span class="stock-badge stock-badge--danger"><span class="pulse-dot"></span> ⚠️ Cảnh báo: Chỉ còn ${stock}</span>`;
+      return `<span class="stock-badge stock-badge--ok">✅ Sẵn hàng (${stock})</span>`;
+    }
 
-      let rowCls = '';
-      if (isZero) rowCls = 'stock-row--zero';
-      else if (isLow) rowCls = 'stock-row--danger';
-
-      let statusBadge = '';
-      if (item.isCustom) {
-        statusBadge = `<span class="stock-badge stock-badge--custom">⭐ Custom Build (Order)</span>`;
-      } else if (isZero) {
-        statusBadge = `<span class="stock-badge stock-badge--zero">🚫 Hết hàng (0)</span>`;
-      } else if (isLow) {
-        statusBadge = `<span class="stock-badge stock-badge--danger"><span class="pulse-dot"></span> ⚠️ Cảnh báo: Chỉ còn ${item.stock}</span>`;
-      } else {
-        statusBadge = `<span class="stock-badge stock-badge--ok">✅ Sẵn hàng (${item.stock})</span>`;
-      }
-      const hasColors = !item.isCustom && item.colors?.length > 0;
-      const outColors = hasColors ? item.colors.filter(c => c.stock === 0) : [];
-      if (outColors.length && !isZero) {
-        statusBadge += `<span class="stock-badge stock-badge--danger" style="margin-top:4px">⚠️ Hết màu: ${outColors.map(c => esc(c.name)).join(', ')}</span>`;
-      }
+    tbody.innerHTML = groups.map(({ item, skus: groupSkus }) => {
       const stepper = (val, colorId = '') => `
         <div class="stock-stepper">
           <button type="button" class="btn-step" data-step="-1" data-id="${item.id}" data-color="${colorId}" title="Giảm 1 sp">-</button>
           <input type="number" class="stock-input ${val < 3 ? 'is-low' : ''}" value="${val}" min="0" max="9999" data-id="${item.id}" data-color="${colorId}" aria-label="Tồn kho">
           <button type="button" class="btn-step" data-step="1" data-id="${item.id}" data-color="${colorId}" title="Tăng 1 sp">+</button>
         </div>`;
-      // colour products: one stepper per colour, e.g. Xanh [5] · Đen [6] · Trắng [0] ➔ Tổng 11
-      const stockCell = item.isCustom ? '<span class="muted" style="font-size:12px">Không giới hạn kho</span>'
-        : hasColors ? `<div class="stock-colors">${item.colors.map(c => `
-            <div class="stock-color${c.stock === 0 ? ' is-out' : ''}"><span><i style="background:${esc(c.hex)}"></i>${esc(c.name)}</span>${stepper(c.stock, c.id)}</div>`).join('')}
-            <div class="stock-color stock-color--total">➔ Tổng: <b>${item.stock}</b></div></div>`
-        : stepper(item.stock);
 
-      return `
-        <tr class="${rowCls}">
+      const brandCatCell = `
+        <span style="font-weight:600">${esc(item.brand)}</span>
+        <div class="muted" style="font-size:12px">${catNames[item.category] || item.category}${getSubName(item.category, item.subCategory) ? ` · <span style="color:var(--p-action);font-weight:600">${esc(getSubName(item.category, item.subCategory))}</span>` : ''}</div>
+      `;
+
+      const actionsCell = `
+        <div class="stock-actions-cell">
+          <button type="button" class="btn-mini-action" data-edit-id="${item.id}" title="Chỉnh sửa sản phẩm">
+            ✏️ Sửa
+          </button>
+          <button type="button" class="btn-mini-action btn-mini-action--del" data-del-id="${item.id}" title="Xóa sản phẩm">
+            🗑️ Xóa
+          </button>
+        </div>
+      `;
+
+      const hasColors = !item.isCustom && item.colors?.length > 0;
+
+      if (!hasColors) {
+        const isZero = !item.isCustom && item.stock === 0;
+        const isLow = !item.isCustom && item.stock > 0 && item.stock < 3;
+        const isDanger = !item.isCustom && item.stock < 3;
+        const rowCls = isZero ? 'stock-row--zero' : isLow ? 'stock-row--danger' : '';
+        const stockCell = item.isCustom ? '<span class="muted" style="font-size:12px">Không giới hạn kho</span>' : stepper(item.stock);
+
+        return `
+          <tr class="${rowCls}">
+            <td>
+              <img src="${item.img}" class="stock-thumb" alt="${esc(item.name)}" onerror="this.src='img/red-translucent.webp'">
+            </td>
+            <td>
+              <div class="stock-prod-title">${esc(item.name)}</div>
+              <div class="stock-prod-sku">ID: ${item.id}</div>
+            </td>
+            <td>
+              ${brandCatCell}
+            </td>
+            <td style="text-align:right;font-weight:600">
+              ${vnd(item.price)}
+            </td>
+            <td style="text-align:center">
+              <span style="font-size:16px;font-weight:700;color:${isDanger ? '#d70015' : 'inherit'}">
+                ${item.isCustom ? '∞' : item.stock}
+              </span>
+            </td>
+            <td style="text-align:center">
+              ${badge(item.stock, item.isCustom)}
+            </td>
+            <td style="text-align:center">
+              ${stockCell}
+            </td>
+            <td style="text-align:center">
+              ${actionsCell}
+            </td>
+          </tr>
+        `;
+      }
+
+      const n = item.colors.length;
+      const k = item.colors.filter(c => c.stock === 0).length;
+      const groupStatusBadge = k > 0
+        ? `<span class="stock-badge stock-badge--danger">⚠️ Hết ${k}/${n} màu</span>`
+        : `<span class="stock-badge stock-badge--ok">✅ ${n} màu còn hàng</span>`;
+
+      const headerRow = `
+        <tr class="stock-group">
           <td>
             <img src="${item.img}" class="stock-thumb" alt="${esc(item.name)}" onerror="this.src='img/red-translucent.webp'">
           </td>
           <td>
             <div class="stock-prod-title">${esc(item.name)}</div>
-            <div class="stock-prod-sku">ID: ${item.id}</div>
+            <div class="stock-prod-sku">ID: ${item.id} · ${item.colors.length} màu</div>
           </td>
           <td>
-            <span style="font-weight:600">${esc(item.brand)}</span>
-            <div class="muted" style="font-size:12px">${catNames[item.category] || item.category}${getSubName(item.category, item.subCategory) ? ` · <span style="color:var(--p-action);font-weight:600">${esc(getSubName(item.category, item.subCategory))}</span>` : ''}</div>
+            ${brandCatCell}
           </td>
           <td style="text-align:right;font-weight:600">
             ${vnd(item.price)}
           </td>
           <td style="text-align:center">
-            <span style="font-size:16px;font-weight:700;color:${isDanger ? '#d70015' : 'inherit'}">
-              ${item.isCustom ? '∞' : item.stock}
-            </span>
+            <span style="font-size:16px;font-weight:700;color:${item.stock < 3 ? '#d70015' : 'inherit'}">${item.stock}</span>
+            <div class="muted" style="font-size:11px">tổng</div>
           </td>
           <td style="text-align:center">
-            ${statusBadge}
+            ${groupStatusBadge}
           </td>
+          <td style="text-align:center"></td>
           <td style="text-align:center">
-            ${stockCell}
-          </td>
-          <td style="text-align:center">
-            <div class="stock-actions-cell">
-              <button type="button" class="btn-mini-action" data-edit-id="${item.id}" title="Chỉnh sửa sản phẩm">
-                ✏️ Sửa
-              </button>
-              <button type="button" class="btn-mini-action btn-mini-action--del" data-del-id="${item.id}" title="Xóa sản phẩm">
-                🗑️ Xóa
-              </button>
-            </div>
+            ${actionsCell}
           </td>
         </tr>
       `;
+
+      const skuRows = groupSkus.map(({ color, sku }) => {
+        const isZero = color.stock === 0;
+        const isLow = color.stock > 0 && color.stock < 3;
+        const skuRowCls = isZero ? 'stock-row--zero' : isLow ? 'stock-row--danger' : '';
+        const cImg = imgOf[item.id + ':' + color.id];
+        const thumbHtml = cImg
+          ? `<img src="${cImg}" class="stock-thumb stock-thumb--sm" alt="${esc(color.name)}" onerror="this.src='img/red-translucent.webp'">`
+          : `<span class="stock-swatch" style="background:${esc(color.hex || '')}"></span>`;
+
+        return `
+          <tr class="stock-sku${skuRowCls ? ' ' + skuRowCls : ''}">
+            <td>
+              ${thumbHtml}
+            </td>
+            <td>
+              <div class="stock-prod-title">${esc(item.name)} — <span class="stock-sku-color">${esc(color.name)}</span></div>
+              <div class="stock-prod-sku">SKU: ${sku}</div>
+            </td>
+            <td>
+              <span class="stock-color-chip"><i style="background:${esc(color.hex || '')}"></i>${esc(color.name)}</span>
+            </td>
+            <td style="text-align:right;font-weight:600">
+              ${vnd(item.price)}
+            </td>
+            <td style="text-align:center">
+              <span style="font-size:16px;font-weight:700;color:${color.stock < 3 ? '#d70015' : 'inherit'}">${color.stock}</span>
+            </td>
+            <td style="text-align:center">
+              ${badge(color.stock)}
+            </td>
+            <td style="text-align:center">
+              ${stepper(color.stock, color.id)}
+            </td>
+            <td style="text-align:center"></td>
+          </tr>
+        `;
+      }).join('');
+
+      return headerRow + skuRows;
     }).join('');
   }
 
@@ -1107,6 +1211,11 @@
   document.addEventListener('keydown', (e) => {
     const r = e.target.closest?.('tr[data-code]');
     if (r && e.key === 'Enter') openOrder(r.dataset.code);
+    const kpi = e.target.closest?.('#kpi-lowstock');
+    if (kpi && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      kpi.click();
+    }
   });
 
   // Modal actions
@@ -1181,12 +1290,13 @@
       return;
     }
 
-    const kpiLow = e.target.closest('#kpi-lowstock');
-    if (kpiLow) {
-      stockSort = 'stock-asc';
-      updateSortIndicators();
+    const kpi = e.target.closest('#kpi-lowstock');
+    if (kpi) {
+      lowOnly = !lowOnly;
+      kpi.setAttribute('aria-pressed', lowOnly);
       renderInventory();
       $('#section-inventory').scrollIntoView({ behavior: 'smooth' });
+      toast(lowOnly ? 'Chỉ hiện SKU tồn < 3' : 'Hiện tất cả SKU');
     }
   });
 

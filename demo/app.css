@@ -248,19 +248,19 @@ body { font-family: var(--font-text); color: var(--p-ink); background: var(--p-b
 
 .kmpd-dropdown__cols {
   display: grid;
-  grid-template-columns: repeat(4, 1.1fr) 1.5fr;
+  grid-template-columns: repeat(4, minmax(0, 1.1fr)) minmax(0, 1.5fr);
   gap: 20px;
   align-items: stretch;
 }
 @media (max-width: 1080px) {
-  .kmpd-dropdown__cols { grid-template-columns: repeat(4, 1fr); }
+  .kmpd-dropdown__cols { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .kmpd-dropdown__spotlight { display: none !important; }
 }
 @media (max-width: 768px) {
-  .kmpd-dropdown__cols { grid-template-columns: repeat(2, 1fr); }
+  .kmpd-dropdown__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 520px) {
-  .kmpd-dropdown__cols { grid-template-columns: 1fr; gap: 16px; }
+  .kmpd-dropdown__cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .dropdown-mega-rich { padding: 16px; border-radius: 16px; }
 }
 
@@ -301,8 +301,7 @@ body { font-family: var(--font-text); color: var(--p-ink); background: var(--p-b
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-height: 380px;
-  overflow-y: auto;
+  /* no inner scroll: a 380px cap hid the last keycap items behind a scrollbar */
   scrollbar-width: thin;
   scrollbar-color: rgb(0 0 0 / .15) transparent;
   padding-right: 4px;
@@ -433,9 +432,18 @@ body { font-family: var(--font-text); color: var(--p-ink); background: var(--p-b
   background: var(--p-action);
   color: #fff;
 }
+/* brand panel: sample product cards (had no styles, so the photos rendered full size) */
+.mega-products-preview__head { font-size: 13px; font-weight: 600; color: var(--p-muted); margin-bottom: 12px; }
+.mega-prod-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.mega-prod-card { display: flex; flex-direction: column; gap: 8px; padding: 8px; border-radius: 14px; text-decoration: none; color: var(--p-ink); transition: background .15s ease; }
+.mega-prod-card:hover { background: var(--p-surface); }
+.mega-prod-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; background: var(--p-surface); display: block; }
+.mega-prod-card__info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mega-prod-card__name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.mega-prod-card__price { font-size: 12px; color: var(--p-action); font-weight: 600; }
 @media (max-width: 860px) {
-  .mega-grid-cats { grid-template-columns: repeat(2, 1fr); }
-  .mega-prod-grid { grid-template-columns: repeat(2, 1fr); }
+  .mega-grid-cats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mega-prod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ---------- Standalone Info Pages Styling (HDSD, Bảo hành, Liên hệ, Giới thiệu) ---------- */
@@ -2765,12 +2773,15 @@ body { overflow-x: clip; }
 .color-row .c-del { height: 40px; border-radius: 10px; border: 1px solid #fca5a5; background: #fff; color: #d70015; cursor: pointer; font-size: 15px; }
 .color-variants__total { font-size: 13px; color: var(--p-ink); margin-top: 4px; }
 #p-stock[readonly] { background: var(--p-surface); color: var(--p-muted); }
-.stock-colors { display: flex; flex-direction: column; gap: 6px; align-items: stretch; min-width: 210px; }
-.stock-color { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; font-weight: 600; }
-.stock-color span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.stock-color i { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .2); display: inline-block; }
-.stock-color.is-out span { color: #d70015; }
-.stock-color--total { justify-content: flex-end; border-top: 1px solid rgb(0 0 0 / .08); padding-top: 4px; color: var(--p-muted); }
+.stock-group td { background: var(--p-surface); border-top: 1px solid rgb(0 0 0 / .08); }
+.stock-sku td:nth-child(2) { padding-left: 34px; }
+.stock-sku .stock-prod-title { font-weight: 500; }
+.stock-sku-color { color: var(--p-action); font-weight: 600; }
+.stock-swatch { width: 30px; height: 30px; border-radius: 50%; display: block; margin: 0 auto; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .15); }
+.stock-thumb--sm { width: 34px; height: 34px; margin: 0 auto; }
+.stock-color-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; }
+.stock-color-chip i { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .2); display: inline-block; }
+#kpi-lowstock[aria-pressed="true"] { outline: 2px solid #d70015; outline-offset: -2px; }
 
 /* ---------- Product page: stock of the chosen colour ---------- */
 .color-stock { margin: 12px 0 0; font-size: 14px; font-weight: 600; color: #1b6e33; min-height: 1.2em; }
@@ -2778,3 +2789,102 @@ body { overflow-x: clip; }
 .swatch.is-out { position: relative; opacity: .55; }
 .swatch.is-out::after { content: ''; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; background: #d70015; transform: rotate(45deg); }
 .stock-error { margin: 16px 0 0; padding: 12px 14px; border-radius: 12px; background: #fff1f0; color: #b3261e; font-size: 14px; }
+
+/* ---------- Phase 3: mobile (375px / 768px) ---------- */
+@media (max-width: 1024px) {
+  /* system.css hides every header action except .btn--primary below 1024px: keep order lookup, account and cart */
+  .nav:not(.is-open) .nav__actions > :is(.account-btn, .cart-btn) { display: inline-flex; }
+
+  /* one-hand menu: the horizontal bar is replaced by a "Menu" pill at the bottom-left that opens a bottom sheet */
+  .main-menu { position: static; border: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .nav__hamburger-kmpd {
+    position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 1001;
+    display: grid; grid-template-columns: 18px auto; row-gap: 4px; column-gap: 10px; align-content: center;
+    width: auto; height: 48px; margin: 0; padding: 0 20px 0 16px;
+    border-radius: 999px; background: var(--p-ink); color: #fff; box-shadow: 0 10px 28px -8px rgb(0 0 0 / .45);
+  }
+  .nav__hamburger-kmpd span { grid-column: 1; width: 18px; height: 2px; background: #fff; }
+  .nav__hamburger-kmpd::after { content: 'Menu'; grid-column: 2; grid-row: 1 / 4; font: 600 15px var(--font-text); }
+  .main-menu.is-sheet .nav__hamburger-kmpd::after { content: 'Đóng'; }
+  .menu-list { display: none; }
+  .main-menu.is-sheet::before { content: ''; position: fixed; inset: 0; z-index: 999; background: rgb(0 0 0 / .35); }
+  .main-menu.is-sheet .menu-list {
+    display: flex; flex-direction: column; align-items: stretch; gap: 0;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000;
+    max-height: 82svh; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    background: #fff; border-radius: 20px 20px 0 0; box-shadow: 0 -12px 40px rgb(0 0 0 / .18);
+    padding: 12px 16px calc(80px + env(safe-area-inset-bottom));
+  }
+  .main-menu.is-sheet .menu-item { border-bottom: 1px solid rgb(0 0 0 / .06); }
+  .main-menu.is-sheet .menu-link { display: flex; justify-content: space-between; width: 100%; min-height: 52px; padding: 0 8px; font-size: 16px; }
+  .main-menu.is-sheet .menu-item:hover > .menu-link { background: none; color: var(--p-ink); }
+  .main-menu.is-sheet .menu-item.is-open > .menu-link { color: var(--p-action); }
+  /* SẢN PHẨM / THƯƠNG HIỆU open inline (accordion) instead of floating panels */
+  .main-menu.is-sheet :is(.dropdown-mega-rich, .dropdown-brands-rich) {
+    position: static; display: none; width: auto; max-height: none; overflow: visible;
+    opacity: 1; visibility: visible; transform: none; pointer-events: auto;
+    border: 0; border-radius: 0; box-shadow: none; padding: 0 0 12px 8px;
+  }
+  .main-menu.is-sheet .menu-item.is-open > :is(.dropdown-mega-rich, .dropdown-brands-rich) { display: flex; }
+  .main-menu.is-sheet .kmpd-dropdown__head, .main-menu.is-sheet .kmpd-dropdown__list a { min-height: 44px; font-size: 15px; }
+  .main-menu.is-sheet .mega-products-preview { display: none; }
+  .main-menu.is-sheet .brands-pill-list a { padding: 11px 16px; font-size: 14px; }
+  body:has(.main-menu.is-sheet) { overflow: hidden; }
+  body:has(.main-menu.is-sheet) .kmod-floating-contact, .cart-open .nav__hamburger-kmpd { display: none !important; }
+
+  /* where the header already has "Tra cứu đơn" the floating copy only covers content on the right edge */
+  body:has(.nav__actions [data-open-tracking]) .kmod-contact-btn--track { display: none; }
+  /* finger-size tap areas without moving the layout */
+  .kmpd-pcard__link { padding-block: 12px; margin-block: -12px; }
+  .kmpd-sound-btn { min-height: 40px; }
+}
+
+/* product page: the sticky buy bar must not hide the page end, nor sit under the floating buttons */
+body:has(.buybar) { padding-bottom: 76px; }
+body:has(.buybar.is-on) .kmod-floating-contact { bottom: calc(88px + env(safe-area-inset-bottom)) !important; }
+@media (max-width: 1024px) {
+  body:has(.buybar.is-on) .nav__hamburger-kmpd { bottom: calc(84px + env(safe-area-inset-bottom)); }
+}
+
+/* admin stock table becomes cards on phones */
+@media (max-width: 768px) {
+  table.stock-table { min-width: 0; display: block; }
+  .stock-table thead { display: none; }
+  .stock-table tbody { display: block; }
+  .stock-table tr { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgb(0 0 0 / .06); }
+  .stock-table td { display: block; padding: 0; border: 0; text-align: left !important; }
+  .stock-table td:empty { display: none; }
+  .stock-table td:nth-child(1) { grid-row: 1 / span 3; align-self: start; }
+  .stock-table td:is(:nth-child(2), :nth-child(3), :nth-child(6), :nth-child(7), :nth-child(8)) { grid-column: 2 / 4; }
+  .stock-table td:nth-child(4) { grid-column: 2; }
+  .stock-table td:nth-child(5) { grid-column: 3; text-align: right !important; }
+  .stock-table .stock-sku { padding-left: 32px; }
+  .stock-table .stock-group { background: var(--p-surface); }
+  .stock-table .stock-group td { background: none; border-top: 0; }
+  .stock-table .stock-sku td:nth-child(2) { padding-left: 0; }
+  .stock-table .stock-actions-cell { justify-content: flex-start; }
+}
+@media (max-width: 1024px) {
+  /* room at the page end so the last footer line can scroll above the floating "Menu" pill */
+  #footer { padding-bottom: 136px !important; }
+  /* checkout: floating contact buttons sat on top of the address fields */
+  body:has(main.checkout) .kmod-floating-contact { display: none !important; }
+}
+@media (max-width: 1024px) {
+  .catalog-breadcrumbs a { display: inline-block; padding-block: 12px; margin-block: -12px; }
+}
+@media (max-width: 768px) {
+  /* admin on a phone: steppers and Sửa/Xóa at finger size */
+  .stock-stepper .btn-step { width: 40px; height: 40px; }
+  .stock-stepper .stock-input { height: 40px; font-size: 16px; }
+  .btn-mini-action { min-height: 40px; }
+}
+/* cart drawer sat under the sticky header (z 50): its title and close button were hidden */
+.scrim { z-index: 60; }
+.drawer { z-index: 61; }
+.cart-open .toast { bottom: 140px; } /* not on top of the checkout button */
+@media (max-width: 1024px) {
+  .drawer .btn-cart-qty { width: 36px !important; height: 36px !important; } /* sizes are inline in app.js renderCart */
+  .drawer .line__rm { padding: 10px 0 10px 12px; margin: -10px 0; }
+  .cart-coupon-input { font-size: 16px; min-width: 0; } /* < 16px makes iOS Safari zoom on focus */
+}
