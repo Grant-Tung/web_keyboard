@@ -2699,7 +2699,7 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
 
   /* PDP (Product Detail Page) specs and gallery */
   .pdp {
-    padding-top: 16px !important;
+    padding-top: calc(var(--nav) + 16px) !important; /* the fixed header is no longer followed by the 48px menu bar */
   }
   .buy h1 {
     font-size: clamp(24px, 6.5vw, 32px) !important;
@@ -2840,7 +2840,6 @@ body { overflow-x: clip; }
 }
 
 /* product page: the sticky buy bar must not hide the page end, nor sit under the floating buttons */
-body:has(.buybar) { padding-bottom: 76px; }
 body:has(.buybar.is-on) .kmod-floating-contact { bottom: calc(88px + env(safe-area-inset-bottom)) !important; }
 @media (max-width: 1024px) {
   body:has(.buybar.is-on) .nav__hamburger-kmpd { bottom: calc(84px + env(safe-area-inset-bottom)); }
@@ -2888,3 +2887,18 @@ body:has(.buybar.is-on) .kmod-floating-contact { bottom: calc(88px + env(safe-ar
   .drawer .line__rm { padding: 10px 0 10px 12px; margin: -10px 0; }
   .cart-coupon-input { font-size: 16px; min-width: 0; } /* < 16px makes iOS Safari zoom on focus */
 }
+/* verified from the Gemini review: iOS zooms inputs under 16px, short tap targets, cramped address row */
+html.cart-open, html.cart-open body { overflow: hidden; } /* page behind the cart drawer must not scroll */
+@media (max-width: 768px) {
+  #track-phone-input, .form-group input, .form-group textarea, .catalog-sort select { font-size: 16px !important; }
+  .tier-2 button { height: 40px; padding: 0 16px; }
+  .cart-coupon-input, .btn-coupon-apply { height: 42px; }
+  .main-menu.is-sheet .kmpd-dropdown__list a { white-space: normal; }
+}
+@media (max-width: 480px) {
+  .row2 { grid-template-columns: minmax(0, 1fr); } /* Tỉnh / Phường full width on phones */
+}
+@media (max-width: 640px) {
+  .kmod-floating-contact { bottom: calc(20px + env(safe-area-inset-bottom)) !important; }
+}
+body:has(.buybar) { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
