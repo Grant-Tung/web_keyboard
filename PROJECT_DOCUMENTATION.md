@@ -44,7 +44,7 @@ node server.js
 > *Lưu ý về server:* File `server.js` tự động phát hiện cổng bận. Nếu cổng `3000` đang được dùng, server sẽ tự nhảy sang `3001`, `3002`,... và in link truy cập rõ ràng ra console.
 
 ### 2.3. Sơ đồ các trang chính
-* **Trang chủ (`demo/index.html`):** Mega Menu 5 cột, rồi 6 section theo thứ tự: Hero (một sản phẩm chủ lực, mặc định `aula-f75`) → Danh mục → Sản phẩm nổi bật (8 thẻ) → Nghe thử switch → Thương hiệu → Mua yên tâm (cọc/COD/bảo hành) → footer.
+* **Trang chủ (`demo/index.html`):** Mega Menu 5 cột, Video Footage Reels, 5 dãy sản phẩm kéo ngang (Bàn phím cơ, Switch, Keycap, Phụ kiện, Custom Build).
 * **Trang Danh mục sản phẩm (`demo/san-pham.html`):** Bộ lọc 2 tầng (Faceted Filter Hub), lọc theo hãng, thanh sắp xếp giá/tên, phân loại theo URL (`?cat=...&sub=...`).
 * **Trang Custom Build (`demo/custom-build.html`):** Danh sách tác phẩm build hoàn thiện, bảng báo giá tạm tính (Configurator 4 bước), nút copy cấu hình gửi shop qua Zalo.
 * **Trang Thương hiệu (`demo/thuong-hieu.html`):** Tổng hợp sản phẩm theo từng hãng danh tiếng (Aula, Madlions, MonsGeek, Leobog, Akko, Xinmeng, Weikav, GravaStar, Titan Elite).
@@ -296,16 +296,20 @@ Khi tiếp quản dự án, **tuyệt đối không để xảy ra các lỗi sa
   }
   ```
 
-### 6.2. Trang chủ v2 (Phase 2)
-* `demo/index.html` gồm 6 section, mỗi section một mục đích: `#hero` → `#categories` → `#featured` → `#sound` → `#brands` → `#promise`. Markup tĩnh chứa tiêu đề; nội dung các lưới do script inline render từ `CATALOG` / `PRODUCT.switches` (sản phẩm admin thêm sẽ tự xuất hiện ở Danh mục/Thương hiệu).
-* Hero: `CATALOG.find(p => p.id === 'aula-f75')`; các nút màu đổi ảnh và gắn `&color=` vào link mua (`product.html` mở đúng màu). Đổi sản phẩm chủ lực ở hằng trong script.
-* Nghe thử: mỗi ô là `<button data-sound data-sound-host>` có `.wave i`, dùng `bindSoundButtons()` sẵn có (Web Audio).
-* CSS nằm trong khối `/* Home v2 (Phase 2) */` cuối `app.css`, mọi class đều có tiền tố `.home-`.
-* Đã bỏ Footage Reels, 5 dãy carousel, `#reel-modal`, `#custom-build-modal` khỏi trang chủ (CSS `.kmpd-pcard` vẫn được `san-pham` / `thuong-hieu` / `custom-build` dùng).
+### 6.2. Mega menu & trang chủ
+* Trang chủ giữ bố cục Footage Reels + 5 dãy carousel (bản "Trang chủ v2" ở Phase 2 đã được bỏ theo yêu cầu, dùng lại phần thân của nhánh `main`).
 * **Mega menu:** `initMegaMenu()` tự ẩn link danh mục con / hãng không có sản phẩm nào trong catalog (link chết) và tự hiện lại khi admin thêm sản phẩm. Cột danh mục không còn giới hạn chiều cao (trước đây cột Keycap bị cắt). Dropdown Thương hiệu có CSS cho thẻ sản phẩm mẫu (trước đây ảnh hiện full size). Sửa markup menu ở `index.html` rồi chép khối `<nav class="main-menu">` sang 8 trang còn lại (script kiểm tra ở mục 8).
 * Mọi trang có `<link rel="icon" href="data:,">` để không còn lỗi 404 `favicon.ico` trên console.
 
 ### 6.3. Sửa Lỗi Giao Diện Trên Điện Thoại & Tablet (Mobile Responsive)
+0. **Phase 3 (≤ 1024px), khối `/* Phase 3: mobile */` cuối `app.css`:**
+   * **Header** giống nhau trên 9 trang (chép từ `index.html`; checkout giữ header tối giản). `system.css` ẩn mọi nút trong `.nav__actions` trừ `.btn--primary` → `app.css` hiện lại Tra cứu đơn / Tài khoản / Giỏ hàng.
+   * **Menu một tay:** thanh menu ngang bị ẩn; nút `.nav__hamburger-kmpd` thành viên thuốc "☰ Menu" cố định góc dưới trái, mở `.main-menu.is-sheet` = ngăn kéo từ đáy (mục cao 52px, SẢN PHẨM/THƯƠNG HIỆU mở dạng xổ xuống). Đóng bằng nút "Đóng", chạm nền mờ hoặc phím Esc (`initMegaMenu()`).
+   * **Thanh mua dính (`product.html`):** `IntersectionObserver` có `rootMargin` bằng chiều cao header, nên hiện ngay khi hàng "Thêm vào giỏ" khuất sau header. Khi thanh mua hiện, nút nổi và nút Menu được đẩy lên trên nó; trang có `padding-bottom` để dòng cuối không bị che. Trang sản phẩm đã có footer.
+   * **Giỏ hàng:** `.drawer` z-index 61 (trên header 50), nút −/+ 36px, ô mã giảm giá 16px (iOS không tự zoom).
+   * **Checkout:** ẩn nút liên hệ nổi trên mobile (trước đây đè lên ô địa chỉ).
+   * **Admin:** bảng kho thành dạng thẻ ở ≤ 768px (mỗi màu một thẻ), nút +/− và Sửa/Xóa 40px.
+   * Vùng bấm nhỏ (XEM SẢN PHẨM, Nghe tiếng gõ, breadcrumb) được nới ≥ 40px bằng padding + margin âm, không xô lệch bố cục.
 1. **Thanh Header:**
    * File `system.css` cũ có rule ẩn `.nav__actions` trên màn hình `< 1023px`, làm mất nút Giỏ hàng và Tra cứu trên tablet/mobile. Đã sửa trong `app.css` với `.nav__actions { display: flex !important; }`.
    * Trên màn hình `≤ 540px` (iPhone 375px/390px), tự động ẩn chữ `.action-btn__label` và chuyển các nút thành icon tròn 38px chuẩn Apple, không bị vỡ hàng.

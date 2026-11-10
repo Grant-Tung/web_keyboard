@@ -249,113 +249,219 @@
 </nav>
 
 <main id="top">
-  <!-- 1. HERO -->
-  <section class="home-sec home-hero" id="hero" aria-labelledby="hero-title">
+  <!-- FOOTAGE & SOUND STUDIO SECTION (Footage y chang kietmodphimdao: Video Reels, Sound Test, TikTok, YouTube) -->
+  <section class="footage-section" id="footage" aria-labelledby="footage-h">
     <div class="wrap">
-      <div id="hero-inner" class="home-hero__inner"></div>
+      <div class="section-head" data-reveal>
+        <div>
+          <h2 id="footage-h">Footage Reels. <span class="muted">Gõ nghe tận tai, xem tận mắt.</span></h2>
+          <p>Xem video review thực tế cận cảnh, test độ trễ phím HE và trải nghiệm tiếng gõ switch chân thực trước khi chốt đơn.</p>
+          <div class="footage-channels">
+            <a class="channel-pill" href="https://www.tiktok.com/@_strongxxx" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.47 6.27 6.27 0 0 0 1.88-4.47V8.58a8.27 8.27 0 0 0 4.84 1.56V6.69h-.95z"/></svg>
+              <span>TikTok @_strongxxx ↗</span>
+            </a>
+            <a class="channel-pill" href="https://www.instagram.com/zynxx_ori/" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              <span>Instagram @zynxx_ori ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Footage Reels -->
+      <div class="footage-grid" id="footage-grid"></div>
     </div>
   </section>
 
-  <!-- 2. CATEGORIES -->
-  <section class="home-sec" id="categories" aria-labelledby="cats-title">
+  <!-- ==========================================================================
+       KIETMODPHIMDAO 5 DÃY KÉO NGANG (BÀN PHÍM CƠ, SWITCH, KEYCAP, PHỤ KIỆN, CUSTOM BUILD)
+       Giữ nguyên 100% bản màu sáng & DNA Apple-like của web hiện tại
+       ========================================================================== -->
+
+  <!-- 1. Dãy kéo ngang: BÀN PHÍM CƠ NỔI BẬT (Ảnh 2 của khách) -->
+  <section class="kmpd-carousel-section" id="section-keyboards" aria-labelledby="h-keyboards">
     <div class="wrap">
-      <div class="home-head">
-        <div>
-          <h2 id="cats-title">Danh mục</h2>
-          <p>Chọn nhanh theo loại sản phẩm.</p>
+      <div class="kmpd-section-head" data-reveal>
+        <div class="kmpd-head-left">
+          <span class="kmpd-eyebrow">LATEST ARRIVALS</span>
+          <h2 class="kmpd-title" id="h-keyboards">
+            <a href="san-pham.html?cat=ban-phim-co">Bàn phím cơ nổi bật <span class="arr-diag">↗</span></a>
+          </h2>
+          <p class="kmpd-desc">Khám phá những mẫu phím cơ và phím HE mới nhất tại cửa hàng.</p>
         </div>
-        <a class="home-more" href="san-pham.html">Xem tất cả →</a>
+        <div class="kmpd-head-right">
+          <div class="carousel-nav-btns" aria-label="Điều khiển dãy phím cơ">
+            <button class="c-nav-btn c-prev" type="button" aria-label="Kéo sang trái" data-track="track-keyboards">‹</button>
+            <button class="c-nav-btn c-next" type="button" aria-label="Kéo sang phải" data-track="track-keyboards">›</button>
+          </div>
+          <a class="kmpd-see-all" href="san-pham.html?cat=ban-phim-co">Xem tất cả ↗</a>
+        </div>
       </div>
-      <div id="home-cats" class="home-cats-grid"></div>
+
+      <div class="kmpd-track-wrap">
+        <div class="kmpd-track" id="track-keyboards" tabindex="0" role="region" aria-label="Dãy sản phẩm bàn phím cơ"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 3. FEATURED -->
-  <section class="home-sec home-sec--alt" id="featured" aria-labelledby="featured-title">
+  <!-- 2. Dãy kéo ngang: SWITCH BÀN PHÍM -->
+  <section class="kmpd-carousel-section kmpd-carousel-section--alt" id="section-switches" aria-labelledby="h-switches">
     <div class="wrap">
-      <div class="home-head">
-        <div>
-          <h2 id="featured-title">Sản phẩm nổi bật</h2>
-          <p>Những mẫu được hỏi nhiều nhất tuần này.</p>
+      <div class="kmpd-section-head" data-reveal>
+        <div class="kmpd-head-left">
+          <span class="kmpd-eyebrow">SWITCH & MOD SOUND</span>
+          <h2 class="kmpd-title" id="h-switches">
+            <a href="san-pham.html?cat=switch">Switch bàn phím <span class="arr-diag">↗</span></a>
+          </h2>
+          <p class="kmpd-desc">Đa dạng sắc thái âm thanh: Linear Thock trầm, Clack đanh giòn, Silent siêu êm và Tactile có khấc.</p>
         </div>
-        <a class="home-more" href="san-pham.html">Xem tất cả →</a>
+        <div class="kmpd-head-right">
+          <div class="carousel-nav-btns" aria-label="Điều khiển dãy switch">
+            <button class="c-nav-btn c-prev" type="button" aria-label="Kéo sang trái" data-track="track-switches">‹</button>
+            <button class="c-nav-btn c-next" type="button" aria-label="Kéo sang phải" data-track="track-switches">›</button>
+          </div>
+          <a class="kmpd-see-all" href="san-pham.html?cat=switch">Xem tất cả ↗</a>
+        </div>
       </div>
-      <div id="home-featured" class="home-featured-grid"></div>
+
+      <div class="kmpd-track-wrap">
+        <div class="kmpd-track" id="track-switches" tabindex="0" role="region" aria-label="Dãy sản phẩm switch"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 4. SOUND TEST -->
-  <section class="home-sec" id="sound" aria-labelledby="sound-title">
+  <!-- 3. Dãy kéo ngang: KEYCAP CÁ TÍNH -->
+  <section class="kmpd-carousel-section" id="section-keycaps" aria-labelledby="h-keycaps">
     <div class="wrap">
-      <div class="home-head">
-        <div>
-          <h2 id="sound-title">Nghe thử switch</h2>
-          <p>Bấm để nghe tiếng gõ mô phỏng của từng loại switch trước khi chọn.</p>
+      <div class="kmpd-section-head" data-reveal>
+        <div class="kmpd-head-left">
+          <span class="kmpd-eyebrow">KEYCAP COLLECTION</span>
+          <h2 class="kmpd-title" id="h-keycaps">
+            <a href="san-pham.html?cat=keycap">Keycap cá tính <span class="arr-diag">↗</span></a>
+          </h2>
+          <p class="kmpd-desc">Bộ sưu tập keycap PBT cao cấp: Profile Cherry tiêu chuẩn, MOA bo tròn, XOA xuyên LED và Artisan đúc resin thủ công.</p>
+        </div>
+        <div class="kmpd-head-right">
+          <div class="carousel-nav-btns" aria-label="Điều khiển dãy keycap">
+            <button class="c-nav-btn c-prev" type="button" aria-label="Kéo sang trái" data-track="track-keycaps">‹</button>
+            <button class="c-nav-btn c-next" type="button" aria-label="Kéo sang phải" data-track="track-keycaps">›</button>
+          </div>
+          <a class="kmpd-see-all" href="san-pham.html?cat=keycap">Xem tất cả ↗</a>
         </div>
       </div>
-      <div id="home-sw" class="home-sw-grid"></div>
+
+      <div class="kmpd-track-wrap">
+        <div class="kmpd-track" id="track-keycaps" tabindex="0" role="region" aria-label="Dãy sản phẩm keycap"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 5. BRANDS -->
-  <section class="home-sec home-sec--alt" id="brands" aria-labelledby="brands-title">
+  <!-- 4. Dãy kéo ngang: PHỤ KIỆN SETUP -->
+  <section class="kmpd-carousel-section kmpd-carousel-section--alt" id="section-accessories" aria-labelledby="h-accessories">
     <div class="wrap">
-      <div class="home-head">
-        <div>
-          <h2 id="brands-title">Thương hiệu</h2>
-          <p>Hàng chính hãng từ các hãng phím được cộng đồng tin dùng.</p>
+      <div class="kmpd-section-head" data-reveal>
+        <div class="kmpd-head-left">
+          <span class="kmpd-eyebrow">DESK ACCESSORIES</span>
+          <h2 class="kmpd-title" id="h-accessories">
+            <a href="san-pham.html?cat=phu-kien">Phụ kiện setup <span class="arr-diag">↗</span></a>
+          </h2>
+          <p class="kmpd-desc">Pad chuột Deskmat cỡ lớn, cáp xoắn Aviation mạ vàng, chuột wireless PAW3395 và bộ đồ nghề mod phím chuẩn bài.</p>
         </div>
-        <a class="home-more" href="thuong-hieu.html">Xem tất cả →</a>
+        <div class="kmpd-head-right">
+          <div class="carousel-nav-btns" aria-label="Điều khiển dãy phụ kiện">
+            <button class="c-nav-btn c-prev" type="button" aria-label="Kéo sang trái" data-track="track-accessories">‹</button>
+            <button class="c-nav-btn c-next" type="button" aria-label="Kéo sang phải" data-track="track-accessories">›</button>
+          </div>
+          <a class="kmpd-see-all" href="san-pham.html?cat=phu-kien">Xem tất cả ↗</a>
+        </div>
       </div>
-      <div id="home-brands" class="home-brands-grid"></div>
+
+      <div class="kmpd-track-wrap">
+        <div class="kmpd-track" id="track-accessories" tabindex="0" role="region" aria-label="Dãy sản phẩm phụ kiện"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 6. PROMISE -->
-  <section class="home-sec" id="promise" aria-labelledby="promise-title">
+  <!-- 5. Dãy kéo ngang: BUILD CUSTOM (Tác phẩm đã từng build - Chỉ có giá tham khảo & Nhắn tin tư vấn) -->
+  <section class="kmpd-carousel-section" id="section-custom-build" aria-labelledby="h-custom-build">
     <div class="wrap">
-      <div class="home-head">
-        <div>
-          <h2 id="promise-title">Mua yên tâm</h2>
-          <p>Giữ hàng bằng một khoản cọc nhỏ, kiểm tra rồi mới trả phần còn lại.</p>
+      <div class="kmpd-section-head" data-reveal>
+        <div class="kmpd-head-left">
+          <span class="kmpd-eyebrow" style="color:var(--p-ink)">EXCLUSIVE CRAFTSMANSHIP</span>
+          <h2 class="kmpd-title" id="h-custom-build">
+            <a href="custom-build.html">Tác phẩm Custom Build <span class="arr-diag">↗</span></a>
+          </h2>
+          <p class="kmpd-desc">
+            Những tác phẩm đã được mod và build thủ công hoàn thiện (không có sẵn stock kho). Quý khách vui lòng <strong>liên hệ nhắn tin trước khi build</strong> để được tư vấn chọn kit, switch và mod âm đúng gu!
+          </p>
+        </div>
+        <div class="kmpd-head-right">
+          <div class="carousel-nav-btns" aria-label="Điều khiển dãy custom build">
+            <button class="c-nav-btn c-prev" type="button" aria-label="Kéo sang trái" data-track="track-custom-build">‹</button>
+            <button class="c-nav-btn c-next" type="button" aria-label="Kéo sang phải" data-track="track-custom-build">›</button>
+          </div>
+          <a class="kmpd-see-all" href="custom-build.html">Xem tất cả tác phẩm ↗</a>
         </div>
       </div>
-      <div id="home-promise" class="home-promise-grid">
-        <div class="home-promise">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--p-action)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3"/>
-            <path d="M3 10h18"/>
-            <circle cx="16" cy="14" r="1"/>
-          </svg>
-          <h3 class="home-promise__title">Cọc 100.000đ</h3>
-          <p class="home-promise__text">Đặt cọc để giữ đúng mẫu và màu bạn chọn. Cọc được trừ thẳng vào tổng đơn.</p>
-        </div>
-        <div class="home-promise">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--p-action)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="1" y="3" width="15" height="13" rx="2"/>
-            <polygon points="16 8 20 8 23 11 23 16 16 16"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/>
-            <circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-          <h3 class="home-promise__title">Giao COD toàn quốc</h3>
-          <p class="home-promise__text">Phần còn lại thanh toán khi nhận hàng. Được kiểm tra hàng trước khi trả tiền.</p>
-        </div>
-        <div class="home-promise">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--p-action)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <polyline points="9 12 11 14 15 10"/>
-          </svg>
-          <h3 class="home-promise__title">Bảo hành 12 tháng</h3>
-          <p class="home-promise__text">Mạch và switch bảo hành 12 tháng, đổi mới trong 7 ngày nếu lỗi nhà sản xuất.</p>
-          <a class="home-more" href="bao-hanh.html">Chính sách bảo hành →</a>
-        </div>
-      </div>
-      <div class="home-promise-action">
-        <button type="button" class="btn btn--secondary" data-open-tracking>Tra cứu đơn hàng</button>
+
+      <div class="kmpd-track-wrap">
+        <div class="kmpd-track" id="track-custom-build" tabindex="0" role="region" aria-label="Dãy tác phẩm custom build"></div>
       </div>
     </div>
   </section>
 </main>
+
+<!-- Footage Player Modal -->
+<dialog class="reel-dialog" id="reel-modal">
+  <div class="reel-dialog__head">
+    <strong id="modal-reel-title" style="font-size:16px">Footage Review</strong>
+    <button type="button" id="close-reel-modal" data-close-dialog style="background:none;border:0;color:#fff;font-size:20px;cursor:pointer" aria-label="Đóng">✕</button>
+  </div>
+  <div class="reel-dialog__body">
+    <div class="reel-dialog__screen">
+      <img id="modal-reel-img" alt="Footage thumbnail">
+      <div class="reel-dialog__hud">
+        <span class="reel-card__tag" id="modal-reel-tag" style="position:static;display:inline-block;margin-bottom:8px"></span>
+        <h4 id="modal-reel-heading" style="margin:0 0 4px;font-size:18px"></h4>
+        <p id="modal-reel-desc" style="margin:0 0 16px;font-size:13px;color:#a1a1a6"></p>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <button class="btn btn--primary" type="button" id="modal-reel-play-sound" style="border-radius:999px">
+            🎵 Nghe âm thanh switch này
+          </button>
+          <span id="modal-reel-stats" style="font-size:12px;color:#c7c7cc"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<!-- Custom Build Inquiry Modal (Dành riêng cho khách muốn liên hệ đặt build mới) -->
+<dialog class="reel-dialog" id="custom-build-modal" style="max-width:580px;background:#fff;color:var(--p-ink)">
+  <div class="reel-dialog__head" style="border-color:rgb(0 0 0 / .08)">
+    <strong id="cb-modal-title" style="font-size:18px;color:var(--p-ink)">Liên Hệ Tư Vấn Custom Build</strong>
+    <button type="button" id="close-cb-modal" data-close-dialog style="background:none;border:0;color:var(--p-ink);font-size:22px;cursor:pointer" aria-label="Đóng">✕</button>
+  </div>
+  <div class="reel-dialog__body" style="padding:24px">
+    <div id="cb-modal-content" style="background:var(--p-surface);border-radius:16px;padding:18px;margin-bottom:20px">
+      <!-- Injected config -->
+    </div>
+    <p style="font-size:14px;color:var(--p-muted);line-height:1.5;margin:0 0 20px">
+      Sản phẩm này là tác phẩm custom hoàn thiện mẫu (không có sẵn stock). Vui lòng chọn kênh bên dưới để gửi yêu cầu và nhận báo giá chi tiết:
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a class="btn btn--primary" id="cb-zalo-btn" href="https://zalo.me/0942109929" target="_blank" rel="noopener" style="justify-content:center;height:46px">
+        💬 Nhắn tin qua Zalo (0942 109 929)
+      </a>
+      <a class="btn btn--secondary" href="https://www.instagram.com/zynxx_ori/" target="_blank" rel="noopener" style="justify-content:center;height:46px">
+        📸 Nhắn qua Instagram @zynxx_ori ↗
+      </a>
+      <button class="btn btn--secondary" type="button" id="cb-copy-btn" style="justify-content:center;height:46px">
+        📋 Sao chép cấu hình phím này
+      </button>
+    </div>
+  </div>
+</dialog>
 
 <!-- Modal: Tài khoản / Đăng nhập -->
 <dialog class="reel-dialog" id="account-modal" style="max-width:440px;background:#fff;color:var(--p-ink)">
@@ -417,92 +523,215 @@
 <script type="module" src="assets/system.js"></script>
 <script type="module" src="assets/motion/motion.js"></script>
 <script type="module">
-  import { bindSoundButtons, CATALOG, PRODUCT, vnd, firstImg, esc, stockBadge, DEPOSIT } from './app.js';
+  import {
+    bindSoundButtons,
+    playSwitch,
+    CATALOG,
+    BRANDS,
+    PRODUCT,
+    FOOTAGE_ITEMS,
+    vnd,
+    firstImg,
+    isPhoto,
+    toast,
+    esc,
+    stockBadge
+  } from './app.js';
 
+  // Initialize sound buttons
   bindSoundButtons();
-  const $ = (s) => document.querySelector(s);
-  const pill = (p, cls) => `<span class="${cls}${p.inStock === false && p.category !== 'hang-order' ? ' is-out' : ''}">${stockBadge(p)}</span>`;
 
-  // 1. Hero: one flagship product; the swatches swap the photo and carry the colour into the buy link
-  const hero = CATALOG.find((p) => p.id === 'aula-f75') || CATALOG.find((p) => p.category === 'ban-phim-co');
-  if (hero) {
-    const colors = hero.colors || [];
-    const start = Math.max(0, colors.findIndex((c) => c.stock > 0));
-    $('#hero-inner').innerHTML = `
-      <div>
-        <span class="home-hero__eyebrow">${esc(hero.badge || 'Nổi bật')}</span>
-        <h1 class="home-hero__title" id="hero-title">${esc(hero.name)}</h1>
-        <p class="home-hero__line">${esc(hero.line)}</p>
-        <div class="home-hero__price-row"><span class="home-hero__price">${vnd(hero.price)}</span>${pill(hero, 'home-hero__stock')}</div>
-        ${colors.length ? `<div class="home-hero__swatches">
-          <div class="home-hero__swatch-list">${colors.map((c, i) => `<button type="button" class="home-swatch" data-i="${i}" aria-pressed="false" aria-label="Màu ${esc(c.name)}" title="${esc(c.name)}" style="background:${esc(c.hex)}"></button>`).join('')}</div>
-          <span class="home-hero__color-name"></span>
-        </div>` : ''}
-        <div class="home-hero__cta">
-          <a class="btn btn--primary" id="hero-buy" href="product.html?id=${hero.id}">Mua ngay · cọc ${vnd(DEPOSIT)}</a>
-          <button type="button" class="btn btn--secondary" data-sound="${hero.soundId || 'graywood'}">▶ Nghe tiếng gõ</button>
+
+
+  // ==========================================
+  // 1. FOOTAGE & SOUND STUDIO
+  // ==========================================
+  const footageGrid = document.getElementById('footage-grid');
+  footageGrid.innerHTML = FOOTAGE_ITEMS.map((item) => `
+    <article class="reel-card" data-reel-id="${item.id}">
+      <img class="reel-card__thumb" src="${item.img}" alt="${item.title}" loading="lazy">
+      <div class="reel-card__scrim"></div>
+      <span class="reel-card__tag">${item.tag}</span>
+      <div class="reel-card__play" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
+      </div>
+      <div class="reel-card__body">
+        <h3 class="reel-card__title">${item.title}</h3>
+        <p class="reel-card__desc">${item.desc}</p>
+        <div class="reel-card__meta">
+          <span>⏱️ ${item.duration}</span>
+          <span>${item.channel}</span>
         </div>
       </div>
-      <img class="home-hero__img" src="${firstImg(hero)}" alt="${esc(hero.name)}" fetchpriority="high">`;
-    const pick = (i) => {
-      const c = colors[i];
-      document.querySelectorAll('.home-swatch').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.i === i)));
-      $('.home-hero__color-name').textContent = `Màu ${c.name}${c.stock === 0 ? ' · tạm hết' : ''}`;
-      $('.home-hero__img').src = c.imgs?.[0] || firstImg(hero);
-      $('#hero-buy').href = `product.html?id=${hero.id}&color=${encodeURIComponent(c.id)}`;
+    </article>
+  `).join('');
+
+  // Footage Reel Click -> Modal
+  const modal = document.getElementById('reel-modal');
+  footageGrid.addEventListener('click', (e) => {
+    const card = e.target.closest('[data-reel-id]');
+    if (!card) return;
+    const item = FOOTAGE_ITEMS.find((r) => r.id === card.dataset.reelId);
+    if (!item) return;
+
+    document.getElementById('modal-reel-title').textContent = item.title;
+    document.getElementById('modal-reel-img').src = item.img;
+    document.getElementById('modal-reel-tag').textContent = item.tag;
+    document.getElementById('modal-reel-heading').textContent = item.title;
+    document.getElementById('modal-reel-desc').textContent = item.desc;
+    document.getElementById('modal-reel-stats').textContent = `${item.stats} · ${item.channel}`;
+    
+    const playBtn = document.getElementById('modal-reel-play-sound');
+    playBtn.onclick = () => {
+      const sw = PRODUCT.switches.find(s => s.id === item.soundId) || PRODUCT.switches[0];
+      playSwitch(sw.sound);
     };
-    if (colors.length) {
-      pick(start);
-      $('.home-hero__swatch-list').addEventListener('click', (e) => { const b = e.target.closest('.home-swatch'); if (b) pick(+b.dataset.i); });
+
+    modal.showModal();
+  });
+
+  // ==========================================
+  // 2. KMPD 5 DÃY KÉO NGANG (PRODUCT HORIZONTAL CAROUSELS)
+  // Matching Ảnh 2: SẴN HÀNG, Dark Photo Container, Giá, XEM SẢN PHẨM ↗
+  // ==========================================
+  const renderKmpdCard = (p) => {
+    const src = firstImg(p);
+    const soundId = p.soundId || (p.category === 'ban-phim-co' ? 'graywood' : (p.category === 'switch' ? 'graywood' : null));
+
+    // Custom Build Card
+    if (p.isCustomBuild) {
+      const specsHtml = p.buildSpecs ? `
+        <div class="kmpd-cb-specs">
+          ${p.buildSpecs.slice(0, 2).map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('')}
+        </div>
+      ` : '';
+
+      return `
+        <article class="kmpd-pcard" data-prod-id="${p.id}" data-cat="${p.category}" data-sub="${p.subCategory}" data-sound-host>
+          <span class="kmpd-badge-custom">${p.badge || 'TÁC PHẨM ĐÃ BÀN GIAO'}</span>
+          <div class="kmpd-pcard__img" data-cb-id="${p.id}" style="cursor:pointer" title="Bấm để xem chi tiết tác phẩm">
+            <img src="${src}" alt="${esc(p.name)}" loading="lazy">
+          </div>
+          <span class="kmpd-pcard__brand">${esc(p.brand)}</span>
+          <h3 class="kmpd-pcard__name" data-cb-id="${p.id}" style="cursor:pointer" title="Bấm để xem chi tiết tác phẩm">
+            <a href="javascript:void(0)">${esc(p.name)}</a>
+          </h3>
+          <p class="kmpd-pcard__line">${esc(p.line)}</p>
+          ${specsHtml}
+          ${(p.audioData || soundId) ? `
+            <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}"` : ''} data-sound="${soundId || 'graywood'}">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
+              <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe âm bản build 🎵'}</span>
+            </button>` : ''}
+          <div class="kmpd-pcard__footer">
+            <div style="display:flex;flex-direction:column">
+              <span class="kmpd-pcard__price-ref">Chi phí tham khảo:</span>
+              <span class="kmpd-pcard__price">${vnd(p.price)}</span>
+            </div>
+            <button class="kmpd-pcard__btn-build" type="button" data-cb-id="${p.id}">
+              Nhắn tin đặt build 💬
+            </button>
+          </div>
+        </article>
+      `;
     }
-  }
 
-  // 2. Categories
-  const CATS = [['ban-phim-co', 'Bàn phím cơ'], ['switch', 'Switch'], ['keycap', 'Keycap'], ['phu-kien', 'Phụ kiện'], ['custom-build', 'Custom Build']];
-  $('#home-cats').innerHTML = CATS.map(([id, name]) => {
-    const list = CATALOG.filter((p) => p.category === id);
-    if (!list.length) return '';
-    const href = id === 'custom-build' ? 'custom-build.html' : `san-pham.html?cat=${id}`;
-    return `<a class="home-cat" href="${href}">
-      <span class="home-cat__img-box"><img src="${firstImg(list[0])}" alt="" loading="lazy"></span>
-      <span class="home-cat__name">${name}</span><span class="home-cat__count">${list.length} sản phẩm</span></a>`;
-  }).join('');
+    // Standard Stock Card (Ảnh 2 của user)
+    return `
+      <article class="kmpd-pcard" data-prod-id="${p.id}" data-cat="${p.category}" data-sub="${p.subCategory}" data-sound-host>
+        <span class="kmpd-badge-stock">${stockBadge(p)}</span>
+        <a class="kmpd-pcard__img" href="product.html?id=${p.id}">
+          <img src="${src}" alt="${esc(p.name)}" loading="lazy">
+        </a>
+        <span class="kmpd-pcard__brand">${esc(p.brand)}</span>
+        <h3 class="kmpd-pcard__name">
+          <a href="product.html?id=${p.id}">${esc(p.name)}</a>
+        </h3>
+        <p class="kmpd-pcard__line">${esc(p.line)}</p>
+        ${(p.audioData || soundId) ? `
+          <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}"` : ''} data-sound="${soundId || 'graywood'}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
+            <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
+          </button>` : ''}
+        <div class="kmpd-pcard__footer">
+          <span class="kmpd-pcard__price">${vnd(p.price)}</span>
+          <a class="kmpd-pcard__link" href="product.html?id=${p.id}">
+            XEM SẢN PHẨM ↗
+          </a>
+        </div>
+      </article>
+    `;
+  };
 
-  // 3. Featured: a fixed lead list, topped up with other keyboards
-  const LEAD = ['aula-f75', 'madlions-mad60-v2', 'gravastar-mercury-k1-pro', 'leobog-hi75c-pro', 'titan-elite-t87', 'lingbao-k87', 'aula-hero68-he', 'akko-3084b'];
-  const featured = [...LEAD.map((id) => CATALOG.find((p) => p.id === id)).filter(Boolean),
-    ...CATALOG.filter((p) => p.category === 'ban-phim-co' && !LEAD.includes(p.id))].slice(0, 8);
-  // same .kmpd-pcard markup as san-pham.html, so the card looks the same on every page
-  $('#home-featured').innerHTML = featured.map((p) => `
-    <article class="kmpd-pcard" data-sound-host>
-      <span class="kmpd-badge-stock">${stockBadge(p)}</span>
-      <a class="kmpd-pcard__img" href="product.html?id=${p.id}"><img src="${firstImg(p)}" alt="${esc(p.name)}" loading="lazy"></a>
-      <span class="kmpd-pcard__brand">${esc(p.brand)}</span>
-      <h3 class="kmpd-pcard__name"><a href="product.html?id=${p.id}">${esc(p.name)}</a></h3>
-      <p class="kmpd-pcard__line">${esc(p.line)}</p>
-      <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}" ` : ''}data-sound="${p.soundId || 'graywood'}">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
-        <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
-      </button>
-      <div class="kmpd-pcard__footer">
-        <span class="kmpd-pcard__price">${vnd(p.price)}</span>
-        <a class="kmpd-pcard__link" href="product.html?id=${p.id}">XEM SẢN PHẨM ↗</a>
+  // Render 5 Carousels
+  // the 4 featured keyboards always lead the row, even after the admin adds new ones (they are unshifted to the front)
+  const FEATURED = ['madlions-mad60-v2', 'titan-elite-t87', 'lingbao-k87', 'gravastar-mercury-k1-pro'];
+  const rank = (p) => (FEATURED.includes(p.id) ? FEATURED.indexOf(p.id) : FEATURED.length);
+  const keyboardsList = CATALOG.filter(p => p.category === 'ban-phim-co').sort((x, y) => rank(x) - rank(y));
+  const switchesList = CATALOG.filter(p => p.category === 'switch');
+  const keycapsList = CATALOG.filter(p => p.category === 'keycap');
+  const accessoriesList = CATALOG.filter(p => p.category === 'phu-kien');
+  const customBuildList = CATALOG.filter(p => p.category === 'custom-build');
+
+  document.getElementById('track-keyboards').innerHTML = keyboardsList.map(renderKmpdCard).join('');
+  document.getElementById('track-switches').innerHTML = switchesList.map(renderKmpdCard).join('');
+  document.getElementById('track-keycaps').innerHTML = keycapsList.map(renderKmpdCard).join('');
+  document.getElementById('track-accessories').innerHTML = accessoriesList.map(renderKmpdCard).join('');
+  document.getElementById('track-custom-build').innerHTML = customBuildList.map(renderKmpdCard).join('');
+
+  // Carousel Next / Prev Navigation Buttons
+  document.querySelectorAll('.carousel-nav-btns button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const trackId = btn.dataset.track;
+      const track = document.getElementById(trackId);
+      if (!track) return;
+      const isNext = btn.classList.contains('c-next');
+      const step = 310;
+      track.scrollBy({ left: isNext ? step : -step, behavior: 'smooth' });
+    });
+  });
+
+
+
+  // Dropdown toggle and touch navigation are initialized globally in app.js
+
+
+  // ==========================================
+  // 5. CUSTOM BUILD CONSULTATION MODAL
+  // ==========================================
+  const cbModal = document.getElementById('custom-build-modal');
+  let currentCbProduct = null;
+
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-cb-id]');
+    if (!btn) return;
+    const p = CATALOG.find(item => item.id === btn.dataset.cbId);
+    if (!p) return;
+    currentCbProduct = p;
+
+    document.getElementById('cb-modal-title').textContent = `Tư Vấn Custom: ${p.name}`;
+    document.getElementById('cb-modal-content').innerHTML = `
+      <strong style="display:block;font-size:16px;margin-bottom:8px">${p.name}</strong>
+      <p style="margin:0 0 10px;font-size:13px;color:var(--p-muted)">${p.line}</p>
+      <div style="font-size:14px;font-weight:700;color:var(--p-action);margin-bottom:12px">
+        Chi phí hoàn thiện tham khảo: ${vnd(p.price)}
       </div>
-    </article>`).join('');
+      <div style="font-size:12px;line-height:1.6;color:var(--p-ink);border-top:1px solid rgb(0 0 0 / .08);padding-top:10px">
+        ${p.buildSpecs ? p.buildSpecs.map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('') : ''}
+      </div>
+    `;
 
-  // 4. Sound test: bindSoundButtons animates the .wave bars of the host while it plays
-  $('#home-sw').innerHTML = PRODUCT.switches.map((s) => `
-    <button type="button" class="home-sw" data-sound="${s.id}" data-sound-host>
-      <span class="home-sw__name">${esc(s.name)}</span><span class="home-sw__kind">${esc(s.kind)}</span>
-      <span class="wave" aria-hidden="true">${'<i></i>'.repeat(12)}</span>
-      <span class="home-sw__play">▶ Phát</span>
-    </button>`).join('');
+    cbModal.showModal();
+  });
 
-  // 5. Brands with at least one product, most products first
-  const count = {};
-  CATALOG.forEach((p) => { if (p.brand !== 'MoneyKeyboard') count[p.brand] = (count[p.brand] || 0) + 1; });
-  $('#home-brands').innerHTML = Object.entries(count).sort((a, b) => b[1] - a[1]).map(([b, n]) => `
-    <a class="home-brand" href="thuong-hieu.html?brand=${encodeURIComponent(b)}"><span class="home-brand__name">${esc(b)}</span><span class="home-brand__count">${n} sản phẩm</span></a>`).join('');
+
+  document.getElementById('cb-copy-btn').addEventListener('click', () => {
+    if (!currentCbProduct) return;
+    const text = `Tôi muốn tư vấn Custom Build:\n- Mẫu: ${currentCbProduct.name}\n- Chi phí tham khảo: ${vnd(currentCbProduct.price)}\n- Cấu hình: ${currentCbProduct.line}`;
+    navigator.clipboard.writeText(text).then(() => {
+      toast('Đã sao chép cấu hình phím! Bạn có thể dán vào tin nhắn Zalo.');
+    });
+  });
 
   // Modal: Tài khoản
   const accountModal = document.getElementById('account-modal');
