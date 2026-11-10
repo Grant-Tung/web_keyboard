@@ -472,13 +472,22 @@
   const LEAD = ['aula-f75', 'madlions-mad60-v2', 'gravastar-mercury-k1-pro', 'leobog-hi75c-pro', 'titan-elite-t87', 'lingbao-k87', 'aula-hero68-he', 'akko-3084b'];
   const featured = [...LEAD.map((id) => CATALOG.find((p) => p.id === id)).filter(Boolean),
     ...CATALOG.filter((p) => p.category === 'ban-phim-co' && !LEAD.includes(p.id))].slice(0, 8);
+  // same .kmpd-pcard markup as san-pham.html, so the card looks the same on every page
   $('#home-featured').innerHTML = featured.map((p) => `
-    <article class="home-card">
-      <a class="home-card__img" href="product.html?id=${p.id}">${pill(p, 'home-card__stock')}<img src="${firstImg(p)}" alt="${esc(p.name)}" loading="lazy"></a>
-      <span class="home-card__brand">${esc(p.brand)}</span>
-      <a class="home-card__name" href="product.html?id=${p.id}">${esc(p.name)}</a>
-      <div class="home-card__footer"><span class="home-card__price">${vnd(p.price)}</span>
-        <button type="button" class="home-card__sound" data-sound="${p.soundId || 'graywood'}">▶ Nghe thử</button></div>
+    <article class="kmpd-pcard" data-sound-host>
+      <span class="kmpd-badge-stock">${stockBadge(p)}</span>
+      <a class="kmpd-pcard__img" href="product.html?id=${p.id}"><img src="${firstImg(p)}" alt="${esc(p.name)}" loading="lazy"></a>
+      <span class="kmpd-pcard__brand">${esc(p.brand)}</span>
+      <h3 class="kmpd-pcard__name"><a href="product.html?id=${p.id}">${esc(p.name)}</a></h3>
+      <p class="kmpd-pcard__line">${esc(p.line)}</p>
+      <button class="kmpd-sound-btn" type="button" ${p.audioData ? `data-sound-file="${p.audioData}" ` : ''}data-sound="${p.soundId || 'graywood'}">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
+        <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
+      </button>
+      <div class="kmpd-pcard__footer">
+        <span class="kmpd-pcard__price">${vnd(p.price)}</span>
+        <a class="kmpd-pcard__link" href="product.html?id=${p.id}">XEM SẢN PHẨM ↗</a>
+      </div>
     </article>`).join('');
 
   // 4. Sound test: bindSoundButtons animates the .wave bars of the host while it plays

@@ -366,14 +366,15 @@
   });
   bindSoundButtons();
 
-  // sticky buy bar: shows once the add-to-cart row has scrolled above the screen
+  // sticky buy bar: shows once the add-to-cart row has scrolled under the sticky header (not only off the screen)
   const bar = $('.buybar');
+  const headerH = Math.round(Math.max(...[...document.querySelectorAll('.nav, .main-menu')].map((el) => el.getBoundingClientRect().bottom)));
   new IntersectionObserver(([e]) => {
-    const on = !e.isIntersecting && e.boundingClientRect.top < 0;
+    const on = !e.isIntersecting && e.boundingClientRect.top < headerH;
     bar.classList.toggle('is-on', on);
     bar.setAttribute('aria-hidden', !on);
     bar.querySelector('button').tabIndex = on ? 0 : -1;
-  }).observe($('#buy-actions'));
+  }, { rootMargin: `-${headerH}px 0px 0px 0px` }).observe($('#buy-actions'));
   // render() also locks the buy buttons: custom builds, sold-out products and sold-out colours
   gallery(); render();
 </script>
