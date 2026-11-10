@@ -1388,6 +1388,7 @@ export function initMegaMenu() {
           const isOpen = item.classList.contains('is-open');
           dropdownItems.forEach(other => other.classList.remove('is-open'));
           if (!isOpen) item.classList.add('is-open');
+          dropdownItems.forEach((other) => other.querySelector('.menu-link')?.setAttribute('aria-expanded', String(other.classList.contains('is-open'))));
         }
       });
     }
@@ -1397,7 +1398,11 @@ export function initMegaMenu() {
   const burger = document.querySelector('.nav__hamburger-kmpd');
   burger?.setAttribute('aria-expanded', 'false');
   const menu = document.querySelector('.main-menu');
-  const sheet = (open) => { menu?.classList.toggle('is-sheet', open); burger?.setAttribute('aria-expanded', String(open)); };
+  const sheet = (open) => {
+    menu?.classList.toggle('is-sheet', open);
+    burger?.setAttribute('aria-expanded', String(open));
+    (open ? menu.querySelector('.menu-link') : burger)?.focus({ preventScroll: true }); // keyboard users land inside the sheet, and back on the button
+  };
   burger?.addEventListener('click', (e) => {
     e.stopPropagation();
     // phones/tablets: the button sits at the bottom (thumb reach) and opens the whole menu as a bottom sheet
