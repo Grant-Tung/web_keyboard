@@ -3223,8 +3223,8 @@ body { overflow-x: clip; }
   body:has(.main-menu.is-sheet) { overflow: hidden; }
   body:has(.main-menu.is-sheet) .kmod-floating-contact, .cart-open .nav__hamburger-kmpd { display: none !important; }
 
-  /* the header already has "Tra cứu đơn": the floating copy only covered content on the right edge */
-  .kmod-contact-btn--track { display: none; }
+  /* where the header already has "Tra cứu đơn" the floating copy only covers content on the right edge */
+  body:has(.nav__actions [data-open-tracking]) .kmod-contact-btn--track { display: none; }
   /* finger-size tap areas without moving the layout */
   .kmpd-pcard__link, .home-more { padding-block: 12px; margin-block: -12px; }
   .kmpd-sound-btn { min-height: 40px; }
