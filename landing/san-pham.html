@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="vi" data-type="product" data-radius="round" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Danh Sách Sản Phẩm - MoneyKeyboard</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Danh mục đầy đủ bàn phím cơ, switch, keycap và phụ kiện mod phím chính hãng. Phân loại theo layout, profile, hãng và nghe thử âm thanh gõ thực tế.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="app.css">
+<style>
+.catalog-page {
+  padding: 36px 0 96px;
+}
+.catalog-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--p-muted);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.catalog-breadcrumbs a {
+  color: var(--p-muted);
+  text-decoration: none;
+  transition: color .15s;
+}
+.catalog-breadcrumbs a:hover {
+  color: var(--p-action);
+}
+.catalog-breadcrumbs span {
+  opacity: .5;
+}
+.catalog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.catalog-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+  line-height: 1.15;
+}
+.catalog-sub {
+  font-size: 15px;
+  color: var(--p-muted);
+  margin: 8px 0 0;
+}
+.catalog-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.catalog-sort select {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-btn);
+  border: 1px solid rgb(0 0 0 / .12);
+  background: var(--p-surface);
+  font: 500 13.5px var(--font-text);
+  color: var(--p-ink);
+  outline: none;
+  cursor: pointer;
+}
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 22px;
+  margin-top: 28px;
+}
+@media (max-width: 600px) {
+  .catalog-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .catalog-grid .kmpd-pcard { width: 100%; flex: 1; min-width: 0; padding: 12px; }
+  .catalog-grid .kmpd-pcard__name { font-size: 14px; min-height: 38px; }
+  .catalog-grid .kmpd-pcard__line { display: none; }
+}
+@media (max-width: 420px) {
+  .catalog-grid { grid-template-columns: 1fr; }
+}
+.filter-active-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--p-action) 12%, transparent);
+  color: var(--p-action);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.filter-tag button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+}
+</style>
+</head>
+<body>
+
+<!-- Header Hàng Trên Cùng -->
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="index.html">
+      <span class="mark" data-mark="stack" aria-hidden="true"></span>MoneyKeyboard
+    </a>
+
+    <!-- Ô tìm kiếm ngay trung tâm thanh header + Dropdown kết quả tức thì -->
+    <div class="nav__search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" id="top-search" placeholder="Tìm kiếm bàn phím cơ, layout, switch, linh kiện..." aria-label="Tìm kiếm sản phẩm" autocomplete="off">
+      <div class="search-dropdown" id="search-dropdown">
+        <div class="search-dropdown__header">
+          <span id="search-results-count">Kết quả tìm kiếm</span>
+          <span id="search-clear-btn" style="cursor:pointer;color:var(--p-action)">Đóng ✕</span>
+        </div>
+        <div id="search-results-list"></div>
+      </div>
+    </div>
+
+    <!-- Cụm hành động: Tra cứu đơn, Tài khoản và Giỏ hàng -->
+    <div class="nav__actions">
+      <button class="account-btn" type="button" data-open-tracking aria-label="Tra cứu đơn hàng">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/><circle cx="18.5" cy="15.5" r="2.5"/><path d="M20.2 17.2 22 19"/></svg>
+        <span class="action-btn__label">Tra cứu đơn</span>
+      </button>
+
+      <button class="account-btn" type="button" id="account-btn" aria-label="Tài khoản">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span class="action-btn__label">Tài khoản</span>
+      </button>
+
+      <button class="cart-btn" type="button" aria-label="Mở giỏ hàng">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="cart-btn__n"></span>
+      </button>
+    </div>
+
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Thanh Menu Ngang Chuẩn Y Chang kietmodphimdao.com -->
+<nav class="main-menu" aria-label="Menu điều hướng chính">
+  <div class="wrap main-menu__inner">
+    <button class="nav__hamburger-kmpd" type="button" aria-label="Menu mở rộng">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="menu-list">
+      <!-- 1. GIỚI THIỆU -->
+      <li class="menu-item">
+        <a class="menu-link" href="gioi-thieu.html">GIỚI THIỆU</a>
+      </li>
+
+      <!-- 2. SẢN PHẨM -->
+      <li class="menu-item has-dropdown">
+        <a class="menu-link" href="san-pham.html" id="menu-btn-san-pham">
+          SẢN PHẨM <span class="arrow-down" aria-hidden="true">⌄</span>
+        </a>
+        <div class="dropdown-mega-rich">
+          <div class="kmpd-dropdown__cols">
+            <!-- Cột 1: BÀN PHÍM CƠ -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=ban-phim-co">
+                <span>BÀN PHÍM CƠ</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-40"><span>Layout 40%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-65"><span>Layout 65%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-75"><span>Layout 75%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-96"><span>Layout 96%</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-fullsize"><span>Layout Fullsize</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=layout-tkl"><span>Layout TKL – FRL</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=numpad"><span>Numpad</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=ban-phim-co&sub=phim-he" class="is-highlight"><span>Phím HE – Chuyên Game</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 2: SWITCH -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=switch">
+                <span>SWITCH</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=switch&sub=switch-clicky"><span>Switch Clicky</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=switch&sub=switch-linear"><span>Switch Linear</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=switch&sub=switch-silent"><span>Switch Silent</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=switch&sub=switch-tactile"><span>Switch Tactile</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 3: KEYCAP -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=keycap">
+                <span>KEYCAP</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-akko"><span>Keycap Akko</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-artisan"><span>Keycap Artisan</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-fbb"><span>Keycap FBB</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-piifox"><span>Keycap Piifox</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=keycap-xuyen-led"><span>Keycap Xuyên LED</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-asa"><span>Profile ASA</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-cherry"><span>Profile Cherry</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-khac"><span>Profile Khác</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-mao"><span>Profile MAO</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-mda"><span>Profile MDA</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-moa"><span>Profile MOA</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-moc-moe"><span>Profile MOC – MOE</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=keycap&sub=profile-xoa"><span>Profile XOA</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 4: PHỤ KIỆN -->
+            <div class="kmpd-dropdown__col">
+              <a class="kmpd-dropdown__head" href="san-pham.html?cat=phu-kien">
+                <span>PHỤ KIỆN</span> <span class="kmpd-arr">→</span>
+              </a>
+              <ul class="kmpd-dropdown__list">
+                <li><a href="san-pham.html?cat=phu-kien&sub=chuot-wireless"><span>Chuột Wireless</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=dau-lube"><span>Dầu Lube</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=day-cap-custom"><span>Dây Cáp Custom</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=deskmat"><span>Deskmat</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=dung-cu-mod-phim"><span>Dụng Cụ Mod Phím</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=phu-kien-khac"><span>Phụ Kiện Khác</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=plate"><span>Plate</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=stab"><span>Stab</span> <span class="kmpd-chv">›</span></a></li>
+                <li><a href="san-pham.html?cat=phu-kien&sub=switches"><span>SWITCHES</span> <span class="kmpd-chv">›</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Cột 5: Spotlight Banner Card chuẩn Ảnh 1 (GravaStar Mercury K98 Beyond The Ordinary) -->
+            <div class="kmpd-dropdown__spotlight">
+              <a class="spotlight-card" href="product.html?id=gravastar-mercury-k1-pro" title="GravaStar Mercury K98">
+                <img src="img/gravastar-k98-banner.jpg" alt="GravaStar Mercury K98 Beyond The Ordinary" loading="lazy">
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- 3. THƯƠNG HIỆU -->
+      <li class="menu-item has-dropdown">
+        <a class="menu-link" href="thuong-hieu.html">
+          THƯƠNG HIỆU <span class="arrow-down" aria-hidden="true">⌄</span>
+        </a>
+        <div class="dropdown-brands-rich">
+          <div class="brands-pill-list">
+            <a href="thuong-hieu.html?brand=Aula">Aula</a>
+            <a href="thuong-hieu.html?brand=Madlions">Madlions</a>
+            <a href="thuong-hieu.html?brand=MonsGeek">MonsGeek</a>
+            <a href="thuong-hieu.html?brand=Leobog">Leobog</a>
+            <a href="thuong-hieu.html?brand=Akko">AKKO</a>
+            <a href="thuong-hieu.html?brand=Xinmeng">Xinmeng</a>
+            <a href="thuong-hieu.html?brand=Weikav">Weikav</a>
+            <a href="thuong-hieu.html?brand=GravaStar">GravaStar</a>
+            <a href="thuong-hieu.html?brand=Titan Elite">Titan Elite</a>
+            <a href="thuong-hieu.html?brand=Lingbao">Lingbao</a>
+            <a href="thuong-hieu.html">Tất cả hãng →</a>
+          </div>
+
+          <!-- Danh sách sản phẩm của các hãng nổi bật -->
+          <div class="mega-products-preview">
+            <div class="mega-products-preview__head">
+              <span>Mẫu phím tiêu biểu theo từng thương hiệu</span>
+            </div>
+            <div class="mega-prod-grid">
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=Aula">
+                <img src="assets/objects/product-render/specs/stills/keyboard-75-three-quarter-blue.webp" alt="Aula" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">Aula F75 / F99 / SC620</span>
+                  <span class="mega-prod-card__price">Xem sản phẩm Aula →</span>
+                </div>
+              </a>
+
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=Madlions">
+                <img src="img/mad60-v2.jpg" alt="Madlions" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">Madlions MAD60 V2 HE</span>
+                  <span class="mega-prod-card__price">Xem phím HE Rapid Trigger →</span>
+                </div>
+              </a>
+
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=MonsGeek">
+                <img src="assets/objects/product-render/specs/stills/keyboard-75-three-quarter-black.webp" alt="MonsGeek" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">MonsGeek M1 Nhôm CNC</span>
+                  <span class="mega-prod-card__price">Kit phím cao cấp →</span>
+                </div>
+              </a>
+
+              <a class="mega-prod-card" href="thuong-hieu.html?brand=Leobog">
+                <img src="img/cathedral-keycaps.webp" alt="Leobog" loading="lazy">
+                <div class="mega-prod-card__info">
+                  <span class="mega-prod-card__name">Leobog Hi75C & Switch</span>
+                  <span class="mega-prod-card__price">Xem sản phẩm Leobog →</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- 4. CUSTOM BUILD -->
+      <li class="menu-item">
+        <a class="menu-link highlight-link" href="custom-build.html">
+          CUSTOM BUILD <span class="badge-mini">HOT</span>
+        </a>
+      </li>
+
+      <!-- 5. HƯỚNG DẪN SỬ DỤNG -->
+      <li class="menu-item">
+        <a class="menu-link" href="hdsd.html">HƯỚNG DẪN SỬ DỤNG</a>
+      </li>
+
+      <!-- 6. CHÍNH SÁCH BẢO HÀNH -->
+      <li class="menu-item">
+        <a class="menu-link" href="bao-hanh.html">CHÍNH SÁCH BẢO HÀNH</a>
+      </li>
+
+      <!-- 7. LIÊN HỆ -->
+      <li class="menu-item">
+        <a class="menu-link" href="lien-he.html">LIÊN HỆ</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main class="catalog-page">
+  <div class="wrap">
+    <!-- Breadcrumbs -->
+    <nav class="catalog-breadcrumbs" aria-label="Đường dẫn">
+      <a href="index.html">Trang chủ</a>
+      <span>/</span>
+      <a href="san-pham.html" id="bc-cat-link">Sản phẩm</a>
+      <span id="bc-sub-sep" style="display:none">/</span>
+      <span id="bc-sub-text" style="display:none;color:var(--p-ink);font-weight:600"></span>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="catalog-head">
+      <div>
+        <h1 class="catalog-title" id="page-title">Tất cả sản phẩm</h1>
+        <p class="catalog-sub" id="page-sub">Khám phá toàn bộ bàn phím cơ, switch, keycap và phụ kiện mod phím chính hãng.</p>
+        <div class="filter-active-pills" id="active-pills"></div>
+      </div>
+
+      <div class="catalog-sort">
+        <label for="sort-select" style="font-size:13px;color:var(--p-muted);font-weight:600">Sắp xếp:</label>
+        <select id="sort-select" aria-label="Sắp xếp sản phẩm">
+          <option value="featured">Nổi bật nhất</option>
+          <option value="price-asc">Giá: Thấp đến cao</option>
+          <option value="price-desc">Giá: Cao đến thấp</option>
+          <option value="name-asc">Tên: A → Z</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Faceted Filter Hub (2 Tầng chuẩn) -->
+    <div class="filter-hub">
+      <!-- Tầng 1: Danh mục lớn -->
+      <div class="tier-1" id="cat-tabs" role="tablist" aria-label="Danh mục chính"></div>
+
+      <!-- Tầng 2: Phân loại con -->
+      <div class="tier-2" id="sub-filters" style="display:none"></div>
+
+      <!-- Hàng lọc thương hiệu -->
+      <div class="filter-bar-sub">
+        <span style="font-size:13px;font-weight:600;color:var(--p-muted)">Lọc theo hãng:</span>
+        <div class="brand-pills" id="brand-filters" role="group" aria-label="Lọc theo thương hiệu"></div>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="catalog-grid" id="catalog-products"></div>
+
+    <div id="no-products" style="display:none;text-align:center;padding:80px 0;color:var(--p-muted)">
+      <p style="font-size:18px;font-weight:600">Không tìm thấy sản phẩm phù hợp.</p>
+      <p style="font-size:14px;margin-top:6px">Thử chọn danh mục khác hoặc đặt lại bộ lọc.</p>
+      <button class="btn btn--secondary" type="button" id="reset-filters-btn" style="margin-top:16px">Đặt lại toàn bộ lọc</button>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="section-xl" id="footer" style="background:var(--p-surface);padding:64px 0">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:40px;margin-bottom:48px">
+      <div>
+        <p style="font-size:20px;font-weight:700;margin:0 0 12px">MoneyKeyboard</p>
+        <p class="muted" style="font-size:14px;line-height:1.6">Góc nhỏ đam mê bàn phím cơ custom, switch, keycap và phụ kiện mod phím chính hãng. Chất riêng trên từng phím bấm.</p>
+      </div>
+      <div>
+        <p style="font-size:15px;font-weight:600;margin:0 0 12px">Hỗ trợ khách hàng</p>
+        <p class="muted" style="font-size:14px;line-height:1.8">
+          · Đặt cọc 100.000đ, giao COD toàn quốc<br>
+          · Đổi mới trong 7 ngày nếu lỗi nhà sản xuất<br>
+          · Dịch vụ Custom Build & Mod phím theo gu riêng
+        </p>
+      </div>
+      <div>
+        <p style="font-size:15px;font-weight:600;margin:0 0 12px">Thông tin liên hệ</p>
+        <p class="muted" style="font-size:14px;line-height:1.8">
+          📍 158/65 Phạm Văn Chiêu, Gò Vấp, HCM<br>
+          📞 Hotline / Zalo: <a href="tel:0942109929" style="color:inherit;font-weight:600">0942 109 929</a><br>
+          🎵 TikTok: <a href="https://www.tiktok.com/@_strongxxx" target="_blank" rel="noopener" class="link">@_strongxxx</a><br>
+          📸 Instagram: <a href="https://www.instagram.com/zynxx_ori/" target="_blank" rel="noopener" class="link">@zynxx_ori</a><br>
+          ⏰ Giờ hoạt động: 09:00 – 20:00 hàng ngày
+        </p>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgb(0 0 0 / .07);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <p class="muted" style="font-size:14px;margin:0">© 2026 MoneyKeyboard. Bản quyền thuộc về MoneyKeyboard.</p>
+      <p class="muted" style="font-size:14px;margin:0"><a class="link" href="admin.html">Trang quản trị (Demo)</a></p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module">
+  import {
+    bindSoundButtons,
+    CAT_TABS,
+    SUB_FILTERS,
+    CATALOG,
+    BRANDS,
+    vnd,
+    firstImg,
+    toast,
+    esc,
+    stockBadge
+  } from './app.js';
+
+  // Read URL search params
+  const urlParams = new URLSearchParams(window.location.search);
+  let activeCat = urlParams.get('cat') || 'all';
+  let activeSub = urlParams.get('sub') || 'all';
+  let activeBrand = urlParams.get('brand') || 'Tất cả';
+  let activeSort = 'featured';
+
+  // If cat was 'custom-build', redirect to dedicated custom-build.html
+  if (activeCat === 'custom-build') {
+    window.location.href = 'custom-build.html';
+  }
+
+  // Stock categories only (exclude custom-build from stock catalog)
+  const STOCK_TABS = CAT_TABS.filter(t => t.id !== 'custom-build');
+
+  function updatePageMeta() {
+    const titleEl = document.getElementById('page-title');
+    const subEl = document.getElementById('page-sub');
+    const bcSubSep = document.getElementById('bc-sub-sep');
+    const bcSubText = document.getElementById('bc-sub-text');
+    const bcCatLink = document.getElementById('bc-cat-link');
+
+    const catObj = CAT_TABS.find(t => t.id === activeCat);
+    const catName = catObj ? catObj.name : 'Sản phẩm';
+
+    if (activeCat === 'all') {
+      titleEl.textContent = 'Tất cả sản phẩm';
+      subEl.textContent = 'Khám phá toàn bộ bàn phím cơ, switch, keycap và phụ kiện mod phím chính hãng.';
+      bcCatLink.textContent = 'Sản phẩm';
+      bcSubSep.style.display = 'none';
+      bcSubText.style.display = 'none';
+    } else {
+      bcCatLink.textContent = catName;
+      bcCatLink.href = `san-pham.html?cat=${activeCat}`;
+
+      const subs = SUB_FILTERS[activeCat] || [];
+      const subObj = subs.find(s => s.id === activeSub);
+
+      if (activeSub !== 'all' && subObj) {
+        titleEl.textContent = `${catName} – ${subObj.name}`;
+        subEl.textContent = `Danh sách ${subObj.name} sẵn hàng tại MoneyKeyboard. Nghe thử âm thanh gõ thực tế.`;
+        bcSubSep.style.display = 'inline';
+        bcSubText.style.display = 'inline';
+        bcSubText.textContent = subObj.name;
+      } else {
+        titleEl.textContent = catName;
+        subEl.textContent = `Danh sách ${catName} chính hãng đầy đủ phân loại. Sẵn hàng tại TP.HCM.`;
+        bcSubSep.style.display = 'none';
+        bcSubText.style.display = 'none';
+      }
+    }
+
+    // Active pills
+    const pillsEl = document.getElementById('active-pills');
+    let pillsHtml = '';
+    if (activeCat !== 'all') {
+      pillsHtml += `<span class="filter-tag">${catName} <button type="button" data-clear="cat">✕</button></span>`;
+    }
+    if (activeSub !== 'all') {
+      const subObj = (SUB_FILTERS[activeCat] || []).find(s => s.id === activeSub);
+      if (subObj) pillsHtml += `<span class="filter-tag">${subObj.name} <button type="button" data-clear="sub">✕</button></span>`;
+    }
+    if (activeBrand !== 'Tất cả') {
+      pillsHtml += `<span class="filter-tag">Hãng: ${activeBrand} <button type="button" data-clear="brand">✕</button></span>`;
+    }
+    pillsEl.innerHTML = pillsHtml;
+  }
+
+  function renderFilterControls() {
+    // Tier 1 tabs
+    document.getElementById('cat-tabs').innerHTML = STOCK_TABS.map(t => `
+      <button type="button" data-cat="${t.id}" aria-pressed="${t.id === activeCat}">${t.name}</button>
+    `).join('');
+
+    // Tier 2 sub chips
+    const tier2El = document.getElementById('sub-filters');
+    const subs = SUB_FILTERS[activeCat] || [];
+    if (subs.length > 0) {
+      tier2El.style.display = 'flex';
+      tier2El.innerHTML = `
+        <span class="tier-2__label">Phân loại:</span>
+        ${subs.map(s => `
+          <button type="button" data-sub="${s.id}" aria-pressed="${s.id === activeSub}">${s.name}</button>
+        `).join('')}
+      `;
+    } else {
+      tier2El.style.display = 'none';
+    }
+
+    // Brand pills
+    document.getElementById('brand-filters').innerHTML = BRANDS.map(b => `
+      <button type="button" data-brand="${b}" aria-pressed="${b === activeBrand}">${b}</button>
+    `).join('');
+  }
+
+  function renderGrid() {
+    let list = CATALOG.filter(p => !p.isCustomBuild);
+
+    if (activeCat !== 'all') {
+      list = list.filter(p => p.category === activeCat);
+    }
+    if (activeSub !== 'all') {
+      list = list.filter(p => p.subCategory === activeSub);
+    }
+    if (activeBrand !== 'Tất cả') {
+      list = list.filter(p => p.brand.toLowerCase() === activeBrand.toLowerCase());
+    }
+
+    // Sorting
+    if (activeSort === 'price-asc') {
+      list.sort((a, b) => a.price - b.price);
+    } else if (activeSort === 'price-desc') {
+      list.sort((a, b) => b.price - a.price);
+    } else if (activeSort === 'name-asc') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    const grid = document.getElementById('catalog-products');
+    const noProds = document.getElementById('no-products');
+
+    if (list.length === 0) {
+      grid.innerHTML = '';
+      noProds.style.display = 'block';
+    } else {
+      noProds.style.display = 'none';
+      grid.innerHTML = list.map(p => {
+        const src = firstImg(p);
+        const soundId = p.soundId || (p.category === 'ban-phim-co' || p.category === 'switch' ? 'graywood' : null);
+        const hasSound = Boolean(p.audioData || soundId);
+        const soundAttr = `${p.audioData ? `data-sound-file="${p.audioData}" ` : ''}data-sound="${soundId || 'graywood'}"`;
+        return `
+          <article class="kmpd-pcard" data-sound-host>
+            <span class="kmpd-badge-stock">${stockBadge(p)}</span>
+            <a class="kmpd-pcard__img" href="product.html?id=${p.id}">
+              <img src="${src}" alt="${esc(p.name)}" loading="lazy">
+            </a>
+            <span class="kmpd-pcard__brand">${esc(p.brand)}</span>
+            <h3 class="kmpd-pcard__name">
+              <a href="product.html?id=${p.id}">${esc(p.name)}</a>
+            </h3>
+            <p class="kmpd-pcard__line">${esc(p.line)}</p>
+            ${hasSound ? `
+              <button class="kmpd-sound-btn" type="button" ${soundAttr}>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
+                <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
+              </button>` : ''}
+            <div class="kmpd-pcard__footer">
+              <span class="kmpd-pcard__price">${vnd(p.price)}</span>
+              <a class="kmpd-pcard__link" href="product.html?id=${p.id}">
+                XEM SẢN PHẨM ↗
+              </a>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    bindSoundButtons();
+  }
+
+  // Filter events
+  document.getElementById('cat-tabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-cat]');
+    if (!btn) return;
+    activeCat = btn.dataset.cat;
+    activeSub = 'all';
+    history.replaceState(null, '', `san-pham.html?cat=${activeCat}`);
+    updatePageMeta();
+    renderFilterControls();
+    renderGrid();
+  });
+
+  document.getElementById('sub-filters').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-sub]');
+    if (!btn) return;
+    activeSub = btn.dataset.sub;
+    history.replaceState(null, '', `san-pham.html?cat=${activeCat}&sub=${activeSub}`);
+    updatePageMeta();
+    renderFilterControls();
+    renderGrid();
+  });
+
+  document.getElementById('brand-filters').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-brand]');
+    if (!btn) return;
+    activeBrand = btn.dataset.brand;
+    updatePageMeta();
+    renderFilterControls();
+    renderGrid();
+  });
+
+  document.getElementById('sort-select').addEventListener('change', (e) => {
+    activeSort = e.target.value;
+    renderGrid();
+  });
+
+  document.getElementById('active-pills').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-clear]');
+    if (!btn) return;
+    const type = btn.dataset.clear;
+    if (type === 'cat') {
+      activeCat = 'all';
+      activeSub = 'all';
+      history.replaceState(null, '', 'san-pham.html');
+    } else if (type === 'sub') {
+      activeSub = 'all';
+      history.replaceState(null, '', `san-pham.html?cat=${activeCat}`);
+    } else if (type === 'brand') {
+      activeBrand = 'Tất cả';
+    }
+    updatePageMeta();
+    renderFilterControls();
+    renderGrid();
+  });
+
+  document.getElementById('reset-filters-btn').addEventListener('click', () => {
+    activeCat = 'all';
+    activeSub = 'all';
+    activeBrand = 'Tất cả';
+    history.replaceState(null, '', 'san-pham.html');
+    updatePageMeta();
+    renderFilterControls();
+    renderGrid();
+  });
+
+  // header search: shared initSearch() in app.js
+
+  // Initial
+  updatePageMeta();
+  renderFilterControls();
+  renderGrid();
+</script>
+</body>
+</html>

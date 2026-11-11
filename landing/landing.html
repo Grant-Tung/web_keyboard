@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="vi" data-type="product" data-radius="round" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MoneyKeyboard – Bàn phím cơ chính hãng, mua nhanh qua Zalo</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="MoneyKeyboard – Bàn phím cơ, switch, keycap chính hãng. Mua sắm nhanh chóng và nhận tư vấn trực tiếp qua Zalo, giao COD toàn quốc.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="app.css">
+<style>
+.lp-body {
+  overflow-x: hidden;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  font-family: var(--font-text);
+  margin: 0;
+  padding: 0;
+}
+
+.lp-topbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.lp-topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 16px;
+}
+
+.lp-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: -0.03em;
+  color: var(--p-ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.lp-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.lp-nav-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--p-ink);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.lp-nav-link:hover {
+  color: var(--p-action);
+}
+
+.lp-topbar-cta {
+  height: 40px;
+  padding: 0 18px;
+  font-size: 14px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .lp-nav-links {
+    display: none;
+  }
+  .lp-topbar-inner {
+    height: 56px;
+  }
+}
+
+.lp-hero {
+  padding: 60px 0 72px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .lp-hero {
+    padding: 36px 0 48px;
+  }
+}
+
+.lp-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 48px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .lp-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+}
+
+.lp-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lp-hero-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--p-action);
+  background: rgba(0, 113, 227, 0.08);
+  padding: 4px 12px;
+  border-radius: var(--r-btn);
+  margin-bottom: 16px;
+}
+
+.lp-hero-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin: 0 0 16px;
+  color: var(--p-ink);
+  word-break: break-word;
+}
+
+.lp-hero-lead {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--p-muted);
+  margin: 0 0 20px;
+  max-width: 50ch;
+}
+
+.lp-hero-price {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--p-ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+
+.lp-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.lp-hero-btn {
+  text-decoration: none;
+}
+
+.lp-hero-note {
+  font-size: 13px;
+  color: var(--p-muted);
+  line-height: 1.45;
+  margin: 0;
+  max-width: 48ch;
+}
+
+.lp-hero-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.lp-hero-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-width: 520px;
+  background: #0b0b0e;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.12);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.lp-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.lp-hero-img-wrap:hover .lp-hero-img {
+  transform: scale(1.06);
+}
+
+@media (max-width: 480px) {
+  .lp-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .lp-hero-actions .lp-hero-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.lp-section {
+  padding: 80px 0;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.lp-section--alt {
+  background: #f5f5f7;
+}
+
+@media (max-width: 640px) {
+  .lp-section {
+    padding: 48px 0;
+  }
+}
+
+.lp-section-head {
+  margin-bottom: 36px;
+}
+
+.lp-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--p-action);
+  margin-bottom: 6px;
+}
+
+.lp-section-title {
+  font-size: clamp(24px, 3.5vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  color: var(--p-ink);
+}
+
+.lp-section-sub {
+  font-size: 15px;
+  color: var(--p-muted);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 60ch;
+}
+
+.lp-products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .lp-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-products-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lp-pcard {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: none !important;
+  box-sizing: border-box !important;
+}
+
+.lp-footage-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .lp-footage-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-footage-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lp-footage-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.lp-footage-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12);
+}
+
+.lp-footage-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #0b0b0e;
+  overflow: hidden;
+}
+
+.lp-footage-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.lp-footage-card:hover .lp-footage-media img {
+  transform: scale(1.06);
+}
+
+.lp-footage-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 6px;
+}
+
+.lp-footage-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lp-footage-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 8px;
+  color: var(--p-ink);
+  min-height: 40px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lp-footage-desc {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--p-muted);
+  margin: 0 0 16px;
+  min-height: 38px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lp-footage-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.lp-footage-btn {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lp-commit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .lp-commit-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+.lp-commit-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s var(--ease-out);
+  box-sizing: border-box;
+}
+
+.lp-commit-card:hover {
+  transform: translateY(-4px);
+}
+
+.lp-commit-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #f5f5f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lp-commit-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 10px;
+  color: var(--p-ink);
+}
+
+.lp-commit-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--p-muted);
+  margin: 0;
+}
+
+.lp-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .lp-steps-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+.lp-step-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.lp-step-num {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--p-action);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.lp-step-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 10px;
+  color: var(--p-ink);
+}
+
+.lp-step-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--p-muted);
+  margin: 0;
+}
+
+.lp-footer {
+  background: #f5f5f7;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 56px 0 36px;
+  box-sizing: border-box;
+}
+
+.lp-footer-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.lp-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 36px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .lp-footer-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+
+.lp-footer-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.03em;
+  color: var(--p-ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lp-footer-tagline {
+  font-size: 14px;
+  color: var(--p-muted);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 36ch;
+}
+
+.lp-footer-heading {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 14px;
+  color: var(--p-ink);
+}
+
+.lp-footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.lp-footer-list li {
+  color: var(--p-muted);
+  line-height: 1.4;
+}
+
+.lp-footer-list strong {
+  color: var(--p-ink);
+}
+
+.lp-footer-link {
+  color: var(--p-action);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.lp-footer-link:hover {
+  text-decoration: underline;
+}
+
+.lp-footer-bottom {
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.lp-footer-copy {
+  font-size: 13px;
+  color: var(--p-muted);
+  margin: 0;
+}
+
+.lp-zalo-fab {
+  position: fixed;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #0071e3;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
+  z-index: 999;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+}
+
+.lp-zalo-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.5);
+}
+</style>
+</head>
+<body class="lp-body">
+
+<div id="kmod-contact-widget" style="display:none" aria-hidden="true"></div>
+
+<!-- 1. Simple sticky top bar -->
+<header class="lp-topbar">
+  <div class="wrap lp-topbar-inner">
+    <a class="lp-logo" href="#">
+      <span class="mark" data-mark="stack" aria-hidden="true"></span>MoneyKeyboard
+    </a>
+    <nav class="lp-nav-links" aria-label="Điều hướng">
+      <a class="lp-nav-link" href="#san-pham">Sản phẩm</a>
+      <a class="lp-nav-link" href="#nghe-thu">Nghe thử</a>
+      <a class="lp-nav-link" href="#cam-ket">Cam kết</a>
+      <a class="lp-nav-link" href="#lien-he">Liên hệ</a>
+    </nav>
+    <a class="btn btn--primary lp-topbar-cta" id="lp-topbar-cta" href="https://zalo.me/0942109929" target="_blank" rel="noopener" data-zalo>
+      Chat Zalo
+    </a>
+  </div>
+</header>
+
+<main>
+  <!-- 2. Hero: product aula-f75 from CATALOG -->
+  <section class="lp-hero" id="lp-hero-root">
+    <!-- Populated by script -->
+  </section>
+
+  <!-- 3. Sản phẩm (#san-pham): grid of category 'ban-phim-co' -->
+  <section class="lp-section lp-section--alt" id="san-pham">
+    <div class="wrap">
+      <div class="lp-section-head">
+        <span class="lp-eyebrow">DANH MỤC NỔI BẬT</span>
+        <h2 class="lp-section-title">Bàn phím cơ chính hãng</h2>
+        <p class="lp-section-sub">Tuyển chọn các dòng phím cơ chất lượng cao, thiết kế đẹp mắt, hỗ trợ hotswap và kết nối đa chế độ.</p>
+      </div>
+      <div class="lp-products-grid" id="lp-products-root">
+        <!-- Populated by script -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Nghe thử (#nghe-thu): 4 FOOTAGE_ITEMS as image cards -->
+  <section class="lp-section" id="nghe-thu">
+    <div class="wrap">
+      <div class="lp-section-head">
+        <span class="lp-eyebrow">SOUND TEST THỰC TẾ</span>
+        <h2 class="lp-section-title">Nghe thử âm thanh switch</h2>
+        <p class="lp-section-sub">Trải nghiệm âm thanh gõ đặc trưng của từng dòng switch: Thock trầm ấm, Clack đanh giòn, Silent siêu êm và phím từ tính HE.</p>
+      </div>
+      <div class="lp-footage-grid" id="lp-footage-root">
+        <!-- Populated by script -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Cam kết (#cam-ket): 3 cards -->
+  <section class="lp-section lp-section--alt" id="cam-ket">
+    <div class="wrap">
+      <div class="lp-section-head">
+        <span class="lp-eyebrow">UY TÍN HÀNG ĐẦU</span>
+        <h2 class="lp-section-title">Cam kết từ MoneyKeyboard</h2>
+        <p class="lp-section-sub">Chúng tôi mang lại sự an tâm tuyệt đối với quy trình bảo hành chu đáo và chất lượng sản phẩm nguyên bản.</p>
+      </div>
+      <div class="lp-commit-grid">
+        <div class="lp-commit-card">
+          <div class="lp-commit-icon" aria-hidden="true">🛡️</div>
+          <h3 class="lp-commit-title">Hàng chính hãng</h3>
+          <p class="lp-commit-desc">100% bàn phím cơ và phụ kiện nguyên seal chính hãng, đầy đủ phụ kiện theo tiêu chuẩn nhà sản xuất.</p>
+        </div>
+        <div class="lp-commit-card">
+          <div class="lp-commit-icon" aria-hidden="true">📦</div>
+          <h3 class="lp-commit-title">Giao COD toàn quốc – kiểm tra rồi mới trả tiền</h3>
+          <p class="lp-commit-desc">Được mở hộp đồng kiểm tra hàng tận tay trước khi thanh toán, đảm bảo an tâm tuyệt đối khi mua sắm online.</p>
+        </div>
+        <div class="lp-commit-card">
+          <div class="lp-commit-icon" aria-hidden="true">⚙️</div>
+          <h3 class="lp-commit-title">Bảo hành 12 tháng, đổi mới 7 ngày nếu lỗi NSX</h3>
+          <p class="lp-commit-desc">Bảo hành mạch và switch 12 tháng chu đáo, 1 đổi 1 nhanh chóng trong 7 ngày đầu, hỗ trợ cân chỉnh stab trọn đời.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Mua thế nào?: 3 steps -->
+  <section class="lp-section" id="huong-dan">
+    <div class="wrap">
+      <div class="lp-section-head">
+        <span class="lp-eyebrow">QUY TRÌNH MUA HÀNG</span>
+        <h2 class="lp-section-title">Mua thế nào?</h2>
+        <p class="lp-section-sub">Đặt hàng chỉ với 3 bước đơn giản, không cần tài khoản hay thủ tục rườm rà.</p>
+      </div>
+      <div class="lp-steps-grid">
+        <div class="lp-step-card">
+          <div class="lp-step-num" aria-hidden="true">1</div>
+          <h3 class="lp-step-title">Chọn mẫu</h3>
+          <p class="lp-step-desc">Duyệt danh sách các mẫu bàn phím cơ yêu thích và bấm nghe thử âm gõ switch thực tế để chọn sản phẩm phù hợp.</p>
+        </div>
+        <div class="lp-step-card">
+          <div class="lp-step-num" aria-hidden="true">2</div>
+          <h3 class="lp-step-title">Bấm "Mua qua Zalo" và gửi tin nhắn</h3>
+          <p class="lp-step-desc">Tên sản phẩm và giá tiền đã được tự động lưu vào bộ nhớ tạm. Khi mở Zalo bạn chỉ cần dán (Paste) và gửi ngay cho shop.</p>
+        </div>
+        <div class="lp-step-card">
+          <div class="lp-step-num" aria-hidden="true">3</div>
+          <h3 class="lp-step-title">Shop xác nhận &amp; giao COD</h3>
+          <p class="lp-step-desc">MoneyKeyboard phản hồi lập tức, tư vấn chi tiết và gửi hàng COD về tận nhà bạn trong thời gian nhanh nhất.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 7. Footer (#lien-he) -->
+<footer class="lp-footer" id="lien-he">
+  <div class="wrap lp-footer-inner">
+    <div class="lp-footer-grid">
+      <div class="lp-footer-col">
+        <div class="lp-footer-brand">
+          <span class="mark" data-mark="stack" aria-hidden="true"></span>MoneyKeyboard
+        </div>
+        <p class="lp-footer-tagline">Chuyên bàn phím cơ, switch và linh kiện chính hãng. Mua sắm tiện lợi và hỗ trợ trực tiếp qua Zalo.</p>
+      </div>
+      <div class="lp-footer-col">
+        <h4 class="lp-footer-heading">Thông tin liên hệ</h4>
+        <ul class="lp-footer-list">
+          <li><strong>Hotline:</strong> <a class="lp-footer-link" id="lp-footer-hotline" href="tel:0942109929">0942 109 929</a></li>
+          <li><strong>Địa chỉ:</strong> <span id="lp-footer-address">158/65 Phạm Văn Chiêu, Gò Vấp, HCM</span></li>
+          <li><strong>Zalo:</strong> <a class="lp-footer-link" id="lp-footer-zalo" href="https://zalo.me/0942109929" target="_blank" rel="noopener">Chat Zalo Shop</a></li>
+        </ul>
+      </div>
+      <div class="lp-footer-col">
+        <h4 class="lp-footer-heading">Kênh mạng xã hội</h4>
+        <ul class="lp-footer-list">
+          <li><strong>TikTok:</strong> <a class="lp-footer-link" id="lp-footer-tiktok" href="https://www.tiktok.com/@_strongxxx" target="_blank" rel="noopener">@_strongxxx</a></li>
+          <li><strong>Instagram:</strong> <a class="lp-footer-link" id="lp-footer-instagram" href="https://www.instagram.com/zynxx_ori/" target="_blank" rel="noopener">@zynxx_ori</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="lp-footer-bottom">
+      <p class="lp-footer-copy">© 2026 MoneyKeyboard. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- 8. Fixed round Zalo button bottom-right -->
+<a class="lp-zalo-fab" id="lp-zalo-fab" href="https://zalo.me/0942109929" target="_blank" rel="noopener" aria-label="Chat Zalo tư vấn phím" data-zalo>
+  Zalo
+</a>
+
+<script type="module">
+import {
+  CATALOG,
+  vnd,
+  firstImg,
+  esc,
+  stockBadge,
+  bindSoundButtons,
+  CONTACT_ZALO,
+  CONTACT_HOTLINE,
+  CONTACT_ADDRESS,
+  CONTACT_TIKTOK,
+  CONTACT_INSTAGRAM,
+  FOOTAGE_ITEMS
+} from './app.js';
+
+const zalo = (p) => CONTACT_ZALO;
+
+// Clipboard helper on click of any [data-zalo]
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-zalo]');
+  if (!el) return;
+  const name = el.dataset.name;
+  const price = el.dataset.price;
+  const msg = name ? `Mình muốn mua ${name}${price ? ` (${price})` : ''}` : 'Mình muốn tư vấn mua bàn phím cơ';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(msg).catch(() => {});
+  }
+});
+
+// 1. Top bar & FAB links
+const topbarCtaEl = document.getElementById('lp-topbar-cta');
+if (topbarCtaEl) topbarCtaEl.href = CONTACT_ZALO;
+
+const zaloFabEl = document.getElementById('lp-zalo-fab');
+if (zaloFabEl) zaloFabEl.href = CONTACT_ZALO;
+
+// 2. Render Hero (aula-f75)
+const heroRoot = document.getElementById('lp-hero-root');
+const aula = CATALOG.find((p) => p.id === 'aula-f75') || CATALOG[0];
+if (heroRoot && aula) {
+  const heroImg = firstImg(aula);
+  const heroSoundId = aula.soundId || 'graywood';
+  heroRoot.innerHTML = `
+    <div class="wrap">
+      <div class="lp-hero-grid">
+        <div class="lp-hero-content">
+          <span class="lp-hero-badge">BÀN PHÍM CƠ HOT NHẤT</span>
+          <h1 class="lp-hero-title">${esc(aula.name)}</h1>
+          <p class="lp-hero-lead">${esc(aula.line)}</p>
+          <div class="lp-hero-price">${vnd(aula.price)}</div>
+          <div class="lp-hero-actions">
+            <a class="btn btn--primary lp-hero-btn" href="${CONTACT_ZALO}" target="_blank" rel="noopener" data-zalo data-name="${esc(aula.name)}" data-price="${vnd(aula.price)}">
+              Mua qua Zalo
+            </a>
+            <button class="btn btn--secondary lp-hero-btn" type="button" data-sound="${heroSoundId}">
+              ▶ Nghe tiếng gõ
+            </button>
+          </div>
+          <p class="lp-hero-note">Bấm mua sẽ mở Zalo, tin nhắn sản phẩm đã được copy sẵn – chỉ cần dán và gửi.</p>
+        </div>
+        <div class="lp-hero-visual">
+          <div class="lp-hero-img-wrap">
+            <img class="lp-hero-img" src="${heroImg}" alt="${esc(aula.name)}" loading="eager">
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// 3. Render "Sản phẩm" (#san-pham)
+const prodsRoot = document.getElementById('lp-products-root');
+const keyboards = CATALOG.filter((p) => p.category === 'ban-phim-co');
+if (prodsRoot) {
+  prodsRoot.innerHTML = keyboards.map((p) => {
+    const src = firstImg(p);
+    const soundId = p.soundId || (p.category === 'ban-phim-co' || p.category === 'switch' ? 'graywood' : null);
+    const hasSound = Boolean(p.audioData || soundId);
+    const soundAttr = `${p.audioData ? `data-sound-file="${p.audioData}" ` : ''}data-sound="${soundId || 'graywood'}"`;
+    return `
+      <article class="kmpd-pcard lp-pcard" data-sound-host>
+        <span class="kmpd-badge-stock">${stockBadge(p)}</span>
+        <div class="kmpd-pcard__img">
+          <img src="${src}" alt="${esc(p.name)}" loading="lazy">
+        </div>
+        <span class="kmpd-pcard__brand">${esc(p.brand)}</span>
+        <h3 class="kmpd-pcard__name">${esc(p.name)}</h3>
+        <p class="kmpd-pcard__line">${esc(p.line)}</p>
+        ${hasSound ? `
+          <button class="kmpd-sound-btn" type="button" ${soundAttr}>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10-6.5z"/></svg>
+            <span>${p.audioData ? 'Nghe âm thực tế 🎵' : 'Nghe tiếng gõ 🎵'}</span>
+          </button>` : ''}
+        <div class="kmpd-pcard__footer">
+          <span class="kmpd-pcard__price">${vnd(p.price)}</span>
+          <a class="kmpd-pcard__link" data-zalo data-name="${esc(p.name)}" data-price="${vnd(p.price)}" href="${CONTACT_ZALO}" target="_blank" rel="noopener">
+            MUA QUA ZALO ↗
+          </a>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+// 4. Render "Nghe thử" (#nghe-thu)
+const footageRoot = document.getElementById('lp-footage-root');
+if (footageRoot) {
+  const footageList = FOOTAGE_ITEMS.slice(0, 4);
+  footageRoot.innerHTML = footageList.map((item) => `
+    <article class="lp-footage-card">
+      <div class="lp-footage-media">
+        <img src="${esc(item.img)}" alt="${esc(item.title)}" loading="lazy">
+        ${item.tag ? `<span class="lp-footage-tag">${esc(item.tag)}</span>` : ''}
+      </div>
+      <div class="lp-footage-body">
+        <h3 class="lp-footage-title">${esc(item.title)}</h3>
+        <p class="lp-footage-desc">${esc(item.desc)}</p>
+        <div class="lp-footage-footer">
+          <button class="btn btn--secondary lp-footage-btn" type="button" data-sound="${item.soundId || 'graywood'}">
+            ▶ Nghe
+          </button>
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+
+// 7. Footer details
+const hotlineEl = document.getElementById('lp-footer-hotline');
+if (hotlineEl) {
+  hotlineEl.textContent = CONTACT_HOTLINE;
+  hotlineEl.href = `tel:${CONTACT_HOTLINE.replace(/\s+/g, '')}`;
+}
+const addressEl = document.getElementById('lp-footer-address');
+if (addressEl) addressEl.textContent = CONTACT_ADDRESS;
+
+const zaloLinkEl = document.getElementById('lp-footer-zalo');
+if (zaloLinkEl) zaloLinkEl.href = CONTACT_ZALO;
+
+const tiktokLinkEl = document.getElementById('lp-footer-tiktok');
+if (tiktokLinkEl) tiktokLinkEl.href = CONTACT_TIKTOK;
+
+const instaLinkEl = document.getElementById('lp-footer-instagram');
+if (instaLinkEl) instaLinkEl.href = CONTACT_INSTAGRAM;
+
+// Bind all switch sound buttons
+bindSoundButtons();
+</script>
+</body>
+</html>
