@@ -289,9 +289,10 @@
   }
 }
 
-@media (max-width: 480px) {
+/* phones: two compact columns (card sizing lives in app.css, "Landing mobile polish") */
+@media (max-width: 640px) {
   .lp-products-grid {
-    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
 }
 
@@ -409,6 +410,12 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .lp-footage-btn.lp-footage-btn {
+    height: 40px; /* finger-size on touch screens */
+  }
 }
 
 .lp-footage-btn {

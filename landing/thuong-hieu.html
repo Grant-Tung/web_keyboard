@@ -82,15 +82,7 @@
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 22px;
 }
-@media (max-width: 600px) {
-  .brand-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
-  .brand-grid .kmpd-pcard { width: 100%; flex: 1; min-width: 0; padding: 12px; }
-  .brand-grid .kmpd-pcard__name { font-size: 14px; min-height: 38px; }
-  .brand-grid .kmpd-pcard__line { display: none; }
-}
-@media (max-width: 420px) {
-  .brand-grid { grid-template-columns: 1fr; }
-}
+/* phone columns for .brand-grid: see "Landing mobile polish" in app.css */
 </style>
 </head>
 <body>
@@ -117,20 +109,7 @@
 
     <!-- Cụm hành động: Tra cứu đơn, Tài khoản và Giỏ hàng -->
     <div class="nav__actions">
-      <button class="account-btn" type="button" data-open-tracking aria-label="Tra cứu đơn hàng">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/><circle cx="18.5" cy="15.5" r="2.5"/><path d="M20.2 17.2 22 19"/></svg>
-        <span class="action-btn__label">Tra cứu đơn</span>
-      </button>
-
-      <button class="account-btn" type="button" id="account-btn" aria-label="Tài khoản">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        <span class="action-btn__label">Tài khoản</span>
-      </button>
-
-      <button class="cart-btn" type="button" aria-label="Mở giỏ hàng">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
-        <span class="cart-btn__n"></span>
-      </button>
+      <a class="btn btn--primary" href="https://zalo.me/0942109929" target="_blank" rel="noopener" style="height:40px;padding:0 18px">Chat Zalo</a>
     </div>
 
     <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
@@ -361,7 +340,7 @@
       <div>
         <p style="font-size:15px;font-weight:600;margin:0 0 12px">Hỗ trợ khách hàng</p>
         <p class="muted" style="font-size:14px;line-height:1.8">
-          · Đặt cọc 100.000đ, giao COD toàn quốc<br>
+          · Mua nhanh qua Zalo, giao COD toàn quốc<br>
           · Đổi mới trong 7 ngày nếu lỗi nhà sản xuất<br>
           · Dịch vụ Custom Build & Mod phím theo gu riêng
         </p>
@@ -379,7 +358,6 @@
     </div>
     <div style="border-top:1px solid rgb(0 0 0 / .07);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
       <p class="muted" style="font-size:14px;margin:0">© 2026 MoneyKeyboard. Bản quyền thuộc về MoneyKeyboard.</p>
-      <p class="muted" style="font-size:14px;margin:0"><a class="link" href="admin.html">Trang quản trị (Demo)</a></p>
     </div>
   </div>
 </footer>
