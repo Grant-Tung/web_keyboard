@@ -2,37 +2,58 @@
 <html lang="vi">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MoneyKeyboard – Chọn bản demo</title>
+<title>MoneyKeyboard – Chọn gói website</title>
 <style>
   :root { --bg: #fff; --surface: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --action: #0071e3; }
   * { box-sizing: border-box; }
-  body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: 24px; background: var(--bg); color: var(--ink);
+  body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: 40px 20px; background: var(--bg); color: var(--ink);
          font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
-  main { width: 100%; max-width: 760px; }
-  h1 { font-size: clamp(28px, 6vw, 40px); letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 8px; }
-  p.lead { color: var(--muted); margin: 0 0 32px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
-  a.card { display: flex; flex-direction: column; gap: 8px; padding: 24px; border-radius: 20px; background: var(--surface);
-           color: inherit; text-decoration: none; transition: transform .2s, box-shadow .2s; }
-  a.card:hover { transform: translateY(-3px); box-shadow: 0 16px 36px -14px rgb(0 0 0 / .2); }
-  .card h2 { font-size: 21px; margin: 0; letter-spacing: -0.02em; }
-  .card p { margin: 0; color: var(--muted); font-size: 15px; }
-  .card span { margin-top: auto; padding-top: 12px; color: var(--action); font-weight: 600; }
+  main { width: 100%; max-width: 860px; }
+  h1 { font-size: clamp(28px, 6vw, 42px); letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 8px; }
+  p.lead { color: var(--muted); margin: 0 0 32px; max-width: 56ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; align-items: start; }
+  .card { position: relative; display: flex; flex-direction: column; padding: 28px 24px 24px; border-radius: 22px; background: var(--surface); }
+  .card--pick { background: var(--bg); box-shadow: inset 0 0 0 2px var(--action), 0 20px 44px -20px rgb(0 113 227 / .45); }
+  .card h2 { font-size: 22px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .card .for { margin: 0; color: var(--muted); font-size: 15px; }
+  .price { margin: 18px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.03em; }
+  .price small { font-size: 15px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  ul { list-style: none; margin: 20px 0 24px; padding: 0; display: grid; gap: 10px; font-size: 15px; }
+  li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; }
+  li::before { content: "✓"; font-weight: 700; color: #1b8a3c; }
+  .btn { margin-top: auto; display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 999px;
+         font-weight: 600; text-decoration: none; transition: transform .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn--primary { background: var(--action); color: #fff; }
+  .btn--ghost { color: var(--ink); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .15); }
 </style>
 <main>
-  <h1>MoneyKeyboard</h1>
-  <p class="lead">Chọn một bản để xem thử.</p>
+  <h1>Website cho MoneyKeyboard</h1>
+  <p class="lead">Bấm vào từng bản để xem thử như khách mua hàng thật.</p>
   <div class="grid">
-    <a class="card" href="demo/">
-      <h2>Bản đầy đủ</h2>
-      <p>Cửa hàng có giỏ hàng, thanh toán, tra cứu đơn và trang quản trị sản phẩm, tồn kho.</p>
-      <span>Mở bản đầy đủ →</span>
-    </a>
-    <a class="card" href="landing/">
-      <h2>Bản landing</h2>
-      <p>Web giới thiệu sản phẩm, khách đặt mua trực tiếp qua Zalo. Không có giỏ hàng hay tài khoản.</p>
-      <span>Mở bản landing →</span>
-    </a>
+    <section class="card card--pick">
+      <h2>Shop + Trang quản trị</h2>
+      <p class="for">Website bán hàng kèm trang quản trị cho chủ shop.</p>
+      <p class="price">5.000.000đ <small>trọn gói</small></p>
+      <ul>
+        <li>Tự thêm, sửa sản phẩm và đổi giá bất cứ lúc nào</li>
+        <li>Theo dõi tồn kho theo từng màu</li>
+        <li>Khách đặt hàng và tra cứu đơn ngay trên web</li>
+        <li>Đơn hàng tập trung một chỗ, dễ quản lý</li>
+      </ul>
+      <a class="btn btn--primary" href="demo/">Xem bản đầy đủ →</a>
+    </section>
+    <section class="card">
+      <h2>Landing</h2>
+      <p class="for">Website giới thiệu sản phẩm, khách mua qua Zalo.</p>
+      <p class="price">2.000.000đ <small>trọn gói</small></p>
+      <ul>
+        <li>Giới thiệu sản phẩm đẹp, xem tốt trên điện thoại</li>
+        <li>Khách nghe thử tiếng switch trước khi mua</li>
+        <li>Đặt hàng nhanh qua Zalo, tin nhắn soạn sẵn</li>
+      </ul>
+      <a class="btn btn--ghost" href="landing/">Xem bản landing →</a>
+    </section>
   </div>
 </main>
 </html>
