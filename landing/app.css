@@ -2902,3 +2902,71 @@ html.cart-open, html.cart-open body { overflow: hidden; } /* page behind the car
   .kmod-floating-contact { bottom: calc(20px + env(safe-area-inset-bottom)) !important; }
 }
 body:has(.buybar) { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+
+/* ---------- Landing mobile polish ---------- */
+@media (max-width: 1024px) {
+  /* the menu bar is gone here, so nothing pushed the page below the fixed header: breadcrumbs and titles sat under it */
+  main:is(.catalog-page, .brand-page, .cb-page, .info-page) { padding-top: calc(var(--nav) + 20px); }
+  /* product page: header "Chat Zalo" + buy bar already cover contact; the floating pair sat on the switch sound buttons */
+  body:has(.buybar) .kmod-floating-contact { display: none !important; }
+  /* finger-size tap areas */
+  :is(#footer a, footer .link) { position: relative; }
+  :is(#footer a, footer .link)::before { content: ''; position: absolute; inset: -9px 0; } /* 40px tap area, layout untouched */
+  .c-nav-btn { width: 40px; height: 40px; }
+  .kmpd-see-all, .channel-pill, .kmpd-pcard__btn-build, .brand-pills button { min-height: 40px; }
+  .brand-pills button { padding-inline: 14px; }
+  footer .link[href="index.html"]::after { content: none; } /* "← Quay lại trang chủ →" had an arrow on both ends */
+}
+@media (max-width: 640px) {
+  /* shop grids: two columns of compact cards instead of one 520px-tall card per screen */
+  main .catalog-grid, main .brand-grid, main .lp-products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } /* "main": the pages' own <style> sets columns after this file */
+  .cb-grid { grid-template-columns: minmax(0, 1fr); }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard { padding: 10px; border-radius: 16px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__img { margin-bottom: 10px; border-radius: 10px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__img img { padding: 6px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) :is(.kmpd-badge-stock, .kmpd-badge-custom) { top: 6px; left: 6px; font-size: 9.5px; padding: 3px 6px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__brand { font-size: 10.5px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__name { font-size: 13.5px; min-height: 36px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__line { display: none; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-sound-btn { align-self: stretch; justify-content: center; padding-inline: 6px; margin-bottom: 10px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__footer { padding-top: 10px; gap: 6px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__price { font-size: 15.5px; }
+  :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__link { font-size: 11px; letter-spacing: .03em; }
+
+  /* sticky buy bar: the name was cut to "AUL…"; name over price on the left, button on the right */
+  .buybar .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-content: center; }
+  .buybar .wrap > :first-child { grid-area: 1 / 1; }
+  .buybar .price { grid-area: 2 / 1; margin: 0; font-size: 15px; }
+  .buybar .wrap > .btn { grid-area: 1 / 2 / 3 / 3; align-self: center; }
+  .buybar__name { font-size: 13px; color: var(--p-muted); }
+
+  /* custom build: the Zalo button label was wider than the button */
+  #btn-send-cfg-zalo { height: auto !important; min-height: 48px; padding-block: 8px; white-space: normal; text-align: center; }
+  /* contact page: two half-width pills broke their labels over two lines */
+  .info-page div:has(> .channel-pill) { flex-wrap: wrap; }
+  .info-page div:has(> .channel-pill) > .channel-pill { flex: 1 1 100% !important; white-space: nowrap; }
+}
+@media (max-width: 580px) {
+  /* Footage Reels: four 480px-tall cards stacked = 4 screens of scrolling; swipe sideways like the product rows */
+  .footage-grid {
+    display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    margin-inline: calc(-1 * var(--gut, 24px)); padding-inline: var(--gut, 24px); scroll-padding-inline: var(--gut, 24px);
+    scrollbar-width: none;
+  }
+  .footage-grid::-webkit-scrollbar { display: none; }
+  .footage-grid > * { flex: 0 0 76%; scroll-snap-align: start; }
+}
+@media (max-width: 1024px) {
+  /* home: system.css gave every section 96px + 48px of padding, ~190px of white between two product rows */
+  main > section.kmpd-carousel-section { padding-top: 56px; padding-bottom: 16px; }
+  main > section.footage-section { padding-bottom: 16px; }
+  .footage-grid { margin-bottom: 0; }
+  #top-search { font-size: 16px; } /* < 16px makes iOS Safari zoom on focus */
+}
+@media (max-width: 640px) {
+  main > section.kmpd-carousel-section { padding-top: 44px; padding-bottom: 12px; }
+  main > section.footage-section { padding-top: calc(var(--nav) + 28px); padding-bottom: 8px; }
+  .footage-section .section-head { margin-bottom: 24px; }
+  /* the header already has "Chat Zalo": one floating button (call) covers less of the right-hand column */
+  body:has(.nav__actions [href*="zalo.me"]) .kmod-contact-btn--zalo { display: none; }
+}

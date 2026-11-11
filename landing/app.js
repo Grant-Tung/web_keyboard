@@ -1319,12 +1319,6 @@ function mountSpeedDial() {
   if ($('#kmod-contact-widget')) return;
   document.body.insertAdjacentHTML('beforeend', `
     <div class="kmod-floating-contact" id="kmod-contact-widget">
-      <!-- Nút Tra cứu đơn -->
-      <button type="button" class="kmod-contact-btn kmod-contact-btn--track" data-open-tracking title="Tra cứu đơn hàng & bảo hành" aria-label="Tra cứu đơn hàng">
-        <span>🔍</span>
-        <span class="kmod-btn-tooltip">Tra cứu đơn hàng & bảo hành</span>
-      </button>
-
       <!-- Nút Hotline -->
       <a href="tel:${CONTACT_HOTLINE.replace(/\s+/g, '')}" class="kmod-contact-btn kmod-contact-btn--phone" title="Gọi Hotline: ${CONTACT_HOTLINE}" aria-label="Gọi Hotline">
         <span>📞</span>

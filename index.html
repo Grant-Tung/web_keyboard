@@ -1,5 +1,38 @@
 <!doctype html>
+<html lang="vi">
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=demo/">
-<title>MoneyKeyboard demo</title>
-<a href="demo/">Mở bản demo</a>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoneyKeyboard – Chọn bản demo</title>
+<style>
+  :root { --bg: #fff; --surface: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --action: #0071e3; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: 24px; background: var(--bg); color: var(--ink);
+         font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+  main { width: 100%; max-width: 760px; }
+  h1 { font-size: clamp(28px, 6vw, 40px); letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 8px; }
+  p.lead { color: var(--muted); margin: 0 0 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+  a.card { display: flex; flex-direction: column; gap: 8px; padding: 24px; border-radius: 20px; background: var(--surface);
+           color: inherit; text-decoration: none; transition: transform .2s, box-shadow .2s; }
+  a.card:hover { transform: translateY(-3px); box-shadow: 0 16px 36px -14px rgb(0 0 0 / .2); }
+  .card h2 { font-size: 21px; margin: 0; letter-spacing: -0.02em; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .card span { margin-top: auto; padding-top: 12px; color: var(--action); font-weight: 600; }
+</style>
+<main>
+  <h1>MoneyKeyboard</h1>
+  <p class="lead">Chọn một bản để xem thử.</p>
+  <div class="grid">
+    <a class="card" href="demo/">
+      <h2>Bản đầy đủ</h2>
+      <p>Cửa hàng có giỏ hàng, thanh toán, tra cứu đơn và trang quản trị sản phẩm, tồn kho.</p>
+      <span>Mở bản đầy đủ →</span>
+    </a>
+    <a class="card" href="landing/">
+      <h2>Bản landing</h2>
+      <p>Web giới thiệu sản phẩm, khách đặt mua trực tiếp qua Zalo. Không có giỏ hàng hay tài khoản.</p>
+      <span>Mở bản landing →</span>
+    </a>
+  </div>
+</main>
+</html>
