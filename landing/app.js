@@ -950,68 +950,6 @@ function renderCart() {
   }
 }
 
-export function openCart() { document.documentElement.classList.add('cart-open'); $('.drawer')?.focus(); }
-function closeCart() { document.documentElement.classList.remove('cart-open'); }
-
-function mountDrawer() {
-  document.body.insertAdjacentHTML('beforeend', `
-    <div class="scrim" data-close></div>
-    <aside class="drawer" tabindex="-1" aria-label="Giỏ hàng">
-      <div class="drawer__head">
-        <h2>Giỏ hàng của bạn</h2>
-        <button class="drawer__x" data-close aria-label="Đóng">✕</button>
-      </div>
-      <div class="drawer__body"></div>
-      <div class="drawer__foot">
-        <div class="cart-coupon-wrap cart-coupon-area"></div>
-        <div class="sum" style="margin-bottom:6px">
-          <span class="muted">Tạm tính:</span>
-          <span class="drawer__subtotal"></span>
-        </div>
-        <div class="sum" style="font-weight:700;font-size:17px;border-top:1px solid rgb(0 0 0 / .08);padding-top:10px;margin-bottom:12px">
-          <span>Tổng thanh toán:</span>
-          <span class="price drawer__total" style="color:var(--p-action)"></span>
-        </div>
-        <a class="btn btn--primary" href="checkout.html" style="width:100%;justify-content:center">Đặt cọc 100.000đ ngay</a>
-      </div>
-    </aside>`);
-
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('[data-close]')) closeCart();
-    if (e.target.closest('.cart-btn')) openCart();
-    const qBtn = e.target.closest('[data-cart-q]');
-    if (qBtn) {
-      const idx = +qBtn.dataset.idx;
-      const delta = +qBtn.dataset.cartQ;
-      const items = cart.get();
-      if (items[idx]) {
-        items[idx].qty += delta;
-        if (items[idx].qty <= 0) {
-          items.splice(idx, 1);
-        }
-        cart.set(items);
-      }
-      return;
-    }
-    const rm = e.target.closest('[data-rm]');
-    if (rm) { const items = cart.get(); items.splice(+rm.dataset.rm, 1); cart.set(items); }
-    if (e.target.closest('[data-rm-coupon]')) cart.removeCoupon();
-    if (e.target.closest('#btn-apply-coupon')) {
-      const code = $('#cart-coupon-code')?.value;
-      const res = cart.applyCoupon(code);
-      toast(res.msg);
-    }
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeCart();
-    if (e.key === 'Enter' && e.target.id === 'cart-coupon-code') {
-      e.preventDefault();
-      const res = cart.applyCoupon(e.target.value);
-      toast(res.msg);
-    }
-  });
-  renderCart();
-}
 
 /* ---------- switch sound synthesizer (Web Audio API) ---------- */
 let ctx, playing;
@@ -1464,11 +1402,15 @@ function initSearch() {
       : `<p style="padding:16px 12px;margin:0;font-size:13px;color:var(--p-muted)">Không tìm thấy sản phẩm khớp với "${esc(input.value)}".</p>`;
     box.classList.add('is-open');
   };
+  // phones show only a search icon; focusing it widens the box over the header row (.is-expanded, see app.css)
+  const wrap = input.closest('.nav__search');
+  const close = () => { box.classList.remove('is-open'); wrap?.classList.remove('is-expanded'); };
   input.addEventListener('input', run);
-  input.addEventListener('focus', run);
+  input.addEventListener('focus', () => { wrap?.classList.add('is-expanded'); run(); });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Escape') { close(); input.blur(); } });
   document.addEventListener('click', (e) => {
-    if (e.target.closest('#search-clear-btn')) { input.value = ''; box.classList.remove('is-open'); }
-    else if (!e.target.closest('.nav__search')) box.classList.remove('is-open');
+    if (e.target.closest('#search-clear-btn')) { input.value = ''; close(); }
+    else if (!e.target.closest('.nav__search')) close();
   });
 }
 
@@ -1479,7 +1421,6 @@ export const orders = {
 
 if (typeof document !== 'undefined') {
   if (!document.body.classList.contains('admin')) {
-    mountDrawer();
     mountSpeedDial();
     mountTrackingModal();
     initMegaMenu();

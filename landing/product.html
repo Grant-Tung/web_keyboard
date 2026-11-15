@@ -318,7 +318,12 @@
   import { CATALOG, PRODUCT, vnd, CONTACT_ZALO, toast, bindSoundButtons, isPhoto, canBuy, stockBadge, esc } from './app.js';
   const $ = (s) => document.querySelector(s);
   const qs = new URLSearchParams(location.search);
-  const p = CATALOG.find((x) => x.id === qs.get('id')) || CATALOG[0];
+  const p = CATALOG.find((x) => x.id === qs.get('id'));
+  if (!p) { // a wrong or old link: say so instead of silently showing another product
+    document.title = 'Không tìm thấy sản phẩm | MoneyKeyboard';
+    document.querySelector('main').innerHTML = '<div class="wrap" style="padding:140px 0 96px;text-align:center"><h1 style="margin:0 0 12px">Không tìm thấy sản phẩm</h1><p class="muted" style="margin:0 0 24px">Sản phẩm này không còn bán hoặc đường link bị sai.</p><a class="btn btn--primary" href="san-pham.html">Xem tất cả sản phẩm</a></div>';
+    await new Promise(() => {}); // stop the rest of this page script
+  }
   const kb = p.type === 'keyboard' || p.category === 'ban-phim-co';
   // stock of one colour (undefined = not tracked yet); order goods are never "out" of a colour
   const left = (c) => (p.category === 'hang-order' ? undefined : c?.stock);
