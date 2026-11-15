@@ -1,3 +1,6 @@
 .claude/
 skills-lock.json
 .agents/
+
+# CMS API token (scripts/cms-sync.mjs)
+.env.cms
