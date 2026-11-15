@@ -1049,6 +1049,7 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
 @media (max-width: 580px) {
   .footage-grid { grid-template-columns: 1fr; }
 }
+a.reel-card { text-decoration: none; }
 .reel-card {
   position: relative;
   border-radius: var(--bento-r);
@@ -2927,4 +2928,22 @@ body:has(.buybar) { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
   :is(.catalog-grid, .brand-grid) .kmpd-pcard__name a::after { content: ''; position: absolute; inset: 0; } /* the whole card opens the product */
   :is(.catalog-grid, .brand-grid) .kmpd-pcard__footer { margin-top: auto; padding: 4px 10px 12px; border: 0; }
   :is(.catalog-grid, .brand-grid) .kmpd-pcard__price { font-size: 15.5px; }
+}
+
+@media (max-width: 580px) {
+  /* Footage Reels: four 480px-tall cards stacked = 4 screens of scrolling; swipe sideways like the product rows (same as landing) */
+  .footage-grid {
+    display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    margin-inline: calc(-1 * var(--gut, 24px)); padding-inline: var(--gut, 24px); scroll-padding-inline: var(--gut, 24px);
+    scrollbar-width: none;
+  }
+  .footage-grid::-webkit-scrollbar { display: none; }
+  .footage-grid > * { flex: 0 0 76%; scroll-snap-align: start; }
+}
+
+@media (max-width: 1024px) {
+  /* home: system.css gave every section 96px + 48px of padding, ~190px of white between two rows (same as landing) */
+  main > section.kmpd-carousel-section { padding-top: 56px; padding-bottom: 16px; }
+  main > section.footage-section { padding-bottom: 16px; }
+  .footage-grid { margin-bottom: 0; }
 }

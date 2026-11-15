@@ -1049,6 +1049,7 @@ html.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
 @media (max-width: 580px) {
   .footage-grid { grid-template-columns: 1fr; }
 }
+a.reel-card { text-decoration: none; }
 .reel-card {
   position: relative;
   border-radius: var(--bento-r);

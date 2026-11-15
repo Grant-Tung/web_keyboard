@@ -548,7 +548,7 @@
   // ==========================================
   const footageGrid = document.getElementById('footage-grid');
   footageGrid.innerHTML = FOOTAGE_ITEMS.map((item) => `
-    <article class="reel-card" data-reel-id="${item.id}">
+    <a class="reel-card" data-reel-id="${item.id}" href="${item.url}" target="_blank" rel="noopener">
       <img class="reel-card__thumb" src="${item.img}" alt="${item.title}" loading="lazy">
       <div class="reel-card__scrim"></div>
       <span class="reel-card__tag">${item.tag}</span>
@@ -563,7 +563,7 @@
           <span>${item.channel}</span>
         </div>
       </div>
-    </article>
+    </a>
   `).join('');
 
   // Footage Reel Click -> Modal
@@ -572,7 +572,7 @@
     const card = e.target.closest('[data-reel-id]');
     if (!card) return;
     const item = FOOTAGE_ITEMS.find((r) => r.id === card.dataset.reelId);
-    if (!item) return;
+    if (!item || item.url) return; // a card with a TikTok link just opens it in a new tab
 
     document.getElementById('modal-reel-title').textContent = item.title;
     document.getElementById('modal-reel-img').src = item.img;
