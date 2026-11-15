@@ -2944,16 +2944,24 @@ body:has(.buybar) { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
   :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__price { font-size: 15.5px; }
   :is(.catalog-grid, .brand-grid, .lp-products-grid) .kmpd-pcard__link { font-size: 11px; letter-spacing: .03em; }
 
-  /* list pages (Sản phẩm, Thương hiệu): Shopee-style small cards - square image, then brand, name, price only */
-  main :is(.catalog-grid, .brand-grid) .kmpd-pcard { padding: 0; border-radius: 12px; overflow: hidden; box-shadow: none; }
-  :is(.catalog-grid, .brand-grid) .kmpd-pcard:hover { transform: none; }
-  :is(.catalog-grid, .brand-grid) .kmpd-pcard__img { margin: 0; border-radius: 0; background: #f2f2f4; }
-  :is(.catalog-grid, .brand-grid) .kmpd-pcard__img img { padding: 0; }
-  :is(.catalog-grid, .brand-grid) :is(.kmpd-badge-stock, .kmpd-badge-custom, .kmpd-sound-btn, .kmpd-pcard__link) { display: none; }
-  :is(.catalog-grid, .brand-grid) .kmpd-pcard__brand { margin: 8px 10px 2px; }
-  :is(.catalog-grid, .brand-grid) .kmpd-pcard__name { margin: 0 10px; min-height: 0; }
-  :is(.catalog-grid, .brand-grid) .kmpd-pcard__name a::after { content: ''; position: absolute; inset: 0; } /* the whole card opens the product */
-  :is(.catalog-grid, .brand-grid) .kmpd-pcard__footer { margin-top: auto; padding: 4px 10px 12px; border: 0; }
+  /* list pages (Sản phẩm, Thương hiệu) and the home rows: Shopee-style small cards - square image, then brand, name, price only */
+  main :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard { padding: 0; border-radius: 12px; overflow: hidden; box-shadow: none; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard:hover { transform: none; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard__img { margin: 0; border-radius: 0; background: #f2f2f4; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard__img img { padding: 0; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) :is(.kmpd-badge-stock, .kmpd-badge-custom, .kmpd-sound-btn, .kmpd-pcard__link) { display: none; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard__brand { margin: 8px 10px 2px; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard__name { margin: 0 10px; min-height: 0; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard__name a::after { content: ''; position: absolute; inset: 0; } /* the whole card opens the product */
+  :is(.catalog-grid, .brand-grid, .kmpd-track) .kmpd-pcard__footer { margin-top: auto; padding: 4px 10px 12px; border: 0; }
+  :is(.catalog-grid, .brand-grid, .kmpd-track) :is(.kmpd-pcard__line, .kmpd-cb-specs, .kmpd-pcard__price-ref, .kmpd-pcard__btn-build) { display: none; }
+  /* home: each carousel becomes a 2x2 grid; "Xem tất cả" leads to the rest */
+  .kmpd-track { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; overflow: visible; scroll-snap-type: none; padding: 8px 0 0; }
+  .kmpd-track > .kmpd-pcard { width: auto; }
+  .kmpd-track > .kmpd-pcard:nth-child(n+5), .kmpd-carousel-section .c-nav-btn { display: none; }
+  .kmpd-track .kmpd-pcard__brand { font-size: 10.5px; }
+  .kmpd-track .kmpd-pcard__name { font-size: 13.5px; }
+  .kmpd-track .kmpd-pcard__price { font-size: 15.5px; }
 
   /* sticky buy bar: the name was cut to "AUL…"; name over price on the left, button on the right */
   .buybar .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-content: center; }
