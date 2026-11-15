@@ -5,7 +5,8 @@
   "description": "MoneyKeyboard - Mechanical Keyboard Store Demo",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "cms:sync": "node --env-file-if-exists=.env.cms scripts/cms-sync.mjs"
   },
   "keywords": [
     "mechanical-keyboard",

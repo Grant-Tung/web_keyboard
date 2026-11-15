@@ -1,4 +1,5 @@
 // Demo only: no backend. Cart and orders live in localStorage so the admin page can show demo orders.
+import CMS_CATALOG from './cms-catalog.js';
 export const BANK = { id: 'VCB', acc: '0123456789', name: 'TEN CHU SHOP' };
 export const DEPOSIT = 100000;
 // The deposit never exceeds the order total (a 95k tube of lube is paid in full, not 100k).
@@ -174,7 +175,7 @@ export const FOOTAGE_ITEMS = [
   },
 ];
 
-export const DEFAULT_CATALOG = [
+const BUILTIN_CATALOG = [
   // ==========================================
   // 1. BÀN PHÍM CƠ (Theo phân loại của kietmodphimdao - 4 sản phẩm đầu chuẩn 100% Ảnh 2)
   // ==========================================
@@ -715,6 +716,8 @@ export const DEFAULT_CATALOG = [
     imgs: [P('black-knob-screen'), P('red-translucent')]
   }
 ];
+// Products synced from the CMS (npm run cms:sync) win; an empty file keeps the built-in list.
+export const DEFAULT_CATALOG = CMS_CATALOG.length ? CMS_CATALOG : BUILTIN_CATALOG;
 
 export function getLiveCatalog() {
   let list = DEFAULT_CATALOG;

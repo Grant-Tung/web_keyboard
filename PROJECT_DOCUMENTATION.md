@@ -406,3 +406,9 @@ pages.forEach(p => console.log(p, getNav(p) === base ? '100% IDENTICAL' : 'MISMA
 
 ---
 *Tài liệu được cập nhật toàn diện để lưu giữ trọn vẹn bối cảnh kỹ thuật cho các kỹ sư và AI tiếp tục phát triển MoneyKeyboard.*
+
+---
+
+## CMS (cms.weeblab.net)
+
+Sản phẩm được quản lý trên CMS (site **MoneyKeyboard**). `npm run cms:sync` kéo sản phẩm Published về `landing/cms-catalog.js` và `demo/cms-catalog.js`; GitHub Action `CMS sync` tự chạy mỗi giờ. File rỗng thì `app.js` dùng danh sách gốc. Chi tiết: [docs/cms-tong-quan.md](docs/cms-tong-quan.md), [docs/cms-huong-dan.md](docs/cms-huong-dan.md).
