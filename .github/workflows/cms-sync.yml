@@ -20,7 +20,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm run cms:sync
+      - run: |
+          [ -n "$CMS_API_KEY" ] || { echo "::warning::CMS_API_KEY secret is not set (Settings > Secrets > Actions) - skipping"; exit 0; }
+          npm run cms:sync
         env:
           CMS_API_KEY: ${{ secrets.CMS_API_KEY }}
           CMS_SITE_ID: 9be2d956-ef9c-4d41-bd55-3b8b6b1272a9
