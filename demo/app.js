@@ -1470,11 +1470,15 @@ function initSearch() {
       : `<p style="padding:16px 12px;margin:0;font-size:13px;color:var(--p-muted)">Không tìm thấy sản phẩm khớp với "${esc(input.value)}".</p>`;
     box.classList.add('is-open');
   };
+  // phones show only a search icon; focusing it widens the box over the header row (.is-expanded, see app.css)
+  const wrap = input.closest('.nav__search');
+  const close = () => { box.classList.remove('is-open'); wrap?.classList.remove('is-expanded'); };
   input.addEventListener('input', run);
-  input.addEventListener('focus', run);
+  input.addEventListener('focus', () => { wrap?.classList.add('is-expanded'); run(); });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Escape') { close(); input.blur(); } });
   document.addEventListener('click', (e) => {
-    if (e.target.closest('#search-clear-btn')) { input.value = ''; box.classList.remove('is-open'); }
-    else if (!e.target.closest('.nav__search')) box.classList.remove('is-open');
+    if (e.target.closest('#search-clear-btn')) { input.value = ''; close(); }
+    else if (!e.target.closest('.nav__search')) close();
   });
 }
 
