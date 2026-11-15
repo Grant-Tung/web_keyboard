@@ -27,7 +27,7 @@ GitHub Pages tự deploy → https://grant-tung.github.io/web_keyboard/
 ## 2. Sửa một sản phẩm (giá, tồn kho, mô tả, ảnh)
 
 1. Menu **Content** → ô *Content Type* chọn **Sản phẩm**.
-2. Bấm vào sản phẩm cần sửa.
+2. Bấm **Edit** ở sản phẩm cần sửa (lọc nhanh bằng ô *Status*: All / Draft / Published).
 3. Các ô:
 
 | Ô | Ý nghĩa trên website |
@@ -45,14 +45,14 @@ GitHub Pages tự deploy → https://grant-tung.github.io/web_keyboard/
 | **sortOrder** | Thứ tự hiển thị, số nhỏ đứng trước |
 | **extra** | Dữ liệu kỹ thuật (JSON): `type`, `soundId`, màu `colors`, `specs`, `buildSpecs`… — chỉ sửa nếu hiểu JSON, sai dấu phẩy là lỗi |
 
-4. Bấm **Save**. Nếu sản phẩm đang Published thì giữ nguyên, website sẽ nhận bản mới ở lần đồng bộ tới.
+4. Bấm **Save Changes** (cuối form). Giữ ô **Status** = *Published*; website nhận bản mới ở lần đồng bộ tới.
 
 ## 3. Thêm sản phẩm mới
 
-1. **Content** → **Sản phẩm** → **Create**.
+1. **Content** → chọn **Sản phẩm** → **Create Content**.
 2. Điền **Title**, **Slug** (chữ thường, không dấu, nối bằng `-`, vd `akko-5075b-plus`), brand, category, subCategory, price, ảnh.
 3. **extra**: copy từ một sản phẩm cùng loại rồi sửa — tối thiểu `{"type": "keyboard"}` (hoặc `switch`, `keycap`, `phu-kien`, `hang-order`, `custom-build`).
-4. Chọn **Published** (hoặc tạo Draft rồi bấm **Publish** sau).
+4. Ô **Status** chọn *Published* (hoặc *Draft* để soạn trước), bấm lưu.
 
 ## 4. Ẩn / xoá sản phẩm
 
@@ -62,7 +62,7 @@ GitHub Pages tự deploy → https://grant-tung.github.io/web_keyboard/
 ## 5. Ảnh (Media)
 
 - Menu **Media** → **Upload** để đưa ảnh lên (nên dùng `.webp`, < 300 KB).
-- Trong form sản phẩm, ô **images** → **Upload Image** sẽ tự upload và điền URL.
+- Trong form sản phẩm, ô **images**: mỗi ảnh có **Upload Image** (tự upload, điền URL) hoặc dán **URL**; **+ Add images** để thêm ảnh, **Remove** để bỏ.
 - Ảnh cũ của shop đang trỏ về GitHub Pages (`grant-tung.github.io/...`) — vẫn dùng bình thường.
 - ⚠️ **Clean Unused** sẽ **xoá** ảnh không được nội dung nào dùng — kiểm tra kỹ trước khi bấm.
 
